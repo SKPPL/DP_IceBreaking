@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, memo } from 'react'
 import { useSpring, animated, to } from '@react-spring/web'
 import { useGesture } from 'react-use-gesture'
 
@@ -19,8 +19,10 @@ interface Props {
     videoId: string
     initx: number
     inity: number
+    peerxy: { peerx: number, peery: number } | undefined
+    moveChannel: RTCDataChannel | undefined
 }
-export default function Segment({ i, videoId, initx, inity }: Props) {
+function Segment({ i, videoId, peerxy, moveChannel, initx, inity }: Props) {
     const [isRightPlace, setIsRightPlace] = useState(false)
     const [zindex, setZindex] = useState(Math.floor(Math.random() * 10))
     const windowSize = useWindowSize();
@@ -43,6 +45,8 @@ export default function Segment({ i, videoId, initx, inity }: Props) {
         }
     }, [])
 
+
+
     const domTarget = useRef<HTMLDivElement>(null)
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
         () => ({
@@ -57,15 +61,35 @@ export default function Segment({ i, videoId, initx, inity }: Props) {
             config: { mass: 2, tension: 750, friction: 50 },
         })
     )
+    useEffect(() => {
+        if (!moveChannel) return;
+        console.log('moveChennel exists')
+    }, [moveChannel])
+
+    useEffect(() => {
+        if (peerxy) {
+            console.log('peerxy', peerxy)
+            api.start({ x: peerxy.peerx, y: peerxy.peery, rotateX: 0, rotateY: 0 })
+        }
+    }, [peerxy])
+
 
     const [{ wheelY }, wheelApi] = useSpring(() => ({ wheelY: 0 }))
 
     useGesture(
         {
-            onDrag: ({ active, offset: [x, y], previous: [prex, prey] }) => {
-
+            onDrag: ({ active, offset: [x, y] }) => {
                 if (isRightPlace) return;
+                console.log('peerxy on drag', peerxy)
+
                 api.start({ x: x, y: y, rotateX: 0, rotateY: 0, scale: active ? 1 : 1.05 })
+
+                console.log(moveChannel)
+                if (moveChannel) {
+                    console.log('나다', x, y)
+                    moveChannel.send(JSON.stringify({ i: i, peerx: x, peery: y }))
+                }
+
             },
             onPinch: ({ offset: [d, a] }) => api.start({ zoom: d / 10000, rotateZ: a }),
             onPinchEnd: () => api.start({ zoom: 0, rotateZ: 0 }),
@@ -137,3 +161,6 @@ export function isNearOutline(x: number, y: number, positionx: number, positiony
         return false;
 }
 
+
+
+export default memo(Segment);

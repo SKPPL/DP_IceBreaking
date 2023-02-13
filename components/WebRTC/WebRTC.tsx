@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
 import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
@@ -6,13 +6,6 @@ import useSocket from "../../pages/hooks/useSocket";
 import dynamic from "next/dynamic";
 import { useWindowSize } from "usehooks-ts";
 import Rocket from "../Game/rocket";
-
-
-// import '@mediapipe/face_mesh';
-// import '@tensorflow/tfjs-core';
-// // Register WebGL backend.
-// import '@tensorflow/tfjs-backend-webgl';
-// import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 
 const PuzzleSegment = dynamic(
   import('@/components/Game/Segment'), {
@@ -55,26 +48,6 @@ interface MyConstraints {
 export default function WebRTC() {
   const windowSize = useWindowSize();
 
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     console.log('ㅇㅇㅇ', window)
-  //     const runFaceDetect = async () => {
-  //       const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
-  //       const detectorConfig: faceLandmarksDetection.MediaPipeFaceMeshMediaPipeModelConfig = {
-  //         runtime: 'mediapipe',
-  //         solutionPath: '/node_modules/@mediapipe/face_mesh',
-  //         refineLandmarks: true
-  //         // or 'base/node_modules/@mediapipe/face_mesh' in npm.
-  //       };
-  //       const detector = await faceLandmarksDetection.createDetector(model, detectorConfig);
-  //     }
-  //     runFaceDetect();
-  //   }
-  // }, [])
-
-
-
-
   useSocket();
   const router = useRouter();
   //useRef은 특정컴포넌트에 접근할 수 있는 객체, 초기값 null
@@ -87,13 +60,8 @@ export default function WebRTC() {
   const hostRef = useRef(false);
   const selectRef = useRef<any>();
   const nickNameChannel = useRef<RTCDataChannel>();
-
-  // useEffect(() => {
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [userVideoRef.current?.video?.readyState])
-
-  const canvas = useRef<HTMLCanvasElement>(null);
+  const moveChannel = useRef<RTCDataChannel>();
+  var recievedPosition = useRef<JSON>();
 
   //State
   const [micSetting, setMicSetting] = useState(true);
@@ -101,10 +69,11 @@ export default function WebRTC() {
   const [roomName, setRoomName] = useState("");
   const [nickName, setNickName] = useState("");
   const [peerNickName, setPeerNickName] = useState("");
+  const [peerPosition, setPeerPosition] = useState({ i: 100, peerx: 0, peery: 0 });
   //닉네임 설정
   const handleNickName = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setNickName(e.currentTarget.value);
-    console.log(nickNameChannel);
+    // console.log(nickNameChannel);
 
     if (typeof nickNameChannel.current !== "undefined" && nickNameChannel.current.label == "nickname") {
       nickNameChannel.current.send(e.currentTarget.value);
@@ -112,13 +81,6 @@ export default function WebRTC() {
       console.log("[No data Channel]");
     }
   };
-
-  useEffect(() => {
-    if (canvas.current) {
-      canvas.current.width = userVideoRef.current.videoWidth;
-      canvas.current.height = userVideoRef.current.videoHeight;
-    }
-  }, [canvas, userVideoRef])
 
   //사이드 이펙트를 수행하기 위한 훅
   //videoRef가 create,update 될 때 실행된다. (props, state가 바뀔 때 마다 getUserCamera함수를 호출한다)
@@ -172,7 +134,7 @@ export default function WebRTC() {
         selectRef.current.appendChild(option);
       });
     } catch (e) {
-      console.log(e);
+      console.log('getCameras error', e);
     }
   }
 
@@ -193,7 +155,7 @@ export default function WebRTC() {
   async function getMedia(deviceId?: string): Promise<void> {
     const initialConstraints: MyConstraints = {
       audio: true,
-      video: { width: 640, height: 480 },
+      video: { facingMode: "user" },
     };
     const cameraConstraints: MyConstraints = {
       audio: true,
@@ -212,7 +174,7 @@ export default function WebRTC() {
         await getCameras();
       }
     } catch (e) {
-      console.log(e);
+      console.log('navigator getUserMedia error', e);
     }
   }
 
@@ -232,10 +194,10 @@ export default function WebRTC() {
       socketRef.current.emit("ready", roomName);
       console.log("[emit ready]");
     } catch (e) {
-      console.log(e);
+      console.log('handleRoomJoined error', e);
     }
   };
-  //peer와 연결 생성 시작
+  //peer와 연결 생성 시작, eventlisten을 호스트에서 실행
   const initiateCall = async (): Promise<void> => {
     console.log("[initiateCall]");
     if (hostRef.current) {
@@ -243,18 +205,28 @@ export default function WebRTC() {
       userStreamRef.current.getTracks().forEach((track) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
       try {
         console.log("[emit offer]");
-        //DataChannel
+        //DataChannel create and label setting
         nickNameChannel.current = webRTCConnRef.current.createDataChannel("nickname");
-        //Client A -> Client B  message
+        moveChannel.current = webRTCConnRef.current.createDataChannel("move");
+
+        //Client B -> Client A  message
         nickNameChannel.current.addEventListener("message", (event) => {
-          setPeerNickName(event.data);
+          // setPeerNickName(event.data);
+          // console.log(JSON.parse(event.data));
         });
+        moveChannel.current.addEventListener("message", (event) => {
+          // recievedPosition = JSON.parse(event.data);
+          if (event.data) {
+            console.log(event.data, 'in initiateCall')
+            setPeerPosition(JSON.parse(event.data));
+          }
+        })
 
         const offer = await webRTCConnRef.current.createOffer();
         webRTCConnRef.current.setLocalDescription(offer);
         socketRef.current.emit("offer", offer, roomName);
       } catch (e) {
-        console.log(e);
+        console.log('initialCall error', e);
       }
     }
   };
@@ -316,18 +288,25 @@ export default function WebRTC() {
   const handleTrackEvent = (event: RTCTrackEvent): void => {
     peerVideoRef.current.srcObject = event.streams[0];
   };
-
+  //peer로부터 offer를 받았을 때
   const handleReceivedOffer = async (offer: any[]): Promise<void> => {
     if (!hostRef.current) {
       webRTCConnRef.current = makeConnection();
-      webRTCConnRef.current.addEventListener("datachannel", (event) => {
-        console.log("offer ", event);
-        nickNameChannel.current = event.channel;
-        //Client B -> Client A  message
-        nickNameChannel.current.addEventListener("message", (event) => {
-          setPeerNickName(event.data);
-        });
-      });
+      webRTCConnRef.current.addEventListener("datachannel", (event: any) => {
+        // console.log(event.channel.label)
+        switch (event.channel.label) {
+          case "nickname":
+            nickNameChannel.current = event.channel;
+            break;
+          case "move":
+            moveChannel.current = event.channel;
+            console.log(peerPosition, 'in handleReceivedOffer')
+            if (event.data)
+              setPeerPosition(JSON.parse(event.data));
+            break;
+        }
+      })
+
       userStreamRef.current.getTracks().forEach((track) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
       webRTCConnRef.current.setRemoteDescription(offer);
 
@@ -338,7 +317,7 @@ export default function WebRTC() {
         socketRef.current.emit("answer", answer, roomName);
         console.log("[emit answer]");
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     }
   };
@@ -375,9 +354,6 @@ export default function WebRTC() {
 
   return (
     <div className=" flex flex-col bg-black h-screen">
-      <canvas
-        ref={canvas}
-      />
       <div className="p-10 flex basis-1/4 flex-row">
         <div className="flex flex-row basis-1/2 justify-center">
           <div className="flex flex-row">
@@ -386,10 +362,9 @@ export default function WebRTC() {
               <p className="flex text-3xl justify-center text-white">{nickName}</p>
 
               {[...Array(9)].map((_, i) => (
-                <PuzzleSegment key={i} i={i} videoId={'myface'} initx={(Math.random() * 0.6 + 0.2) * windowSize.width / 2} inity={(Math.random() * 0.6 + 0.2) * windowSize.height} />
+                <PuzzleSegment key={i} i={i} videoId={'myface'} peerxy={undefined} initx={(Math.random() * 0.6 + 0.2) * windowSize.width / 2} inity={(Math.random() * 0.6 + 0.2) * windowSize.height} moveChannel={moveChannel.current} />
               ))}
               <Rocket />
-
             </div>
 
             <div className="flex flex-col basis-1/5 justify-evenly">
@@ -420,9 +395,16 @@ export default function WebRTC() {
               <video className="w-96" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{peerNickName}</p>
 
-              {[...Array(9)].map((_, i) => (
-                <PuzzleSegment key={i} i={i} videoId={'peerface'} initx={(Math.random() * 0.6 + 0.2) * windowSize.width / 2} inity={(Math.random() * 0.6 + 0.2) * windowSize.height} />
-              ))}
+              {[...Array(9)].map((_, i) => {
+                // console.log(peerPosition, 'if문에서 찍음');
+                if (i === peerPosition.i) {
+                  // console.log(peerPosition.i, '현재 상대가 움직이고 있는 카드번호');
+                  return (<PuzzleSegment key={i} i={i} videoId={'peerface'} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} initx={(Math.random() * 0.6 + 0.2) * windowSize.width / 2} inity={(Math.random() * 0.6 + 0.2) * windowSize.height} moveChannel={moveChannel.current} />)
+                }
+                else {
+                  return (<PuzzleSegment key={i} i={i} peerxy={undefined} videoId={'peerface'} initx={(Math.random() * 0.6 + 0.2) * windowSize.width / 2} inity={(Math.random() * 0.6 + 0.2) * windowSize.height} moveChannel={moveChannel.current} />)
+                }
+              })}
             </div>
           </div>
         </div>
