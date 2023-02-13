@@ -3,6 +3,15 @@ import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
+import dynamic from "next/dynamic";
+import { useWindowSize } from "usehooks-ts";
+
+const PuzzleSegment = dynamic(
+  import('@/components/Game/Segment'), {
+  loading: () => (<div></div>),
+  ssr: false,
+},
+);
 
 const ICE_SERVERS = {
   iceServers: [
@@ -36,6 +45,8 @@ interface MyConstraints {
 }
 
 export default function WebRTC() {
+  const windowSize = useWindowSize();
+
   useSocket();
   const router = useRouter();
   //useRef은 특정컴포넌트에 접근할 수 있는 객체, 초기값 null
@@ -328,7 +339,12 @@ export default function WebRTC() {
             <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
               <video className="w-96" id="myface" autoPlay playsInline ref={userVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{nickName}</p>
+
+              {[...Array(9)].map((_, i) => (
+                <PuzzleSegment key={i} i={i} videoId={'myface'} initx={(Math.random() * 0.6 + 0.2) * windowSize.width / 2} inity={(Math.random() * 0.6 + 0.2) * windowSize.height} />
+              ))}
             </div>
+
             <div className="flex flex-col basis-1/5 justify-evenly">
               <input className="mb-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
               <button id="muteBtn" onClick={changeMicSetting} type="button" className="box-border height width mb-5 border-4 text-white">
@@ -342,13 +358,24 @@ export default function WebRTC() {
               </button>
               <select onChange={handleSelect} ref={selectRef}></select>
             </div>
+
           </div>
+
+
+
         </div>
+
+
         <div className="flex flex-row basis-1/2 justify-center">
+
           <div className="flex flex-row">
             <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
-              <video className="w-96" id="myface" autoPlay playsInline ref={peerVideoRef}></video>
+              <video className="w-96" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{peerNickName}</p>
+
+              {[...Array(9)].map((_, i) => (
+                <PuzzleSegment key={i} i={i} videoId={'peerface'} initx={(Math.random() * 0.6 + 0.2) * windowSize.width / 2} inity={(Math.random() * 0.6 + 0.2) * windowSize.height} />
+              ))}
             </div>
           </div>
         </div>

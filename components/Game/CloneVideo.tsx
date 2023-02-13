@@ -2,9 +2,10 @@ import { useCallback, useEffect, useRef } from "react";
 
 interface segmentData {
     id: number;
+    videoId: string;
 
 }
-export default function CloneVideo({ id }: segmentData) {
+export default function CloneVideo({ id, videoId }: segmentData) {
     var cloneRef = useRef<HTMLCanvasElement>(null);
     var ctx: CanvasRenderingContext2D | null = null;
     useEffect(() => {
@@ -12,7 +13,7 @@ export default function CloneVideo({ id }: segmentData) {
         ctx = cloneRef.current.getContext('2d');
     }, [cloneRef])
 
-    const video = document.getElementById('myface') as HTMLVideoElement;
+    const video = document.getElementById(videoId) as HTMLVideoElement;
 
     const draw = useCallback(() => {
         ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 640, 480);
@@ -20,7 +21,7 @@ export default function CloneVideo({ id }: segmentData) {
             draw();
         }, 20);
 
-    }, []);
+    }, [video]);
 
     useEffect(() => {
         if (!video) return;

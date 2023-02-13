@@ -5,12 +5,7 @@ import WebRTC from "../components/WebRTC/WebRTC";
 import dynamic from 'next/dynamic'
 import { useWindowSize } from "usehooks-ts";
 
-const PuzzleSegment = dynamic(
-  import('@/components/Game/Segment'), {
-  loading: () => (<div></div>),
-  ssr: false,
-},
-);
+
 // export function shuffle<T>(array: T[]): T[] {
 //   let currentIndex = array.length, randomIndex;
 
@@ -30,7 +25,6 @@ const PuzzleSegment = dynamic(
 // };
 
 export default function Play() {
-  const windowSize = useWindowSize();
   return (
     <>
       <Head>
@@ -38,10 +32,6 @@ export default function Play() {
       </Head>
       <div className="flex flex-col bg-neutral-700 h-96">
         <WebRTC />
-        {/* <PlayPuzzle /> */}
-        {[...Array(9)].map((_, i) => (
-          <PuzzleSegment key={i} i={i} videoId={''} initx={(Math.random() * 0.6 + 0.2) * windowSize.width / 2} inity={(Math.random() * 0.6 + 0.2) * windowSize.height} />
-        ))}
       </div>
     </>
   );
