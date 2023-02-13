@@ -4,6 +4,10 @@ import "../components/WebRTC/WebRTC";
 import WebRTC from "../components/WebRTC/WebRTC";
 import dynamic from 'next/dynamic'
 import { useWindowSize } from "usehooks-ts";
+import Script from "next/script";
+import ItemBar from "@/components/itemBar/itemBar";
+
+
 
 
 // export function shuffle<T>(array: T[]): T[] {
@@ -33,6 +37,7 @@ export default function Play() {
       <div className="flex flex-col bg-neutral-700 h-96">
         <WebRTC />
       </div>
+      <ItemBar />
     </>
   );
 }

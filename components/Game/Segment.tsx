@@ -84,8 +84,6 @@ export default function Segment({ i, videoId, initx, inity }: Props) {
                     api.start({ x: width, y: height })
                     setIsRightPlace(true)
                     setZindex(0)
-                    //TODO: zIndex관련 수정 필요
-
                 }
 
             },
@@ -102,7 +100,8 @@ export default function Segment({ i, videoId, initx, inity }: Props) {
 
     return (
         <>
-            {/* zIndex관련 수정 필요 */}
+
+
             <div className=''>
                 <div className={styles.container}>
                     <animated.div

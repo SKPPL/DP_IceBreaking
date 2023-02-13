@@ -36,3 +36,17 @@
   height: 100%;
   justify-content: center;
 }
+
+.rocket {
+  background: url("../../public/images/rocket.png") no-repeat;
+  background-size: contain;
+  width: 140px;
+  height: 140px;
+  cursor: -webkit-grab;
+  will-change: transform;
+  user-select: none;
+}
+
+.rocket:active {
+  cursor: -webkit-grabbing;
+}

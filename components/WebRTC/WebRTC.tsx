@@ -5,6 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
 import dynamic from "next/dynamic";
 import { useWindowSize } from "usehooks-ts";
+import Rocket from "../Game/rocket";
+
+
+// import '@mediapipe/face_mesh';
+// import '@tensorflow/tfjs-core';
+// // Register WebGL backend.
+// import '@tensorflow/tfjs-backend-webgl';
+// import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 
 const PuzzleSegment = dynamic(
   import('@/components/Game/Segment'), {
@@ -47,6 +55,26 @@ interface MyConstraints {
 export default function WebRTC() {
   const windowSize = useWindowSize();
 
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     console.log('ㅇㅇㅇ', window)
+  //     const runFaceDetect = async () => {
+  //       const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
+  //       const detectorConfig: faceLandmarksDetection.MediaPipeFaceMeshMediaPipeModelConfig = {
+  //         runtime: 'mediapipe',
+  //         solutionPath: '/node_modules/@mediapipe/face_mesh',
+  //         refineLandmarks: true
+  //         // or 'base/node_modules/@mediapipe/face_mesh' in npm.
+  //       };
+  //       const detector = await faceLandmarksDetection.createDetector(model, detectorConfig);
+  //     }
+  //     runFaceDetect();
+  //   }
+  // }, [])
+
+
+
+
   useSocket();
   const router = useRouter();
   //useRef은 특정컴포넌트에 접근할 수 있는 객체, 초기값 null
@@ -59,6 +87,13 @@ export default function WebRTC() {
   const hostRef = useRef(false);
   const selectRef = useRef<any>();
   const nickNameChannel = useRef<RTCDataChannel>();
+
+  // useEffect(() => {
+
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [userVideoRef.current?.video?.readyState])
+
+  const canvas = useRef<HTMLCanvasElement>(null);
 
   //State
   const [micSetting, setMicSetting] = useState(true);
@@ -77,6 +112,13 @@ export default function WebRTC() {
       console.log("[No data Channel]");
     }
   };
+
+  useEffect(() => {
+    if (canvas.current) {
+      canvas.current.width = userVideoRef.current.videoWidth;
+      canvas.current.height = userVideoRef.current.videoHeight;
+    }
+  }, [canvas, userVideoRef])
 
   //사이드 이펙트를 수행하기 위한 훅
   //videoRef가 create,update 될 때 실행된다. (props, state가 바뀔 때 마다 getUserCamera함수를 호출한다)
@@ -151,7 +193,7 @@ export default function WebRTC() {
   async function getMedia(deviceId?: string): Promise<void> {
     const initialConstraints: MyConstraints = {
       audio: true,
-      video: { facingMode: "user" },
+      video: { width: 640, height: 480 },
     };
     const cameraConstraints: MyConstraints = {
       audio: true,
@@ -333,6 +375,9 @@ export default function WebRTC() {
 
   return (
     <div className=" flex flex-col bg-black h-screen">
+      <canvas
+        ref={canvas}
+      />
       <div className="p-10 flex basis-1/4 flex-row">
         <div className="flex flex-row basis-1/2 justify-center">
           <div className="flex flex-row">
@@ -343,6 +388,8 @@ export default function WebRTC() {
               {[...Array(9)].map((_, i) => (
                 <PuzzleSegment key={i} i={i} videoId={'myface'} initx={(Math.random() * 0.6 + 0.2) * windowSize.width / 2} inity={(Math.random() * 0.6 + 0.2) * windowSize.height} />
               ))}
+              <Rocket />
+
             </div>
 
             <div className="flex flex-col basis-1/5 justify-evenly">

@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { Inter } from '@next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 import BagicHome from '@/components/PageElements/BagicHome'
+import Rocket from '@/components/Game/rocket'
 
 export default function Home() {
   return (
@@ -16,10 +17,11 @@ export default function Home() {
         <div className="container-2xl" >
           <main className="bg-black flex flex-col justify-center items-center h-screen ">
             <div className="flex flex-col justify-center basis-2/5 bg-amber-200 rounded-3xl">
-                <BagicHome />
+              {/* <BagicHome /> */}
 
             </div>
           </main>
+
         </div>
       </div>
     </>
