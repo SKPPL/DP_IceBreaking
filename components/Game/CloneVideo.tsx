@@ -19,7 +19,7 @@ export default function CloneVideo({ id, videoId }: segmentData) {
         ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 640, 480);
         setTimeout(function () {
             draw();
-        }, 20);
+        }, 30);
 
     }, [video]);
 
@@ -35,4 +35,3 @@ export default function CloneVideo({ id, videoId }: segmentData) {
     )
 
 }
-

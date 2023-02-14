@@ -4,13 +4,14 @@ import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
 import dynamic from "next/dynamic";
+import { Provider, useSelector, useDispatch } from 'react-redux'
+import itemStore from '@/pages/rooms/itemStore'
+import rocket from "../Game/rocket";
+import { useTimeout } from "usehooks-ts";
+import Rocket from "../Game/rocket";
+import MyPuzzle from "../Game/mypuzzle";
+import PeerPuzzle from "../Game/peerpuzzle";
 
-const PuzzleSegment = dynamic(
-  import('@/components/Game/Segment'), {
-  loading: () => (<div></div>),
-  ssr: false,
-},
-);
 
 
 const ICE_SERVERS = {
@@ -56,8 +57,9 @@ export default function WebRTC() {
   const hostRef = useRef(false);
   const userStreamRef = useRef<MediaStream>();
   const nickNameChannel = useRef<RTCDataChannel>();
-  const moveChannel = useRef<RTCDataChannel>();
 
+  // call setDataChannel when dataChannel created
+  var [dataChannel, setDataChannel] = useState<RTCDataChannel>();
 
   //State
   const [micSetting, setMicSetting] = useState(true);
@@ -66,8 +68,7 @@ export default function WebRTC() {
   const [nickName, setNickName] = useState("");
   const [peerNickName, setPeerNickName] = useState("");
   const [socketConnect, setSocketConnect] = useState<any>();
-  const [peerPosition, setPeerPosition] = useState({ i: -1, peerx: 0, peery: 0 });
-
+  //segementState is for item using, owner is my or peer
   useEffect(() => {
     if (typeof socketConnect !== "undefined") {
       console.log("[roomName] : ", roomName);
@@ -77,7 +78,7 @@ export default function WebRTC() {
       socketConnect.on("ready", initiateCall);
       socketConnect.on("leave", onPeerLeave);
       socketConnect.on("full", () => {
-        alert("참가하려는 room을이 가득 찼습니다.");
+        alert("참가하려는 room이 가득 찼습니다.");
       });
       socketConnect.on("offer", handleReceivedOffer);
       socketConnect.on("answer", handleAnswer);
@@ -196,6 +197,7 @@ export default function WebRTC() {
       console.log(e);
     }
   };
+
   //peer와 연결 생성 시작
   const initiateCall = async (): Promise<void> => {
     console.log("[initiateCall]");
@@ -208,8 +210,7 @@ export default function WebRTC() {
         console.log("[emit offer]");
         //DataChannel
         nickNameChannel.current = webRTCConnRef.current.createDataChannel("nickname");
-        moveChannel.current = webRTCConnRef.current.createDataChannel("move");
-
+        dataChannel = webRTCConnRef.current.createDataChannel("data");
         if (typeof nickNameChannel.current !== "undefined") {
           //Client A에서 동작하는 코드 데이터 채널에 이벤트 리스너를 달아서 이벤트가 들어오면 
           //들어오는 데이터로 상대방 닉네임을 설정
@@ -217,19 +218,10 @@ export default function WebRTC() {
             setPeerNickName(event.data);
           });
         }
-
-        if (typeof moveChannel.current !== "undefined") {
-          moveChannel.current.addEventListener("message", (event: MessageEvent<any>): void => {
-            if (event.data) {
-              console.log(event.data, 'in initiateCall')
-              setPeerPosition(JSON.parse(event.data));
-            }
-          });
-        }
-
         const offer = await webRTCConnRef.current.createOffer();
         webRTCConnRef.current.setLocalDescription(offer);
         socketConnect.emit("offer", offer, roomName);
+        setDataChannel(dataChannel)
       } catch (e) {
         console.log(e);
       }
@@ -311,11 +303,8 @@ export default function WebRTC() {
             });
 
             break;
-          case "move":
-            moveChannel.current = event.channel;
-            console.log(peerPosition, 'in handleReceivedOffer')
-            if (event.data)
-              setPeerPosition(JSON.parse(event.data));
+          case "data":
+            setDataChannel(event.channel);
             break;
         }
 
@@ -370,45 +359,44 @@ export default function WebRTC() {
     }
   };
 
-
-
   return (
-
-    <div className="flex flex-col bg-black h-screen">
-      <div className="p-10 flex basis-1/4 flex-row">
-        <div className="flex flex-row basis-1/2 justify-center">
-          <div className="flex flex-row">
-            <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
-              <video className="w-96" id="myface" autoPlay playsInline ref={userVideoRef}></video>
-              <p className="flex text-3xl justify-center text-white">{nickName}</p>
-              {(moveChannel.current?.readyState === 'open') && [...Array(9)].map((_, i) => (
-                <PuzzleSegment key={i} i={i} videoId={'myface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel.current} />
-              ))}
-            </div>
-            <div className="flex flex-col basis-1/5 justify-evenly">
-              <input className="mb-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
-              <button id="muteBtn" onClick={changeMicSetting} type="button" className="box-border height width mb-5 border-4 text-white">
-                {micSetting ? "마이크 음소거" : "마이크 음소거 해제"}
-              </button>
-              <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="box-border height width mb-5 border-4 text-white">
-                {cameraSetting ? "화면 끄기" : "화면 켜기"}
-              </button>
-              <button onClick={leaveRoom} type="button" className="box-border height width mb-5 border-4 text-white">
+    <div className='flex flex-row'>
+      <div className="flex flex-col w-1/2 h-screen">
+        <video className="w-96 hidden" id="myface" autoPlay playsInline ref={userVideoRef}></video>
+        <div className="pt-5 h-16 text-center">
+          <input className="bg-black text-white mb-5 mr-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
+            <button id="muteBtn" onClick={changeMicSetting} type="button" className="mr-5 text-white bg-black">
+            {micSetting ? "O" : "X"}
+          </button>
+          <button onClick={leaveRoom} type="button" className="bg-black hiddenbox-border height width mb-5 border-4 text-white">
                 Leave
-              </button>
-              <select onChange={handleSelect} ref={selectRef}></select>
-            </div>
-          </div>
+          </button>
         </div>
-        <div className="flex flex-row basis-1/2 justify-center">
-          <div className="flex flex-row">
-            <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
-              <video className="w-96" id="myface" autoPlay playsInline ref={peerVideoRef}></video>
-              <p className="flex text-3xl justify-center text-white">{peerNickName}</p>
-            </div>
-          </div>
+        <div className="h-8">
+        <p className="flex text-3xl justify-center text-black">{nickName}</p>
+        </div>
+        {(dataChannel) && <MyPuzzle auth={true} videoId={'myface'} dataChannel={dataChannel} />}
+        <div className="m-10 h-[480px] w-[640px] self-center border border-black">
+        
+        </div>
+          {/* <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="hidden box-border height width mb-5 border-4 text-white">
+            {cameraSetting ? "화면 끄기" : "화면 켜기"}
+          </button>
+          <select className="hidden" onChange={handleSelect} ref={selectRef}></select> */}
+      </div>
+      <div className="flex flex-col w-1/2 h-screen">
+      <video className="w-96 hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
+        <div className="pt-5 h-16 text-center">
+        </div>
+        <div className="h-8">
+        <p className="flex text-3xl justify-center text-black">{peerNickName}</p>
+        </div>
+        {(dataChannel) && <PeerPuzzle auth={false} videoId={'peerface'} dataChannel={dataChannel} />}
+        <div className="m-10 h-[480px] w-[640px] self-center border border-black">
+        
         </div>
       </div>
-    </div>
-  );
+      
+            </div>
+      );
 }

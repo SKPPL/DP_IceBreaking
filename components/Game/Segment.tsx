@@ -1,6 +1,9 @@
 import React, { useRef, useEffect, useState, memo } from 'react'
 import { useSpring, animated, to } from '@react-spring/web'
 import { useGesture } from 'react-use-gesture'
+import { Provider, useSelector, useDispatch } from 'react-redux'
+import itemStore from '@/pages/rooms/itemStore'
+
 
 import styles from './styles.module.css'
 import CloneVideo from './CloneVideo'
@@ -16,13 +19,14 @@ const wheel = (y: number) => {
 interface Props {
     i: number
     videoId: string
-    initx: number
-    inity: number
+    auth: boolean
+
     peerxy: { peerx: number, peery: number } | undefined
-    moveChannel: RTCDataChannel | undefined
+    dataChannel: RTCDataChannel | undefined
+    segmentState: string
 }
-function Segment({ i, videoId, peerxy, moveChannel, initx, inity }: Props) {
-    const [isRightPlace, setIsRightPlace] = useState(false)
+function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
+    const [isRightPlace, setIsRightPlace] = useState(!auth)
     const [zindex, setZindex] = useState(Math.floor(Math.random() * 10))
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
@@ -59,9 +63,9 @@ function Segment({ i, videoId, peerxy, moveChannel, initx, inity }: Props) {
         })
     )
     useEffect(() => {
-        if (!moveChannel) { console.log('nomovechan'); return; }
-        console.log('moveChennel exists')
-    }, [moveChannel])
+        if (!dataChannel) { console.log('nomovechan'); return; }
+        console.log('dataChennel exists')
+    }, [dataChannel])
 
     useEffect(() => {
         if (peerxy !== undefined) {
@@ -79,10 +83,10 @@ function Segment({ i, videoId, peerxy, moveChannel, initx, inity }: Props) {
                 if (isRightPlace) return;
                 api.start({ x: x, y: y, rotateX: 0, rotateY: 0, scale: active ? 1 : 1.05 })
 
-                console.log(moveChannel?.readyState)
-                if (moveChannel?.readyState === 'open') {
+                console.log(dataChannel?.readyState)
+                if (dataChannel?.readyState === 'open') {
                     console.log('나다', x, y)
-                    moveChannel.send(JSON.stringify({ i: i, peerx: x, peery: y }))
+                    dataChannel.send(JSON.stringify({ type: 'move', i: i, peerx: x, peery: y }))
                 }
 
             },
@@ -97,12 +101,14 @@ function Segment({ i, videoId, peerxy, moveChannel, initx, inity }: Props) {
                     });
             },
             onDragEnd: ({ offset: [ox, oy] }) => {
-
                 if (!isRightPlace && isNearOutline(ox, oy, width, height)) {
                     domTarget.current!.setAttribute('style', 'z-index: 0')
                     api.start({ x: width, y: height })
                     setIsRightPlace(true)
                     setZindex(0)
+                    if (dataChannel?.readyState === 'open') {
+                        dataChannel.send(JSON.stringify({ type: 'move', i: i, peerx: width, peery: height }));
+                    }
                 }
 
             },

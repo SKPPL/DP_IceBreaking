@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+
 import { animated, useIsomorphicLayoutEffect, useSpringValue } from '@react-spring/web'
 
 import { useMousePosition } from '../hooks/useMousePosition'
@@ -10,11 +12,15 @@ import styles from './styles.module.scss'
 
 interface DockCardProps {
   children: React.ReactNode
+  item: number
 }
 
 const INITIAL_WIDTH = 48
 
-export const DockCard = ({ children }: DockCardProps) => {
+const itemList = ['rocket', 'lip', 'nose', 'rotate', 'mirror', 'flash']
+
+export const DockCard = ({ children, item }: DockCardProps) => {
+  const dispatch = useDispatch();
   const cardRef = React.useRef<HTMLButtonElement>(null!)
   /**
    * This doesn't need to be real time, think of it as a static
@@ -78,10 +84,12 @@ export const DockCard = ({ children }: DockCardProps) => {
   const wasUsed = React.useRef(false)
 
   const handleClick = () => {
+
+    dispatch({ type: `item/${itemList[item]}` });
     if (!wasUsed.current) {
       wasUsed.current = true
-      opacity.start(0.5)
 
+      opacity.start(0.5)
       timesLooped.current = 0
 
       y.start(-INITIAL_WIDTH / 2, {

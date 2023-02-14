@@ -4,9 +4,6 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <Script src="https://unpkg.com/konva@8/konva.min.js" strategy="beforeInteractive"></Script>
-
-
       </Head>
       <body>
         <Main />
