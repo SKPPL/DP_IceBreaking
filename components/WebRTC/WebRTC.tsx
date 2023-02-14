@@ -4,6 +4,12 @@ import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
 import dynamic from "next/dynamic";
+import { Provider, useSelector, useDispatch } from 'react-redux'
+import itemStore from '@/pages/rooms/itemStore'
+import rocket from "../Game/rocket";
+import { useTimeout } from "usehooks-ts";
+import Rocket from "../Game/rocket";
+
 
 const PuzzleSegment = dynamic(
   import('@/components/Game/Segment'), {
@@ -56,9 +62,8 @@ export default function WebRTC() {
   const hostRef = useRef(false);
   const userStreamRef = useRef<MediaStream>();
   const nickNameChannel = useRef<RTCDataChannel>();
-  // const moveChannel = useRef<RTCDataChannel>();
-  var [moveChannel, setMoveChannel] = useState<RTCDataChannel>();
-  var [userMoveChannel, setUserMoveChannel] = useState<RTCDataChannel>();
+  // const dataChannel = useRef<RTCDataChannel>();
+  var [dataChannel, setDataChannel] = useState<RTCDataChannel>();
 
   //State
   const [micSetting, setMicSetting] = useState(true);
@@ -67,8 +72,12 @@ export default function WebRTC() {
   const [nickName, setNickName] = useState("");
   const [peerNickName, setPeerNickName] = useState("");
   const [socketConnect, setSocketConnect] = useState<any>();
-  const [peerPosition, setPeerPosition] = useState({ i: -1, peerx: 0, peery: 0 });
-
+  // peerPosition for concurrent position sync 
+  const [peerPosition, setPeerPosition] = useState({ type: "move", i: -1, peerx: 0, peery: 0 });
+  // segmentState for item use
+  const [mySegmentState, setMySegmentState] = useState({ type: "item", segementState: 'default' });
+  const [peerSegmentState, setPeerSegmentState] = useState({ type: "item", segementState: 'default' });
+  //segementState is for item using, owner is my or peer
   useEffect(() => {
     if (typeof socketConnect !== "undefined") {
       console.log("[roomName] : ", roomName);
@@ -78,7 +87,7 @@ export default function WebRTC() {
       socketConnect.on("ready", initiateCall);
       socketConnect.on("leave", onPeerLeave);
       socketConnect.on("full", () => {
-        alert("참가하려는 room을이 가득 찼습니다.");
+        alert("참가하려는 room이 가득 찼습니다.");
       });
       socketConnect.on("offer", handleReceivedOffer);
       socketConnect.on("answer", handleAnswer);
@@ -197,6 +206,8 @@ export default function WebRTC() {
       console.log(e);
     }
   };
+  const makeMyDefaultSegment = () => { setMySegmentState({ type: "item", segementState: "default" }) }
+
   //peer와 연결 생성 시작
   const initiateCall = async (): Promise<void> => {
     console.log("[initiateCall]");
@@ -209,7 +220,7 @@ export default function WebRTC() {
         console.log("[emit offer]");
         //DataChannel
         nickNameChannel.current = webRTCConnRef.current.createDataChannel("nickname");
-        moveChannel = webRTCConnRef.current.createDataChannel("move");
+        dataChannel = webRTCConnRef.current.createDataChannel("data");
         if (typeof nickNameChannel.current !== "undefined") {
           //Client A에서 동작하는 코드 데이터 채널에 이벤트 리스너를 달아서 이벤트가 들어오면 
           //들어오는 데이터로 상대방 닉네임을 설정
@@ -218,11 +229,19 @@ export default function WebRTC() {
           });
         }
 
-        if (typeof moveChannel !== "undefined") {
-          moveChannel.addEventListener("message", (event: MessageEvent<any>): void => {
+        if (typeof dataChannel !== "undefined") {
+          dataChannel.addEventListener("message", (event: MessageEvent<any>): void => {
             if (event.data) {
-              console.log(event.data, 'in initiateCall')
-              setPeerPosition(JSON.parse(event.data));
+              var dataJSON = JSON.parse(event.data);
+              switch (dataJSON.type) {
+                case "move":
+                  setPeerPosition(dataJSON);
+                  break;
+                case "item":
+                  setMySegmentState(dataJSON);
+                  setTimeout(() => { makeMyDefaultSegment() }, 5000);
+                  break;
+              }
             }
           });
         }
@@ -230,7 +249,7 @@ export default function WebRTC() {
         const offer = await webRTCConnRef.current.createOffer();
         webRTCConnRef.current.setLocalDescription(offer);
         socketConnect.emit("offer", offer, roomName);
-        setMoveChannel(moveChannel)
+        setDataChannel(dataChannel)
       } catch (e) {
         console.log(e);
       }
@@ -312,15 +331,22 @@ export default function WebRTC() {
             });
 
             break;
-          case "move":
-            moveChannel = event.channel;
-            moveChannel!.addEventListener("message", (event: any) => {
+          case "data":
+            dataChannel = event.channel;
+            dataChannel!.addEventListener("message", (event: any) => {
               if (event.data) {
-                console.log(event.data, 'in handleReceivedOffer')
-                setPeerPosition(JSON.parse(event.data));
+                var dataJSON = JSON.parse(event.data);
+                switch (dataJSON.type) {
+                  case "move":
+                    setPeerPosition(dataJSON);
+                    break;
+                  case "item":
+                    setMySegmentState(dataJSON);
+                    break;
+                }
               }
             })
-            setMoveChannel(event.channel);
+            setDataChannel(event.channel);
             break;
         }
 
@@ -375,6 +401,37 @@ export default function WebRTC() {
     }
   };
 
+
+  //item 사용을 위한 코드
+  const itemList = useSelector((state: any) => { return state.item });
+
+  const [itemListBefore, setItemListBefore] = useState(itemList);
+  const keys = Object.keys(itemList);
+
+  const makePeerDefaultSegment = () => { setPeerSegmentState({ type: "item", segementState: "default" }) }
+
+  //TODO 내 퍼즐 변경은 event listener로 처리하자
+  useEffect(() => {
+    // mySegementState의 변경사항을 감지? -> event listener 쪽에서 처리하면 될듯
+    // myface쪽 segmentState를 변경
+  }, [mySegmentState.segementState]);
+
+  // 상대의 퍼즐 변경은 useEffect로 처리하면서 데이터채널로 뭐 변했는지 보내자
+  useEffect(() => {
+    for (var cnt = 0; cnt < 6; cnt++) {
+      if (itemListBefore[keys[cnt]] !== itemList[keys[cnt]]) {
+        dataChannel?.send(JSON.stringify({ type: "item", segementState: keys[cnt] }))
+        setItemListBefore(itemList);
+        setPeerSegmentState({ type: "item", segementState: keys[cnt] })
+        setTimeout(() => { makePeerDefaultSegment() }, 5000);
+        console.log(keys[cnt])
+      }
+      // peerface쪽 segmentState를 변경
+      // 무엇의 상태가 변했는지 알려줘야함
+      //TODO 아이템 사용 도중일 땐 눌러도 소용 없게하는 로직 추가해야함 -> itemBar쪽에서 처리하자
+    }
+  }, [itemList]);
+
   return (
 
     <div className="flex flex-col bg-black h-screen">
@@ -384,9 +441,17 @@ export default function WebRTC() {
             <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
               <video className="w-96" id="myface" autoPlay playsInline ref={userVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{nickName}</p>
-              {(moveChannel) && [...Array(9)].map((_, i) => (
-                <PuzzleSegment key={i} i={i} auth={true} videoId={'myface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel} />
-              ))}
+
+              {(dataChannel) && [...Array(9)].map((_, i) => {
+                switch (mySegmentState.segementState) {
+                  case "default":
+                    return <PuzzleSegment key={i} i={i} auth={true} videoId={'myface'} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />
+                  case "rocket":
+                    if (i == 0) {
+                      return <Rocket auth={true} peerxy={undefined} dataChannel={dataChannel} />
+                    }
+                }
+              })}
             </div>
             <div className="flex flex-col basis-1/5 justify-evenly">
               <input className="mb-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
@@ -409,12 +474,19 @@ export default function WebRTC() {
               <video className="w-96" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{peerNickName}</p>
 
-              {(moveChannel) && [...Array(9)].map((_, i) => {
-                if (peerPosition.i === i) {
-                  return (<PuzzleSegment key={i} i={i} auth={false} videoId={'peerface'} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} initx={0} inity={0} moveChannel={moveChannel} />);
-                }
-                else {
-                  return (<PuzzleSegment key={i} i={i} auth={false} videoId={'peerface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel} />);
+              {(dataChannel) && [...Array(9)].map((_, i) => {
+                switch (peerSegmentState.segementState) {
+                  case "default":
+                    if (peerPosition.i === i) {
+                      return (<PuzzleSegment key={i} i={i} auth={false} videoId={'peerface'} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />);
+                    }
+                    else {
+                      return (<PuzzleSegment key={i} i={i} auth={false} videoId={'peerface'} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />);
+                    }
+                  case "rocket":
+                    if (i === 0) {
+                      return <Rocket auth={false} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} />
+                    }
                 }
               }
               )}

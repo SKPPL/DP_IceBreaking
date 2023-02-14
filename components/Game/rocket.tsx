@@ -7,7 +7,13 @@ import styles from './styles.module.css'
 import CloneVideo from './CloneVideo'
 import { useWindowSize } from 'usehooks-ts'
 
-export default function rocket() {
+interface Props {
+    peerxy: { peerx: number, peery: number } | undefined
+    dataChannel: RTCDataChannel | undefined
+
+    auth: boolean
+}
+export default function rocket({ auth, peerxy, dataChannel }: Props) {
     const [{ pos }, api] = useSpring(() => ({ pos: [0, 0] }))
     const [{ angle }, angleApi] = useSpring(() => ({
         angle: 0,
@@ -18,8 +24,10 @@ export default function rocket() {
     // this way we can inject the springs current coordinates on the initial event and
     // add movement to it for convenience
 
+    // 유저가 움직일 때
     const bind = useDrag(
         ({ xy, previous, down, movement: pos, velocity, direction }) => {
+            if (!auth) return
             api.start({
                 pos,
                 immediate: down,
@@ -31,6 +39,28 @@ export default function rocket() {
         },
         { initial: () => pos.get() }
     )
+
+    // // 상대방이 움직일 때
+    // const bind2 = useDrag(
+    //     ({ xy, previous, down, movement: pos, velocity, direction }) => {
+    //         if (auth) return
+    //         api.start({
+    //             pos,
+    //             immediate: down,
+    //             config: { velocity: scale(direction, velocity), decay: true },
+    //         })
+
+    //         if (dist(xy, previous) > 10 || !down)
+    //             angleApi.start({ angle: Math.atan2(direction[0], -direction[1]) })
+    //     },
+    //     { initial: () => pos.get() }
+    // )
+    // useEffect(() => {
+    //     if (peerxy !== undefined) {
+    //         api.start({ [peerxy.peerx, peerxy.peery], immediate: down, config: { velocity: scale(direction, velocity), decay: true }})
+    //     }
+    // }, [peerxy])
+
     return (
         <animated.div
             className={styles.rocket}

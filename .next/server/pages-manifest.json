@@ -2,8 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
   "/ready": "pages/ready.js",
   "/api/webRTC/socket": "pages/api/webRTC/socket.js",
+  "/": "pages/index.js",
   "/rooms/[roomName]": "pages/rooms/[roomName].js"
 }

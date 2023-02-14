@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import { Inter } from '@next/font/google'
 const inter = Inter({ subsets: ['latin'] })
-import BagicHome from '@/components/PageElements/BagicHome'
 import Rocket from '@/components/Game/rocket'
 
 export default function Home() {
