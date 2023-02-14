@@ -56,8 +56,9 @@ export default function WebRTC() {
   const hostRef = useRef(false);
   const userStreamRef = useRef<MediaStream>();
   const nickNameChannel = useRef<RTCDataChannel>();
-  const moveChannel = useRef<RTCDataChannel>();
-
+  // const moveChannel = useRef<RTCDataChannel>();
+  var [moveChannel, setMoveChannel] = useState<RTCDataChannel>();
+  var [userMoveChannel, setUserMoveChannel] = useState<RTCDataChannel>();
 
   //State
   const [micSetting, setMicSetting] = useState(true);
@@ -208,8 +209,7 @@ export default function WebRTC() {
         console.log("[emit offer]");
         //DataChannel
         nickNameChannel.current = webRTCConnRef.current.createDataChannel("nickname");
-        moveChannel.current = webRTCConnRef.current.createDataChannel("move");
-
+        moveChannel = webRTCConnRef.current.createDataChannel("move");
         if (typeof nickNameChannel.current !== "undefined") {
           //Client A에서 동작하는 코드 데이터 채널에 이벤트 리스너를 달아서 이벤트가 들어오면 
           //들어오는 데이터로 상대방 닉네임을 설정
@@ -218,8 +218,8 @@ export default function WebRTC() {
           });
         }
 
-        if (typeof moveChannel.current !== "undefined") {
-          moveChannel.current.addEventListener("message", (event: MessageEvent<any>): void => {
+        if (typeof moveChannel !== "undefined") {
+          moveChannel.addEventListener("message", (event: MessageEvent<any>): void => {
             if (event.data) {
               console.log(event.data, 'in initiateCall')
               setPeerPosition(JSON.parse(event.data));
@@ -230,6 +230,7 @@ export default function WebRTC() {
         const offer = await webRTCConnRef.current.createOffer();
         webRTCConnRef.current.setLocalDescription(offer);
         socketConnect.emit("offer", offer, roomName);
+        setMoveChannel(moveChannel)
       } catch (e) {
         console.log(e);
       }
@@ -312,10 +313,14 @@ export default function WebRTC() {
 
             break;
           case "move":
-            moveChannel.current = event.channel;
-            console.log(peerPosition, 'in handleReceivedOffer')
-            if (event.data)
-              setPeerPosition(JSON.parse(event.data));
+            moveChannel = event.channel;
+            moveChannel!.addEventListener("message", (event: any) => {
+              if (event.data) {
+                console.log(event.data, 'in handleReceivedOffer')
+                setPeerPosition(JSON.parse(event.data));
+              }
+            })
+            setMoveChannel(event.channel);
             break;
         }
 
@@ -370,8 +375,6 @@ export default function WebRTC() {
     }
   };
 
-
-
   return (
 
     <div className="flex flex-col bg-black h-screen">
@@ -381,9 +384,17 @@ export default function WebRTC() {
             <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
               <video className="w-96" id="myface" autoPlay playsInline ref={userVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{nickName}</p>
-              {(moveChannel.current?.readyState === 'open') && [...Array(9)].map((_, i) => (
-                <PuzzleSegment key={i} i={i} videoId={'myface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel.current} />
-              ))}
+              {(moveChannel) && [...Array(9)].map((_, i) => {
+                if (peerPosition.i === i) {
+                  return (<PuzzleSegment key={i} i={i} videoId={'myface'} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} initx={0} inity={0} moveChannel={moveChannel} />);
+                }
+                else {
+                  return (<PuzzleSegment key={i} i={i} videoId={'myface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel} />);
+                }
+              }
+              )}
+
+
             </div>
             <div className="flex flex-col basis-1/5 justify-evenly">
               <input className="mb-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
@@ -403,8 +414,11 @@ export default function WebRTC() {
         <div className="flex flex-row basis-1/2 justify-center">
           <div className="flex flex-row">
             <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
-              <video className="w-96" id="myface" autoPlay playsInline ref={peerVideoRef}></video>
+              <video className="w-96" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{peerNickName}</p>
+              {(moveChannel) && [...Array(9)].map((_, i) => (
+                <PuzzleSegment key={i} i={i} videoId={'peerface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel} />
+              ))}
             </div>
           </div>
         </div>
