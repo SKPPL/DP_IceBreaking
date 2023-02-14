@@ -1,6 +1,12 @@
 {
-  "../components/WebRTC/WebRTC.tsx -> @/components/Game/Segment": {
-    "id": "../components/WebRTC/WebRTC.tsx -> @/components/Game/Segment",
+  "../components/Game/mypuzzle.tsx -> @/components/Game/Segment": {
+    "id": "../components/Game/mypuzzle.tsx -> @/components/Game/Segment",
+    "files": [
+      "static/chunks/components_Game_Segment_tsx.js"
+    ]
+  },
+  "../components/Game/peerpuzzle.tsx -> @/components/Game/Segment": {
+    "id": "../components/Game/peerpuzzle.tsx -> @/components/Game/Segment",
     "files": [
       "static/chunks/components_Game_Segment_tsx.js"
     ]
