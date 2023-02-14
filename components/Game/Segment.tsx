@@ -4,7 +4,6 @@ import { useGesture } from 'react-use-gesture'
 
 import styles from './styles.module.css'
 import CloneVideo from './CloneVideo'
-import { useWindowSize } from 'usehooks-ts'
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
@@ -25,8 +24,6 @@ interface Props {
 function Segment({ i, videoId, peerxy, moveChannel, initx, inity }: Props) {
     const [isRightPlace, setIsRightPlace] = useState(false)
     const [zindex, setZindex] = useState(Math.floor(Math.random() * 10))
-    const windowSize = useWindowSize();
-    const divRef = useRef<HTMLDivElement>(null);
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
     const d = 1;
@@ -62,12 +59,12 @@ function Segment({ i, videoId, peerxy, moveChannel, initx, inity }: Props) {
         })
     )
     useEffect(() => {
-        if (!moveChannel) return;
+        if (!moveChannel) { console.log('nomovechan'); return; }
         console.log('moveChennel exists')
     }, [moveChannel])
 
     useEffect(() => {
-        if (peerxy) {
+        if (peerxy !== undefined) {
             console.log('peerxy', peerxy)
             api.start({ x: peerxy.peerx, y: peerxy.peery, rotateX: 0, rotateY: 0 })
         }
@@ -80,12 +77,10 @@ function Segment({ i, videoId, peerxy, moveChannel, initx, inity }: Props) {
         {
             onDrag: ({ active, offset: [x, y] }) => {
                 if (isRightPlace) return;
-                console.log('peerxy on drag', peerxy)
-
                 api.start({ x: x, y: y, rotateX: 0, rotateY: 0, scale: active ? 1 : 1.05 })
 
-                console.log(moveChannel)
-                if (moveChannel) {
+                console.log(moveChannel?.readyState)
+                if (moveChannel?.readyState === 'open') {
                     console.log('나다', x, y)
                     moveChannel.send(JSON.stringify({ i: i, peerx: x, peery: y }))
                 }

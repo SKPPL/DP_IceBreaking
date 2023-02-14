@@ -25,10 +25,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/play": [
+    "/ready": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/play.js"
+      "static/chunks/pages/ready.js"
+    ],
+    "/rooms/[roomName]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/rooms/[roomName].js"
     ]
   },
   "ampFirstPages": []

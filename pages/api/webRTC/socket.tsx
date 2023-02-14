@@ -1,7 +1,5 @@
-// import { Server } from "socket.io";
-
-import { Server as NetServer, Socket } from "net";
 import { NextApiResponse } from "next";
+import { Server as NetServer, Socket } from "net";
 import { Server as SocketIOServer } from "socket.io";
 
 type NextApiResponseServerIO = NextApiResponse & {
@@ -12,6 +10,7 @@ type NextApiResponseServerIO = NextApiResponse & {
   };
 };
 
+// let createdRooms: string[] = [];
 const SocketHandler = (_, res: NextApiResponseServerIO): any => {
   if (res.socket.server.io) {
     console.log("Socket is already attached");
@@ -21,11 +20,27 @@ const SocketHandler = (_, res: NextApiResponseServerIO): any => {
   const io = new SocketIOServer(res.socket.server as any);
   res.socket.server.io = io;
 
+  function publicRooms() {
+    const {
+      sockets: {
+        adapter: { sids, rooms },
+      },
+    } = io;
+    const publicRooms: string[] = [];
+    rooms.forEach((_, key) => {
+      if (sids.get(key) === undefined) {
+        publicRooms.push(key);
+      }
+    });
+    return publicRooms;
+  }
+
   io.on("connection", (socket) => {
-    console.log(`User Connected : ${socket.id}`);
+    console.log(`[User Connected] : ${socket.id}`);
+
     //peer가 room join 버튼을 눌렀을 경우 클라이언트에서 join이 트리거 되어 서버에 전달
     socket.on("join", (roomName) => {
-      console.log("[get event]");
+      console.log("[join]");
       const { rooms } = io.sockets.adapter;
       const room = rooms.get(roomName);
       //방이 없는 경우
@@ -43,7 +58,7 @@ const SocketHandler = (_, res: NextApiResponseServerIO): any => {
         console.log("[emit full]");
         socket.emit("full");
       }
-      console.log("room info : ", rooms);
+      console.log("[room info] : ", rooms);
     });
     //방에 참여한 사람이 connection 준비가 되면 ready가 트리거 됨
     socket.on("ready", (roomName) => {
@@ -69,7 +84,40 @@ const SocketHandler = (_, res: NextApiResponseServerIO): any => {
     socket.on("leave", (roomName) => {
       console.log("[emit leave]", roomName);
       socket.leave(roomName);
+
       socket.broadcast.to(roomName).emit("leave"); // room에 있는 다른 peer에게 "leave" emit
+    });
+
+    socket.on("room-list", () => {
+      socket.emit("room-list", publicRooms());
+      console.log("[room-list]", publicRooms());
+    });
+
+    socket.on("request-create-room", (roomName: string, done) => {
+      console.log("[request-create-room]", roomName);
+      const exists = publicRooms().find((createdRoom) => createdRoom === roomName);
+      if (exists) {
+        console.log("[emit request-create-room : false]");
+        done({ success: false, payload: `${roomName}라는 방이 이미 존재합니다.` });
+      } else {
+        console.log("[emit request-create-room : true]");
+        done({ success: true, payload: roomName });
+      }
+    });
+
+    socket.on("request-join-room", (roomName: string, done) => {
+      console.log("[request-join-room]", roomName);
+
+      const { rooms } = io.sockets.adapter;
+      const room = rooms.get(roomName);
+
+      if (room === undefined || room.size >= 2) {
+        console.log("[emit request-join-room : false]");
+        done({ success: false, payload: `방이 없거나 가득 찼습니다.` });
+      } else {
+        console.log("[emit request-join-room : true]");
+        done({ success: true, payload: roomName });
+      }
     });
   });
   return res.end();
