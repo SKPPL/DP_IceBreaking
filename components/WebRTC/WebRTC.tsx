@@ -384,17 +384,9 @@ export default function WebRTC() {
             <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
               <video className="w-96" id="myface" autoPlay playsInline ref={userVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{nickName}</p>
-              {(moveChannel) && [...Array(9)].map((_, i) => {
-                if (peerPosition.i === i) {
-                  return (<PuzzleSegment key={i} i={i} videoId={'myface'} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} initx={0} inity={0} moveChannel={moveChannel} />);
-                }
-                else {
-                  return (<PuzzleSegment key={i} i={i} videoId={'myface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel} />);
-                }
-              }
-              )}
-
-
+              {(moveChannel) && [...Array(9)].map((_, i) => (
+                <PuzzleSegment key={i} i={i} auth={true} videoId={'myface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel} />
+              ))}
             </div>
             <div className="flex flex-col basis-1/5 justify-evenly">
               <input className="mb-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
@@ -416,9 +408,16 @@ export default function WebRTC() {
             <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
               <video className="w-96" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{peerNickName}</p>
-              {(moveChannel) && [...Array(9)].map((_, i) => (
-                <PuzzleSegment key={i} i={i} videoId={'peerface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel} />
-              ))}
+
+              {(moveChannel) && [...Array(9)].map((_, i) => {
+                if (peerPosition.i === i) {
+                  return (<PuzzleSegment key={i} i={i} auth={false} videoId={'peerface'} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} initx={0} inity={0} moveChannel={moveChannel} />);
+                }
+                else {
+                  return (<PuzzleSegment key={i} i={i} auth={false} videoId={'peerface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel} />);
+                }
+              }
+              )}
             </div>
           </div>
         </div>
