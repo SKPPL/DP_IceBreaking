@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST={"../components/WebRTC/WebRTC.tsx -> @/components/Game/Segment":{"id":"../components/WebRTC/WebRTC.tsx -> @/components/Game/Segment","files":["static/chunks/components_Game_Segment_tsx.js"]}}

@@ -3,6 +3,15 @@ import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
+import dynamic from "next/dynamic";
+
+const PuzzleSegment = dynamic(
+  import('@/components/Game/Segment'), {
+  loading: () => (<div></div>),
+  ssr: false,
+},
+);
+
 
 const ICE_SERVERS = {
   iceServers: [
@@ -42,23 +51,55 @@ export default function WebRTC() {
   //userRef hook은 내부 데이터가 변경되었을 때 별도로 알리지 않음
   const userVideoRef = useRef<any>();
   const peerVideoRef = useRef<any>();
-  const userStreamRef = useRef<any>();
   const webRTCConnRef = useRef<any>();
-  const socketRef = useRef<any>();
-  const hostRef = useRef(false);
   const selectRef = useRef<any>();
+  const hostRef = useRef(false);
+  const userStreamRef = useRef<MediaStream>();
   const nickNameChannel = useRef<RTCDataChannel>();
+  const moveChannel = useRef<RTCDataChannel>();
+
 
   //State
   const [micSetting, setMicSetting] = useState(true);
   const [cameraSetting, setCameraSetting] = useState(true);
-  const [roomName, setRoomName] = useState("");
+  const [roomName, setRoomName] = useState<string | string[] | undefined>("");
   const [nickName, setNickName] = useState("");
   const [peerNickName, setPeerNickName] = useState("");
+  const [socketConnect, setSocketConnect] = useState<any>();
+  const [peerPosition, setPeerPosition] = useState({ i: -1, peerx: 0, peery: 0 });
+
+  useEffect(() => {
+    if (typeof socketConnect !== "undefined") {
+      console.log("[roomName] : ", roomName);
+      socketConnect.on("created", handleRoomCreated);
+      socketConnect.emit("join", roomName);
+      socketConnect.on("joined", handleRoomJoined);
+      socketConnect.on("ready", initiateCall);
+      socketConnect.on("leave", onPeerLeave);
+      socketConnect.on("full", () => {
+        alert("참가하려는 room을이 가득 찼습니다.");
+      });
+      socketConnect.on("offer", handleReceivedOffer);
+      socketConnect.on("answer", handleAnswer);
+      socketConnect.on("ice-candidate", handlerNewIceCandidateMsg);
+
+      // unmmount시 소켓을 끊는다
+      return () => socketConnect.disconnect();
+    }
+  }, [socketConnect]);
+
+  //처음 마운트시에 호출
+  useEffect(() => {
+    // 서버 <-> 브라우저 간 socket io 통신 연결
+    setSocketConnect(io());
+    // 초기 room을이름 설정
+    setRoomName(router.query.roomName);
+  }, []);
+
   //닉네임 설정
   const handleNickName = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setNickName(e.currentTarget.value);
-    console.log(nickNameChannel);
+    // console.log(nickNameChannel);
 
     if (typeof nickNameChannel.current !== "undefined" && nickNameChannel.current.label == "nickname") {
       nickNameChannel.current.send(e.currentTarget.value);
@@ -67,57 +108,25 @@ export default function WebRTC() {
     }
   };
 
-  //사이드 이펙트를 수행하기 위한 훅
-  //videoRef가 create,update 될 때 실행된다. (props, state가 바뀔 때 마다 getUserCamera함수를 호출한다)
-  // umount 시에 실행하고 싶은 함수는 return 함수를 달아준다
-  useEffect(() => {
-    // 서버 <-> 브라우저 간 socket io 통신 연결
-
-    socketRef.current = io();
-    // 초기 room을이름 설정
-    setRoomName("Room1");
-    console.log("RoomName :", roomName);
-    socketRef.current.on("created", handleRoomCreated);
-
-    socketRef.current.emit("join", roomName);
-    socketRef.current.on("joined", handleRoomJoined);
-    // roomName으로 room을이 없으면 서버는 'created'를 emit한다.
-    // room을이 만들어졌고, 다음 사람이 참가하면 서버는 'ready'를 emit한다.
-    socketRef.current.on("ready", initiateCall);
-
-    // 참가자가 room을을 떠나면 'leave'를 emit한다.
-    socketRef.current.on("leave", onPeerLeave);
-
-    //room을이 가득 찼으면 서버는 'full'을 emit한다.
-    socketRef.current.on("full", () => {
-      alert("참가하려는 room을이 가득 찼습니다.");
-    });
-
-    // client- signaling server 간 offer , answer, ice-candidate 과정
-    socketRef.current.on("offer", handleReceivedOffer);
-    socketRef.current.on("answer", handleAnswer);
-    socketRef.current.on("ice-candidate", handlerNewIceCandidateMsg);
-
-    // unmmount시 소켓을 끊는다
-    return () => socketRef.current.disconnect();
-  }, [roomName]);
-
   async function getCameras(): Promise<void> {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const cameras = devices.filter((device) => device.kind === "videoinput");
-      const currentCamera = userStreamRef.current.getVideoTracks()[0];
+      if (typeof userStreamRef.current !== "undefined") {
+        //TODO: 예외처리
+        const currentCamera = userStreamRef.current.getVideoTracks()[0];
 
-      cameras.forEach((camera) => {
-        const option = document.createElement("option");
-        option.value = camera.deviceId;
-        option.innerText = camera.label;
+        cameras.forEach((camera) => {
+          const option = document.createElement("option");
+          option.value = camera.deviceId;
+          option.innerText = camera.label;
 
-        if (currentCamera.label === camera.label) {
-          option.selected = true;
-        }
-        selectRef.current.appendChild(option);
-      });
+          if (currentCamera.label === camera.label) {
+            option.selected = true;
+          }
+          selectRef.current.appendChild(option);
+        });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -130,9 +139,13 @@ export default function WebRTC() {
 
   async function handleCameraChange(selected: string): Promise<any> {
     await getMedia(selected);
-    if (webRTCConnRef.current) {
+    if (webRTCConnRef.current && typeof userStreamRef.current !== "undefined") {
       const videoTrack = userStreamRef.current.getVideoTracks()[0];
-      const videoSender = webRTCConnRef.current.getSenders().find((sender) => sender.track.kind === "video");
+      const videoSender = webRTCConnRef.current.getSenders().find((sender: RTCRtpSender) => {
+        if (sender.track !== null) {
+          sender.track.kind === "video";
+        }
+      });
       videoSender.replaceTrack(videoTrack);
     }
   }
@@ -140,7 +153,8 @@ export default function WebRTC() {
   async function getMedia(deviceId?: string): Promise<void> {
     const initialConstraints: MyConstraints = {
       audio: true,
-      video: { facingMode: "user" },
+      // video: { facingMode: "user" },
+      video: { width: 640, height: 480 },
     };
     const cameraConstraints: MyConstraints = {
       audio: true,
@@ -176,7 +190,7 @@ export default function WebRTC() {
   const handleRoomJoined = async (): Promise<void> => {
     try {
       await getMedia();
-      socketRef.current.emit("ready", roomName);
+      socketConnect.emit("ready", roomName);
       console.log("[emit ready]");
     } catch (e) {
       console.log(e);
@@ -185,21 +199,37 @@ export default function WebRTC() {
   //peer와 연결 생성 시작
   const initiateCall = async (): Promise<void> => {
     console.log("[initiateCall]");
-    if (hostRef.current) {
+    if (hostRef.current && typeof webRTCConnRef !== "undefined") {
       webRTCConnRef.current = makeConnection();
-      userStreamRef.current.getTracks().forEach((track) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
+      if (typeof userStreamRef.current !== "undefined") {
+        userStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
+      }
       try {
         console.log("[emit offer]");
         //DataChannel
         nickNameChannel.current = webRTCConnRef.current.createDataChannel("nickname");
-        //Client A -> Client B  message
-        nickNameChannel.current.addEventListener("message", (event) => {
-          setPeerNickName(event.data);
-        });
+        moveChannel.current = webRTCConnRef.current.createDataChannel("move");
+
+        if (typeof nickNameChannel.current !== "undefined") {
+          //Client A에서 동작하는 코드 데이터 채널에 이벤트 리스너를 달아서 이벤트가 들어오면 
+          //들어오는 데이터로 상대방 닉네임을 설정
+          nickNameChannel.current.addEventListener("message", (event: MessageEvent<any>): void => {
+            setPeerNickName(event.data);
+          });
+        }
+
+        if (typeof moveChannel.current !== "undefined") {
+          moveChannel.current.addEventListener("message", (event: MessageEvent<any>): void => {
+            if (event.data) {
+              console.log(event.data, 'in initiateCall')
+              setPeerPosition(JSON.parse(event.data));
+            }
+          });
+        }
 
         const offer = await webRTCConnRef.current.createOffer();
         webRTCConnRef.current.setLocalDescription(offer);
-        socketRef.current.emit("offer", offer, roomName);
+        socketConnect.emit("offer", offer, roomName);
       } catch (e) {
         console.log(e);
       }
@@ -211,7 +241,7 @@ export default function WebRTC() {
     hostRef.current = true;
     if (peerVideoRef.current.srcObject) {
       // peer의 모든 track 수신을 중지
-      peerVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      peerVideoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     }
 
     // leave 한 peer와 연결을 종료
@@ -224,14 +254,14 @@ export default function WebRTC() {
   };
   //room을 떠날 때
   const leaveRoom = (): void => {
-    socketRef.current.emit("leave", roomName);
+    socketConnect.emit("leave", roomName);
     console.log("[emit leave]");
     //유저와 peer 모든 media 수신을 중지
     if (userVideoRef.current.srcObject) {
-      userVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      userVideoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     }
     if (peerVideoRef.current.srcObject) {
-      peerVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      peerVideoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     }
 
     //connect이 있는지 확인하고 피어와 기존 연결을 종료
@@ -250,13 +280,14 @@ export default function WebRTC() {
     //icecandidate, track listener 추가
     connection.onicecandidate = handleICECandidateEvent;
     connection.ontrack = handleTrackEvent;
+    // TODO: handleTrackEvent 예외처리 고려
     return connection;
   };
 
   const handleICECandidateEvent = (event: RTCPeerConnectionIceEvent): void => {
     if (event.candidate) {
       console.log("[emit ice-candidate]");
-      socketRef.current.emit("ice-candidate", event.candidate, roomName);
+      socketConnect.emit("ice-candidate", event.candidate, roomName);
     }
   };
 
@@ -267,22 +298,39 @@ export default function WebRTC() {
   const handleReceivedOffer = async (offer: any[]): Promise<void> => {
     if (!hostRef.current) {
       webRTCConnRef.current = makeConnection();
-      webRTCConnRef.current.addEventListener("datachannel", (event) => {
-        console.log("offer ", event);
+      webRTCConnRef.current.addEventListener("datachannel", (event: any) => {
+        console.log("[offer]", event);
+
         nickNameChannel.current = event.channel;
-        //Client B -> Client A  message
-        nickNameChannel.current.addEventListener("message", (event) => {
-          setPeerNickName(event.data);
-        });
+        // on guest side, guest -> host
+        switch (event.channel.label) {
+          case "nickname":
+            nickNameChannel.current = event.channel;
+            nickNameChannel.current!.addEventListener("message", (event: any) => {
+              setPeerNickName(event.data);
+            });
+
+            break;
+          case "move":
+            moveChannel.current = event.channel;
+            console.log(peerPosition, 'in handleReceivedOffer')
+            if (event.data)
+              setPeerPosition(JSON.parse(event.data));
+            break;
+        }
+
+
       });
-      userStreamRef.current.getTracks().forEach((track) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
+      if (typeof userStreamRef.current !== "undefined") {
+        userStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
+      }
       webRTCConnRef.current.setRemoteDescription(offer);
 
       const answer = await webRTCConnRef.current.createAnswer();
 
       try {
         webRTCConnRef.current.setLocalDescription(answer);
-        socketRef.current.emit("answer", answer, roomName);
+        socketConnect.emit("answer", answer, roomName);
         console.log("[emit answer]");
       } catch (e) {
         console.log(e);
@@ -290,14 +338,14 @@ export default function WebRTC() {
     }
   };
 
-  const handleAnswer = (answer) => {
-    webRTCConnRef.current.setRemoteDescription(answer).catch((err) => console.log(err));
+  const handleAnswer = (answer: any): void => {
+    webRTCConnRef.current.setRemoteDescription(answer).catch((err: Error) => console.log(err));
   };
 
   // 들어오는 "candidate"를 RTCIceCandidate로 casting
   const handlerNewIceCandidateMsg = (incoming: RTCIceCandidate): void => {
     const candidate = new RTCIceCandidate(incoming);
-    webRTCConnRef.current.addIceCandidate(candidate).catch((e) => console.log(e));
+    webRTCConnRef.current.addIceCandidate(candidate).catch((e: Event) => console.log(e));
   };
 
   //마이크 셋팅 변경 버튼 클릭 시
@@ -313,21 +361,29 @@ export default function WebRTC() {
 
   //미디어스트리미 옵션 값 변경
   const toggleMediaStream = (type: string, state: boolean): void => {
-    userStreamRef.current.getTracks().forEach((track) => {
-      if (track.kind === type) {
-        track.enabled = !state;
-      }
-    });
+    if (typeof userStreamRef.current !== "undefined") {
+      userStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => {
+        if (track.kind === type) {
+          track.enabled = !state;
+        }
+      });
+    }
   };
 
+
+
   return (
-    <div className=" flex flex-col bg-black h-screen">
+
+    <div className="flex flex-col bg-black h-screen">
       <div className="p-10 flex basis-1/4 flex-row">
         <div className="flex flex-row basis-1/2 justify-center">
           <div className="flex flex-row">
             <div className="flex flex-col grow-0 w-60 box-border border-4 text-white text-center">
               <video className="w-96" id="myface" autoPlay playsInline ref={userVideoRef}></video>
               <p className="flex text-3xl justify-center text-white">{nickName}</p>
+              {(moveChannel.current?.readyState === 'open') && [...Array(9)].map((_, i) => (
+                <PuzzleSegment key={i} i={i} videoId={'myface'} peerxy={undefined} initx={0} inity={0} moveChannel={moveChannel.current} />
+              ))}
             </div>
             <div className="flex flex-col basis-1/5 justify-evenly">
               <input className="mb-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
