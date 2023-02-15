@@ -5,7 +5,6 @@ const itemSlice = createSlice({
     initialState: { rocket: 1, lip: 1, nose: 1, rotate: 1, mirror: 1, flash: 1 },
     reducers: {
         rocket: (state) => {
-            console.log(state)
             if (state.rocket > 0) {
                 state.rocket -= 1;
             }

@@ -31,21 +31,16 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         if (event.data) {
             var dataJSON = JSON.parse(event.data);
             switch (dataJSON.type) {
-                case "item": // 상대방이 아이템을 사용했을 때, 그 아이템을 받아와서 내 퍼즐에 동기화 시킨다. 5초 후 원상복귀 시킨다.
+                case "item": // 상대방이 아이템을 사용했을 때, 그 아이템을 받아와서 내 퍼즐에 동기화 시킨다. 5초 후 원상복귀 시킨다. 
 
                     setMySegmentState(dataJSON);
+                    //TODO : 5초 후 원상복귀 시키는 코드, 좌표도 원상복귀 시켜야함 -> 좌표 store에 저장시켜놓고
                     setTimeout(() => { makeMyDefaultSegment() }, 5000);
                     break;
             }
         }
     })
 
-
-    //TODO 내 퍼즐 변경은 event listener로 처리하자
-    useEffect(() => {
-        // mySegementState의 변경사항을 감지? -> event listener 쪽에서 처리하면 될듯
-        // myface쪽 segmentState를 변경
-    }, [mySegmentState.segementState]);
 
     return (
         <>
@@ -58,6 +53,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                             if (i == 0) {
                                 return <Rocket auth={true} peerxy={undefined} dataChannel={dataChannel} />
                             }
+                        //TODO : 나머지 아이템 추가
                     }
                 })
             }

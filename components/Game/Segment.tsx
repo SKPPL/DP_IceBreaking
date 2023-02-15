@@ -33,8 +33,9 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
     const d = 1;
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [640 / 3 * d, 480 / 3 * d]
-    const [width, height] = [640 / 3 * (i % 3) - widthOx / 1, 480 / 3 * ((i - i % 3) / 3) + heightOx]
+    const [width, height] = [640 / 3 * (i % 3) - widthOx, 480 / 3 * ((i - i % 3) / 3) + heightOx]
     // const [width, height] = [windowSize.width / 3 * (i % 3), windowSize.height / 3 * ((i - i % 3) / 3)]
+    // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
         const preventDefault = (e: Event) => e.preventDefault()
@@ -62,10 +63,6 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
             config: { mass: 2, tension: 750, friction: 50 },
         })
     )
-    useEffect(() => {
-        if (!dataChannel) { console.log('nomovechan'); return; }
-        console.log('dataChennel exists')
-    }, [dataChannel])
 
     useEffect(() => {
         if (peerxy !== undefined) {
@@ -81,9 +78,9 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
         {
             onDrag: ({ active, offset: [x, y] }) => {
                 if (isRightPlace) return;
+                //TODO : active 신경써서 수치 변경
                 api.start({ x: x, y: y, rotateX: 0, rotateY: 0, scale: active ? 1 : 1.05 })
 
-                console.log(dataChannel?.readyState)
                 if (dataChannel?.readyState === 'open') {
                     console.log('나다', x, y)
                     dataChannel.send(JSON.stringify({ type: 'move', i: i, peerx: x, peery: y }))
@@ -105,6 +102,7 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
                     domTarget.current!.setAttribute('style', 'z-index: 0')
                     api.start({ x: width, y: height })
                     setIsRightPlace(true)
+                    //TODO : 종료조건 넣어두기
                     setZindex(0)
                     if (dataChannel?.readyState === 'open') {
                         dataChannel.send(JSON.stringify({ type: 'move', i: i, peerx: width, peery: height }));

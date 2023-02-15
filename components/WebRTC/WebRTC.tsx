@@ -375,6 +375,7 @@ export default function WebRTC() {
         <div className="h-8">
         <p className="flex text-3xl justify-center text-black">{nickName}</p>
         </div>
+        //데이터 채널이 아닐때 로딩중 써클
         {(dataChannel) && <MyPuzzle auth={true} videoId={'myface'} dataChannel={dataChannel} />}
         <div className="m-10 h-[480px] w-[640px] self-center border border-black">
         
@@ -397,6 +398,6 @@ export default function WebRTC() {
         </div>
       </div>
       
-            </div>
+      </div>
       );
 }
