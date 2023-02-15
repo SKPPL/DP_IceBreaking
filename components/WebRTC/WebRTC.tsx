@@ -363,21 +363,18 @@ export default function WebRTC() {
     <div className='flex flex-row'>
       <div className="flex flex-col w-1/2 h-screen">
         <video className="w-96 hidden" id="myface" autoPlay playsInline ref={userVideoRef}></video>
-        <div className="pt-5 h-16 text-center">
-          <input className="bg-black text-white mb-5 mr-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
-            <button id="muteBtn" onClick={changeMicSetting} type="button" className="mr-5 text-white bg-black">
+        <div className="flex justify-center h-[160px]">
+          {(dataChannel) && <MyPuzzle auth={true} videoId={'myface'} dataChannel={dataChannel} />}
+          <input className="hidden bg-black text-white mb-5 mr-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
+            <button id="muteBtn" onClick={changeMicSetting} type="button" className="mr-5 hidden text-white bg-black">
             {micSetting ? "O" : "X"}
           </button>
-          <button onClick={leaveRoom} type="button" className="bg-black hiddenbox-border height width mb-5 border-4 text-white">
+          <button onClick={leaveRoom} type="button" className="hidden bg-black hiddenbox-border height width mb-5 border-4 text-white">
                 Leave
           </button>
         </div>
-        <div className="h-8">
-        <p className="flex text-3xl justify-center text-black">{nickName}</p>
-        </div>
-        //데이터 채널이 아닐때 로딩중 써클
-        {(dataChannel) && <MyPuzzle auth={true} videoId={'myface'} dataChannel={dataChannel} />}
-        <div className="m-10 h-[480px] w-[640px] self-center border border-black">
+        <p className="flex hidden text-3xl justify-center text-black">{nickName}</p>
+        <div className="h-[480px] w-[640px] self-center border border-black">
         
         </div>
           {/* <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="hidden box-border height width mb-5 border-4 text-white">
@@ -387,13 +384,11 @@ export default function WebRTC() {
       </div>
       <div className="flex flex-col w-1/2 h-screen">
       <video className="w-96 hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
-        <div className="pt-5 h-16 text-center">
-        </div>
-        <div className="h-8">
-        <p className="flex text-3xl justify-center text-black">{peerNickName}</p>
-        </div>
+        <p className="flex hidden text-3xl justify-center text-black">{peerNickName}</p>
+        <div className="flex justify-center h-[160px]">
         {(dataChannel) && <PeerPuzzle auth={false} videoId={'peerface'} dataChannel={dataChannel} />}
-        <div className="m-10 h-[480px] w-[640px] self-center border border-black">
+        </div>
+        <div className="h-[480px] w-[640px] self-center border border-black">
         
         </div>
       </div>

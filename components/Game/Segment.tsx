@@ -33,7 +33,7 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
     const d = 1;
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [640 / 3 * d, 480 / 3 * d]
-    const [width, height] = [640 / 3 * (i % 3) - widthOx, 480 / 3 * ((i - i % 3) / 3) + heightOx]
+    const [width, height] = [640 / 3 * (i % 3) - widthOx*1.5, 480 / 3 * ((i - i % 3) / 3) + heightOx]
     // const [width, height] = [windowSize.width / 3 * (i % 3), windowSize.height / 3 * ((i - i % 3) / 3)]
     // TODO : 옆으로 init 시 api.start 이동
 
