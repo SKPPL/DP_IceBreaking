@@ -38,6 +38,7 @@
 }
 
 .rocket {
+  position: absolute;
   background: url("../../public/images/rocket.png") no-repeat;
   background-size: contain;
   width: 140px;

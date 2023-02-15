@@ -18,14 +18,8 @@ const GRADIENTS = [
 ]
 
 export default function ItemBar() {
-
-    const itemList = useSelector((state: any) => { return state.item });
-
     return (
         <>
-            <div>
-                {[itemList.rocket, itemList.lip, itemList.nose, itemList.rotate, itemList.mirror, itemList.flash]}
-            </div>
             <div className={styles.body}>
 
 

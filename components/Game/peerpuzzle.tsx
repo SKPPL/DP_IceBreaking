@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, memo } from 'react'
 import { useSpring, animated, to } from '@react-spring/web'
 import { useGesture } from 'react-use-gesture'
 import { Provider, useSelector, useDispatch } from 'react-redux'
-import itemStore from '@/pages/rooms/itemStore'
+import itemStore from '@/pages/rooms/store'
 import styles from './styles.module.css'
 import dynamic from 'next/dynamic'
 import Rocket from './rocket'
@@ -23,8 +23,11 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     // peerPosition for concurrent position sync 
     const [peerPosition, setPeerPosition] = useState({ type: "move", i: -1, peerx: 0, peery: 0 });
     // for peer Item state 
-    const [peerSegmentState, setPeerSegmentState] = useState({ type: "item", segementState: 'default' });
+    const [peerSegmentState, setPeerSegmentState] = useState({ type: "item", segementState: "default" });
 
+    const [cnt, setCnt] = useState(1)
+
+    const makePeerDefaultSegment = () => { setPeerSegmentState({ type: "item", segementState: "default" }) }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
     dataChannel!.addEventListener("message", (event: any) => {
@@ -34,6 +37,14 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
                 case "move": // 상대방이 움직였을 때 , 그 좌표를 받아와서 상대방 퍼즐에 동기화 시킨다. 
                     // TODO : 상대방 퍼즐이 로켓 상태인 경우, 그 외의 경우로 나눠야함
                     setPeerPosition(dataJSON);
+                    break;
+                case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가 
+                    setCnt(cnt + 1)
+                    if (cnt === 9) {
+                        const peer = document.getElementById('peerface')
+                        peer!.style.display = "block"
+                        document.getElementById('fullscreen')!.style.display = "none"
+                    }
                     break;
             }
         }
@@ -48,7 +59,6 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     const [itemListBefore, setItemListBefore] = useState(itemList);
     const keys = Object.keys(itemList);
 
-    const makePeerDefaultSegment = () => { setPeerSegmentState({ type: "item", segementState: "default" }) }
 
     // 상대의 퍼즐 변경은 useEffect로 처리하면서 데이터채널로 뭐 변했는지 보내자
     useEffect(() => {
@@ -71,24 +81,19 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         <>
             {
                 [...Array(9)].map((_, i) => {
-                    switch (peerSegmentState.segementState) {
-                        case "default":
-                            if (peerPosition.i === i) {
-                                return (<PuzzleSegment key={i} i={i} auth={false} videoId={'peerface'} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />);
-                            }
-                            else {
-                                return (<PuzzleSegment key={i} i={i} auth={false} videoId={'peerface'} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />);
-                            }
-                        case "rocket":
-                            if (i === 0) {
-                                return <Rocket auth={false} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} />
-                            }
-                    }
+                    return (
+                        <>
+                            {(peerPosition.i === i) ? <PuzzleSegment key={i} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} /> : <PuzzleSegment key={i} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
+
+                            {(peerSegmentState.segementState === 'rocket') && <Rocket key={`rocket_${i}_peerface`} i={i} auth={auth} peerxy={undefined} dataChannel={dataChannel} />}
+                        </>
+                    )
                 }
                 )
             }
         </>
     )
+
 }
 
 

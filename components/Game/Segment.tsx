@@ -1,12 +1,15 @@
 import React, { useRef, useEffect, useState, memo } from 'react'
 import { useSpring, animated, to } from '@react-spring/web'
-import { useGesture } from 'react-use-gesture'
+import { useDrag, useGesture } from 'react-use-gesture'
 import { Provider, useSelector, useDispatch } from 'react-redux'
-import itemStore from '@/pages/rooms/itemStore'
+import itemStore from '@/pages/rooms/store'
 
 
 import styles from './styles.module.css'
 import CloneVideo from './CloneVideo'
+
+let mycnt = 0
+
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
@@ -20,12 +23,17 @@ interface Props {
     i: number
     videoId: string
     auth: boolean
-
     peerxy: { peerx: number, peery: number } | undefined
     dataChannel: RTCDataChannel | undefined
     segmentState: string
 }
 function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
+
+    //퍼즐 데이터 스토어와 연결 react-redux
+    const dispatch = useDispatch();
+    const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle });
+
+
     const [isRightPlace, setIsRightPlace] = useState(!auth)
     const [zindex, setZindex] = useState(Math.floor(Math.random() * 10))
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
@@ -33,7 +41,7 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
     const d = 1;
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [640 / 3 * d, 480 / 3 * d]
-    const [width, height] = [640 / 3 * (i % 3) - widthOx*1.5, 480 / 3 * ((i - i % 3) / 3) + heightOx]
+    const [width, height] = [640 / 3 * (i % 3) - widthOx * 1.5, 480 / 3 * ((i - i % 3) / 3) + heightOx]
     // const [width, height] = [windowSize.width / 3 * (i % 3), windowSize.height / 3 * ((i - i % 3) / 3)]
     // TODO : 옆으로 init 시 api.start 이동
 
@@ -51,22 +59,24 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
 
     const domTarget = useRef<HTMLDivElement>(null)
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
-        () => ({
-            rotateX: 0,
-            rotateY: 0,
-            rotateZ: 0,
-            scale: 1,
-            zoom: 0,
-            x: 0,
-            y: 0,
-
-            config: { mass: 2, tension: 750, friction: 50 },
-        })
+        () => {
+            return ({
+                rotateX: 0,
+                rotateY: 0,
+                rotateZ: 0,
+                scale: 1,
+                zoom: 0,
+                x: storedPosition[i][0],
+                y: storedPosition[i][1],
+                config: { mass: 2, tension: 750, friction: 50 },
+            })
+        }
     )
+    // api.start({ x: storedPosition[i][0], y: storedPosition[i][1] })
 
     useEffect(() => {
         if (peerxy !== undefined) {
-            console.log('peerxy', peerxy)
+            dispatch({ type: `${peerxy ? 'peerPuzzle' : 'myPuzzle'}/setPosition`, payload: { index: i, position: [peerxy.peerx, peerxy.peery] } });
             api.start({ x: peerxy.peerx, y: peerxy.peery, rotateX: 0, rotateY: 0 })
         }
     }, [peerxy])
@@ -74,18 +84,77 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
 
     const [{ wheelY }, wheelApi] = useSpring(() => ({ wheelY: 0 }))
 
+    //for bounding puzzle peace to board
+    const boardPos = useSpring({ x: x, y: y })
+    const bindBoardPos = useDrag((params) => {
+        //     console.log('뜨냐 유즈드랙??')
+        if (isRightPlace) return;
+        //     // params.offset[0] = storedPosition[i][0];
+        //     // params.offset[1] = storedPosition[i][1];
+        //     // boardPos.x.set(params.offset[0]);
+        x.set(params.offset[0]);
+        y.set(params.offset[1]);
+        //     console.log('params.offset[0] : ', params.offset[0], 'params.offset[1] : ', params.offset[1])
+        //     // console.log(storedPosition[i][0], storedPosition[i][1], 'storred')
+        // if (init) {
+        //     x.set(init.initx);
+        //     y.set(init.inity);
+        //     init = undefined
+        // }
+        // else {
+        // x.set(params.offset[0]);
+        // // boardPos.y.set(params.offset[1]);
+        // y.set(params.offset[1]);
+        // }
+
+        dispatch({ type: `${!auth ? 'peerPuzzle' : 'myPuzzle'}/setPosition`, payload: { index: i, position: [params.offset[0], params.offset[1]] } });
+        // !params.down : 마우스를 떼는 순간
+        if (!params.down && !isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
+            domTarget.current!.setAttribute('style', 'z-index: 0')
+            api.start({ x: width, y: height })
+            setIsRightPlace(true)
+            dataChannel?.send(JSON.stringify({ type: 'cnt' }))
+            mycnt += 1
+            if (mycnt == 9) {
+                const myface = document.getElementById('myface')
+                myface!.style.display = 'block'
+                document.getElementById('fullscreen')!.style.display = "none"
+
+            }
+            setZindex(0)
+            dispatch({ type: `${auth ? 'myPuzzle' : 'peerPuzzle'}/${i}`, payload: { x: width, y: height } });
+            if (dataChannel?.readyState === 'open') {
+                dataChannel.send(JSON.stringify({ type: 'move', i: i, peerx: width, peery: height }));
+                return
+            }
+        }
+        if (dataChannel?.readyState === 'open') {
+            // 데이터 공통 저장소에 저장해야함
+            dataChannel.send(JSON.stringify({ type: 'move', i: i, peerx: x.get(), peery: y.get() }))
+        }
+    },
+        {
+            bounds: { top: 0, bottom: heightOx * 4, left: -widthOx * 2, right: widthOx * 1 },
+            rubberband: 1
+        }
+    )
+
+
+
     useGesture(
         {
             onDrag: ({ active, offset: [x, y] }) => {
+
                 if (isRightPlace) return;
+                console.log('뜨냐 유즈젯쳐?')
                 //TODO : active 신경써서 수치 변경
                 api.start({ x: x, y: y, rotateX: 0, rotateY: 0, scale: active ? 1 : 1.05 })
+                dispatch({ type: `${!auth ? 'peerPuzzle' : 'myPuzzle'}/setPosition`, payload: { index: i, position: [x, y] } });
 
                 if (dataChannel?.readyState === 'open') {
-                    console.log('나다', x, y)
+
                     dataChannel.send(JSON.stringify({ type: 'move', i: i, peerx: x, peery: y }))
                 }
-
             },
             onPinch: ({ offset: [d, a] }) => api.start({ zoom: d / 10000, rotateZ: a }),
             onPinchEnd: () => api.start({ zoom: 0, rotateZ: 0 }),
@@ -97,19 +166,18 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
                         scale: 1.05,
                     });
             },
-            onDragEnd: ({ offset: [ox, oy] }) => {
-                if (!isRightPlace && isNearOutline(ox, oy, width, height)) {
-                    domTarget.current!.setAttribute('style', 'z-index: 0')
-                    api.start({ x: width, y: height })
-                    setIsRightPlace(true)
-                    //TODO : 종료조건 넣어두기
-                    setZindex(0)
-                    if (dataChannel?.readyState === 'open') {
-                        dataChannel.send(JSON.stringify({ type: 'move', i: i, peerx: width, peery: height }));
-                    }
-                }
-
-            },
+            // onDragEnd: ({ offset: [ox, oy] }) => {
+            //     if (!isRightPlace && isNearOutline(ox, oy, width, height)) {
+            //         domTarget.current!.setAttribute('style', 'z-index: 0')
+            //         api.start({ x: width, y: height })
+            //         setIsRightPlace(true)
+            //         //TODO : 종료조건 넣어두기
+            //         setZindex(0)
+            //         if (dataChannel?.readyState === 'open') {
+            //             dataChannel.send(JSON.stringify({ type: 'move', i: i, peerx: width, peery: height }));
+            //         }
+            //     }
+            // },
             onHover: ({ hovering }) =>
                 !hovering && api.start({ rotateX: 0, rotateY: 0, scale: 1 }),
             onWheel: ({ event, offset: [, y] }) => {
@@ -121,15 +189,15 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
     )
 
 
+
     return (
         <>
-
-
-            <div className=''>
+            <div className={(segmentState == "rocket") ? 'hidden' : ''}>
                 <div className={styles.container}>
                     <animated.div
                         ref={domTarget}
                         className={styles.card}
+                        {...bindBoardPos()}
                         style={{
                             transform: 'perspective(600px)',
                             x,

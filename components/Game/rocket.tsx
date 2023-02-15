@@ -2,21 +2,27 @@ import React, { useRef, useEffect, useState } from 'react'
 import { useSpring, animated, to, config } from '@react-spring/web'
 import { useDrag } from 'react-use-gesture'
 import { scale, dist } from 'vec-la'
+import { Provider, useSelector, useDispatch } from 'react-redux'
 
 import styles from './styles.module.css'
 import CloneVideo from './CloneVideo'
 import { useWindowSize } from 'usehooks-ts'
 
 interface Props {
+    i: number
     peerxy: { peerx: number, peery: number } | undefined
     dataChannel: RTCDataChannel | undefined
 
     auth: boolean
 }
-export default function rocket({ auth, peerxy, dataChannel }: Props) {
+export default function rocket({ i, auth, peerxy, dataChannel }: Props) {
+    const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle });
+    const dispatch = useDispatch();
+
+
     const [{ pos }, api] = useSpring(() => ({ pos: [0, 0] }))
     const [{ angle }, angleApi] = useSpring(() => ({
-        angle: 0,
+        angle: 90,
         config: config.wobbly,
     }))
     // direction calculates pointer direction
@@ -24,21 +30,41 @@ export default function rocket({ auth, peerxy, dataChannel }: Props) {
     // this way we can inject the springs current coordinates on the initial event and
     // add movement to it for convenience
 
+
     // 유저가 움직일 때
     const bind = useDrag(
         ({ xy, previous, down, movement: pos, velocity, direction }) => {
             if (!auth) return
+            dataChannel!.send(JSON.stringify({ type: 'rocket', i: i, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction }));
             api.start({
                 pos,
                 immediate: down,
                 config: { velocity: scale(direction, velocity), decay: true },
             })
-
             if (dist(xy, previous) > 10 || !down)
                 angleApi.start({ angle: Math.atan2(direction[0], -direction[1]) })
         },
         { initial: () => pos.get() }
     )
+    dataChannel!.addEventListener("message", (event: any) => {
+        if (event.data) {
+            var dataJSON = JSON.parse(event.data);
+            switch (dataJSON.type) {
+                case "rocket":
+                    if (i !== dataJSON.i) return
+                    api.start({
+                        pos: dataJSON.pos,
+                        immediate: dataJSON.down,
+                        config: { velocity: scale(dataJSON.direction, dataJSON.velocity), decay: true },
+                    })
+                    if (dist(dataJSON.xy, dataJSON.previous) > 10 || !dataJSON.down)
+                        angleApi.start({ angle: Math.atan2(dataJSON.direction[0], -dataJSON.direction[1]) })
+                    break;
+            }
+        }
+    })
+
+
 
     // // 상대방이 움직일 때
     // const bind2 = useDrag(
@@ -60,12 +86,14 @@ export default function rocket({ auth, peerxy, dataChannel }: Props) {
     //         api.start({ [peerxy.peerx, peerxy.peery], immediate: down, config: { velocity: scale(direction, velocity), decay: true }})
     //     }
     // }, [peerxy])
-
+    // console.log(storedPosition[i][0], storedPosition[i][1])
     return (
         <animated.div
             className={styles.rocket}
             {...bind()}
             style={{
+                x: storedPosition[i][0],
+                y: storedPosition[i][1],
                 zIndex: 100,
 
                 transform: to(

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
 import dynamic from "next/dynamic";
 import { Provider, useSelector, useDispatch } from 'react-redux'
-import itemStore from '@/pages/rooms/itemStore'
+import itemStore from '@/pages/rooms/store'
 import rocket from "../Game/rocket";
 import { useTimeout } from "usehooks-ts";
 import Rocket from "../Game/rocket";
@@ -360,39 +360,67 @@ export default function WebRTC() {
   };
 
   return (
-    <div className='flex flex-row'>
-      <div className="flex flex-col w-1/2 h-screen">
-        <video className="w-96 hidden" id="myface" autoPlay playsInline ref={userVideoRef}></video>
-        <div className="flex justify-center h-[160px]">
-          {(dataChannel) && <MyPuzzle auth={true} videoId={'myface'} dataChannel={dataChannel} />}
-          <input className="hidden bg-black text-white mb-5 mr-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
+    <>
+      <video className="w-full h-full hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
+      <video className="w-full h-full hidden" id="myface" autoPlay playsInline ref={userVideoRef}></video>
+      <div className='flex flex-row' id="fullscreen">
+        <div className="flex flex-col w-1/2 h-screen">
+          <div className="flex justify-center h-[160px]">
+            {(dataChannel) && <MyPuzzle auth={true} videoId={'peerface'} dataChannel={dataChannel} />}
+            <input className="hidden bg-black text-white mb-5 mr-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
             <button id="muteBtn" onClick={changeMicSetting} type="button" className="mr-5 hidden text-white bg-black">
-            {micSetting ? "O" : "X"}
-          </button>
-          <button onClick={leaveRoom} type="button" className="hidden bg-black hiddenbox-border height width mb-5 border-4 text-white">
-                Leave
-          </button>
-        </div>
-        <p className="flex hidden text-3xl justify-center text-black">{nickName}</p>
-        <div className="h-[480px] w-[640px] self-center border border-black">
-        
-        </div>
+              {micSetting ? "O" : "X"}
+            </button>
+            <button onClick={leaveRoom} type="button" className="hidden bg-black hiddenbox-border height width mb-5 border-4 text-white">
+              Leave
+            </button>
+          </div>
+          <p className="flex hidden text-3xl justify-center text-black">{nickName}</p>
+          <div className="h-[480px] w-[640px] self-center border border-black">
+            <div className="flex flex-row h-1/3">
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-b-gray-400"></div>
+            </div>
+            <div className="flex flex-row h-1/3">
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-b-gray-400"></div>
+            </div>
+            <div className="flex flex-row h-1/3">
+              <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
+            </div>
+          </div>
           {/* <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="hidden box-border height width mb-5 border-4 text-white">
             {cameraSetting ? "화면 끄기" : "화면 켜기"}
           </button>
           <select className="hidden" onChange={handleSelect} ref={selectRef}></select> */}
-      </div>
-      <div className="flex flex-col w-1/2 h-screen">
-      <video className="w-96 hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
-        <p className="flex hidden text-3xl justify-center text-black">{peerNickName}</p>
-        <div className="flex justify-center h-[160px]">
-        {(dataChannel) && <PeerPuzzle auth={false} videoId={'peerface'} dataChannel={dataChannel} />}
         </div>
-        <div className="h-[480px] w-[640px] self-center border border-black">
-        
+        <div className="flex flex-col w-1/2 h-screen">
+          <p className="flex hidden text-3xl justify-center text-black">{peerNickName}</p>
+          <div className="flex justify-center h-[160px]">
+            {(dataChannel) && <PeerPuzzle auth={false} videoId={'myface'} dataChannel={dataChannel} />}
+          </div>
+          <div className="h-[480px] w-[640px] self-center border border-black">
+            <div className="flex flex-row h-1/3">
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-b-gray-400"></div>
+            </div>
+            <div className="flex flex-row h-1/3">
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-b-gray-400"></div>
+            </div>
+            <div className="flex flex-row h-1/3">
+              <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
+            </div>
+          </div>
         </div>
+
       </div>
-      
-      </div>
-      );
+    </>
+  );
 }

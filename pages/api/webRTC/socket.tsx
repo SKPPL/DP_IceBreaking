@@ -10,8 +10,13 @@ type NextApiResponseServerIO = NextApiResponse & {
   };
 };
 
+interface roomsInfo {
+  roomName: string;
+  roomSize: number | undefined;
+}
+
 // let createdRooms: string[] = [];
-const SocketHandler = (_, res: NextApiResponseServerIO): any => {
+const SocketHandler = (_: any, res: NextApiResponseServerIO): any => {
   if (res.socket.server.io) {
     console.log("Socket is already attached");
     return res.end();
@@ -26,13 +31,17 @@ const SocketHandler = (_, res: NextApiResponseServerIO): any => {
         adapter: { sids, rooms },
       },
     } = io;
-    const publicRooms: string[] = [];
+    const publicRooms: roomsInfo[] = [];
     rooms.forEach((_, key) => {
       if (sids.get(key) === undefined) {
-        publicRooms.push(key);
+        publicRooms.push({ roomName: key, roomSize: countRoomUser(key) });
       }
     });
     return publicRooms;
+  }
+
+  function countRoomUser(roomName: string): number | undefined {
+    return io.sockets.adapter.rooms.get(roomName)?.size;
   }
 
   io.on("connection", (socket) => {
@@ -59,6 +68,8 @@ const SocketHandler = (_, res: NextApiResponseServerIO): any => {
         socket.emit("full");
       }
       console.log("[room info] : ", rooms);
+      //사용자가 참가하여 방 상태가 변경되었으니 room-list emit
+      io.sockets.emit("room-list", publicRooms());
     });
     //방에 참여한 사람이 connection 준비가 되면 ready가 트리거 됨
     socket.on("ready", (roomName) => {
@@ -86,6 +97,8 @@ const SocketHandler = (_, res: NextApiResponseServerIO): any => {
       socket.leave(roomName);
 
       socket.broadcast.to(roomName).emit("leave"); // room에 있는 다른 peer에게 "leave" emit
+      //방 상태가 변경 될 가능성이 있으니 room-list emit
+      io.sockets.emit("room-list", publicRooms());
     });
 
     socket.on("room-list", () => {
@@ -95,7 +108,7 @@ const SocketHandler = (_, res: NextApiResponseServerIO): any => {
 
     socket.on("request-create-room", (roomName: string, done) => {
       console.log("[request-create-room]", roomName);
-      const exists = publicRooms().find((createdRoom) => createdRoom === roomName);
+      const exists = publicRooms().find((createdRoom) => createdRoom.roomName === roomName);
       if (exists) {
         console.log("[emit request-create-room : false]");
         done({ success: false, payload: `${roomName}라는 방이 이미 존재합니다.` });
@@ -113,11 +126,15 @@ const SocketHandler = (_, res: NextApiResponseServerIO): any => {
 
       if (room === undefined || room.size >= 2) {
         console.log("[emit request-join-room : false]");
-        done({ success: false, payload: `방이 없거나 가득 찼습니다.` });
+        done({ success: false, payload: `인원이 가득 찼습니다.` });
       } else {
         console.log("[emit request-join-room : true]");
         done({ success: true, payload: roomName });
       }
+    });
+
+    socket.on("disconnect", () => {
+      io.sockets.emit("room-list", publicRooms());
     });
   });
   return res.end();
