@@ -35,7 +35,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 case "item": // 상대방이 아이템을 사용했을 때, 그 아이템을 받아와서 내 퍼즐에 동기화 시킨다. 5초 후 원상복귀 시킨다. 
                     setMySegmentState(dataJSON);
                     //TODO : 5초 후 원상복귀 시키는 코드, 좌표도 원상복귀 시켜야함 -> 좌표 store에 저장시켜놓고
-                    setTimeout(() => { makeMyDefaultSegment() }, 5000);
+                    setTimeout(() => { makeMyDefaultSegment() }, 8000);
             }
         }
     })

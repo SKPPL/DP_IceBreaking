@@ -34,8 +34,11 @@ export default function rocket({ i, auth, peerxy, dataChannel }: Props) {
     // 유저가 움직일 때
     const bind = useDrag(
         ({ xy, previous, down, movement: pos, velocity, direction }) => {
+            // 내 소유가 아니면 못움직이게
             if (!auth) return
-            dataChannel!.send(JSON.stringify({ type: 'rocket', i: i, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction }));
+            // 상대방에게 내가 발생시킨 이벤트를 모두 전달
+            if (dataChannel)
+                dataChannel.send(JSON.stringify({ type: 'rocket', i: i, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction }));
             api.start({
                 pos,
                 immediate: down,
@@ -46,12 +49,13 @@ export default function rocket({ i, auth, peerxy, dataChannel }: Props) {
         },
         { initial: () => pos.get() }
     )
+    // 상대가 발생시킨 이벤트를 받아서 그대로 원래 useDrag에서 실행하던 것처럼 실행
     dataChannel!.addEventListener("message", (event: any) => {
         if (event.data) {
             var dataJSON = JSON.parse(event.data);
             switch (dataJSON.type) {
                 case "rocket":
-                    if (i !== dataJSON.i) return
+                    if (i !== dataJSON.i || auth) return
                     api.start({
                         pos: dataJSON.pos,
                         immediate: dataJSON.down,

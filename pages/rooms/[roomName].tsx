@@ -10,8 +10,6 @@ import store from "./store";
 
 
 export default function Play() {
-
-
     return (
         <>
             <Head>

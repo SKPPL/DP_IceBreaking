@@ -3,8 +3,7 @@ import { useSpring, animated, to } from '@react-spring/web'
 import { useDrag, useGesture } from 'react-use-gesture'
 import { Provider, useSelector, useDispatch } from 'react-redux'
 import itemStore from '@/pages/rooms/store'
-
-
+import { useRouter } from 'next/router'
 import styles from './styles.module.css'
 import CloneVideo from './CloneVideo'
 
@@ -33,8 +32,13 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
     const dispatch = useDispatch();
     const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle });
 
+    const router = useRouter();
 
     const [isRightPlace, setIsRightPlace] = useState(!auth)
+    //아래 조건문 위로 올리면 안됨
+    if (segmentState === 'ice') {
+        auth = false;
+    }
     const [zindex, setZindex] = useState(Math.floor(Math.random() * 10))
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
@@ -42,7 +46,7 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [640 / 3 * d, 480 / 3 * d]
     const [width, height] = [640 / 3 * (i % 3) - widthOx * 1.5, 480 / 3 * ((i - i % 3) / 3) + heightOx]
-    // const [width, height] = [windowSize.width / 3 * (i % 3), windowSize.height / 3 * ((i - i % 3) / 3)]
+
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
@@ -113,12 +117,18 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
             domTarget.current!.setAttribute('style', 'z-index: 0')
             api.start({ x: width, y: height })
             setIsRightPlace(true)
-            dataChannel?.send(JSON.stringify({ type: 'cnt' }))
+            if (dataChannel)
+                dataChannel.send(JSON.stringify({ type: 'cnt' }))
             mycnt += 1
             if (mycnt == 9) {
                 const myface = document.getElementById('myface')
                 myface!.style.display = 'block'
                 document.getElementById('fullscreen')!.style.display = "none"
+                setTimeout(() => {
+                    router.push({
+                        pathname: '/ready',
+                    })
+                }, 15000)
 
             }
             setZindex(0)
@@ -146,7 +156,7 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
             onDrag: ({ active, offset: [x, y] }) => {
 
                 if (isRightPlace) return;
-                console.log('뜨냐 유즈젯쳐?')
+
                 //TODO : active 신경써서 수치 변경
                 api.start({ x: x, y: y, rotateX: 0, rotateY: 0, scale: active ? 1 : 1.05 })
                 dispatch({ type: `${!auth ? 'peerPuzzle' : 'myPuzzle'}/setPosition`, payload: { index: i, position: [x, y] } });
@@ -188,11 +198,21 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
         { domTarget, eventOptions: { passive: false } }
     )
 
+    // const [segmentStyle, setSegmentStyle] = useState('default');
 
+    // switch (segmentState) {
+    //     case 'ice':
+    //         setSegmentStyle('ice')
+    //         break;
+    //     default:
+    //         setSegmentStyle('default')
+    // }
+
+    //위와 같이 스위치 케이스 문으로 style을 처리하고 싶었으나 ㅠㅠ
 
     return (
         <>
-            <div className={(segmentState == "rocket") ? 'hidden' : ''}>
+            <div className={(segmentState === "rocket") ? 'hidden' : ''}>
                 <div className={styles.container}>
                     <animated.div
                         ref={domTarget}
@@ -209,7 +229,8 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
                             zIndex: zindex
                         }}>
                         <animated.div>
-                            <CloneVideo key={i} id={i} videoId={videoId} />
+                            {(segmentState === "ice") && <img src="/images/ice.png" width={640 / 3} height={160} />}
+                            {(segmentState === "default") && <CloneVideo key={i} id={i} videoId={videoId} segmentState={segmentState} />}
                         </animated.div>
                     </animated.div>
                 </div>
@@ -220,7 +241,7 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
 }
 
 export function isNearOutline(x: number, y: number, positionx: number, positiony: number) {
-    const diff = 40;
+    const diff = 30;
     if (x > positionx - diff && x < positionx + diff && y > positiony - diff && y < positiony + diff) {
         return true;
     }

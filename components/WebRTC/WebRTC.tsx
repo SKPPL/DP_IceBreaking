@@ -11,6 +11,7 @@ import { useTimeout } from "usehooks-ts";
 import Rocket from "../Game/rocket";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
+import Waiting from "../PageElements/Waiting";
 
 
 
@@ -68,6 +69,7 @@ export default function WebRTC() {
   const [nickName, setNickName] = useState("");
   const [peerNickName, setPeerNickName] = useState("");
   const [socketConnect, setSocketConnect] = useState<any>();
+  const [checkLeave, setCheckLeave] = useState<boolean>(false);
   //segementState is for item using, owner is my or peer
   useEffect(() => {
     if (typeof socketConnect !== "undefined") {
@@ -83,9 +85,15 @@ export default function WebRTC() {
       socketConnect.on("offer", handleReceivedOffer);
       socketConnect.on("answer", handleAnswer);
       socketConnect.on("ice-candidate", handlerNewIceCandidateMsg);
-
+      socketConnect.on("reload", () => {
+        leaveRoom();
+      });
+      window.addEventListener("popstate", handleBackButton);
       // unmmount시 소켓을 끊는다
-      return () => socketConnect.disconnect();
+      return () => {
+        socketConnect.emit("peerleave", roomName);
+        socketConnect.disconnect();
+      };
     }
   }, [socketConnect]);
 
@@ -93,9 +101,25 @@ export default function WebRTC() {
   useEffect(() => {
     // 서버 <-> 브라우저 간 socket io 통신 연결
     setSocketConnect(io());
-    // 초기 room을이름 설정
+    // 초기 room이름 설정
     setRoomName(router.query.roomName);
   }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    if (mounted && checkLeave) {
+      // socketConnect.disconnect();
+      router.push("/ready");
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [checkLeave]);
+
+  const handleBackButton = () => {
+    leaveRoom();
+  };
 
   //닉네임 설정
   const handleNickName = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -117,48 +141,21 @@ export default function WebRTC() {
         //TODO: 예외처리
         const currentCamera = userStreamRef.current.getVideoTracks()[0];
 
-        cameras.forEach((camera) => {
-          const option = document.createElement("option");
-          option.value = camera.deviceId;
-          option.innerText = camera.label;
-
-          if (currentCamera.label === camera.label) {
-            option.selected = true;
-          }
-          selectRef.current.appendChild(option);
-        });
       }
     } catch (e) {
       console.log(e);
     }
   }
 
-  const handleSelect = (e: { target: { value: string } }): void => {
-    handleCameraChange(e.target.value);
-    selectRef.current = e.target.value;
-  };
-
-  async function handleCameraChange(selected: string): Promise<any> {
-    await getMedia(selected);
-    if (webRTCConnRef.current && typeof userStreamRef.current !== "undefined") {
-      const videoTrack = userStreamRef.current.getVideoTracks()[0];
-      const videoSender = webRTCConnRef.current.getSenders().find((sender: RTCRtpSender) => {
-        if (sender.track !== null) {
-          sender.track.kind === "video";
-        }
-      });
-      videoSender.replaceTrack(videoTrack);
-    }
-  }
 
   async function getMedia(deviceId?: string): Promise<void> {
     const initialConstraints: MyConstraints = {
-      audio: true,
+      audio: false,
       // video: { facingMode: "user" },
       video: { width: 640, height: 480 },
     };
     const cameraConstraints: MyConstraints = {
-      audio: true,
+      audio: false,
       video: { deviceId: { exact: deviceId } },
     };
 
@@ -249,10 +246,10 @@ export default function WebRTC() {
     socketConnect.emit("leave", roomName);
     console.log("[emit leave]");
     //유저와 peer 모든 media 수신을 중지
-    if (userVideoRef.current.srcObject) {
+    if (userVideoRef.current && userVideoRef.current.srcObject) {
       userVideoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     }
-    if (peerVideoRef.current.srcObject) {
+    if (peerVideoRef.current && peerVideoRef.current.srcObject) {
       peerVideoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     }
 
@@ -263,7 +260,7 @@ export default function WebRTC() {
       webRTCConnRef.current.close();
       webRTCConnRef.current = null;
     }
-    router.push("/");
+    setCheckLeave(true);
   };
 
   const makeConnection = (): RTCPeerConnection => {
@@ -361,21 +358,16 @@ export default function WebRTC() {
 
   return (
     <>
-      <video className="w-full h-full hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
-      <video className="w-full h-full hidden" id="myface" autoPlay playsInline ref={userVideoRef}></video>
+
+      <button onClick={leaveRoom} type="button" className="bg-black hidden text-9xl box-border height width border-4 text-white">Leave</button>
+      <video className="w-full hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
+      <video className="w-full hidden " id="myface" autoPlay playsInline ref={userVideoRef}></video>
+      {(!dataChannel) && <Waiting />}
       <div className='flex flex-row' id="fullscreen">
         <div className="flex flex-col w-1/2 h-screen">
-          <div className="flex justify-center h-[160px]">
-            {(dataChannel) && <MyPuzzle auth={true} videoId={'peerface'} dataChannel={dataChannel} />}
-            <input className="hidden bg-black text-white mb-5 mr-5 rounded-full text-center" value={nickName} onChange={handleNickName} placeholder="닉네임을 입력하세요." />
-            <button id="muteBtn" onClick={changeMicSetting} type="button" className="mr-5 hidden text-white bg-black">
-              {micSetting ? "O" : "X"}
-            </button>
-            <button onClick={leaveRoom} type="button" className="hidden bg-black hiddenbox-border height width mb-5 border-4 text-white">
-              Leave
-            </button>
-          </div>
-          <p className="flex hidden text-3xl justify-center text-black">{nickName}</p>
+          {(dataChannel) && <div className="flex justify-center h-[160px]">
+            <MyPuzzle auth={true} videoId={'peerface'} dataChannel={dataChannel} />
+          </div>}
           <div className="h-[480px] w-[640px] self-center border border-black">
             <div className="flex flex-row h-1/3">
               <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
@@ -398,10 +390,11 @@ export default function WebRTC() {
           <select className="hidden" onChange={handleSelect} ref={selectRef}></select> */}
         </div>
         <div className="flex flex-col w-1/2 h-screen">
-          <p className="flex hidden text-3xl justify-center text-black">{peerNickName}</p>
-          <div className="flex justify-center h-[160px]">
-            {(dataChannel) && <PeerPuzzle auth={false} videoId={'myface'} dataChannel={dataChannel} />}
-          </div>
+          {(dataChannel) &&
+            <div className="flex justify-center h-[160px]">
+              <PeerPuzzle auth={false} videoId={'myface'} dataChannel={dataChannel} />
+            </div>
+          }
           <div className="h-[480px] w-[640px] self-center border border-black">
             <div className="flex flex-row h-1/3">
               <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>

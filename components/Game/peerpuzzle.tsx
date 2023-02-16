@@ -6,7 +6,7 @@ import itemStore from '@/pages/rooms/store'
 import styles from './styles.module.css'
 import dynamic from 'next/dynamic'
 import Rocket from './rocket'
-
+import { useRouter } from 'next/router'
 const PuzzleSegment = dynamic(
     import('@/components/Game/Segment'), {
     loading: () => (<div></div>),
@@ -28,7 +28,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     const [cnt, setCnt] = useState(1)
 
     const makePeerDefaultSegment = () => { setPeerSegmentState({ type: "item", segementState: "default" }) }
-
+    const router = useRouter();
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
     dataChannel!.addEventListener("message", (event: any) => {
         if (event.data) {
@@ -44,6 +44,9 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
                         const peer = document.getElementById('peerface')
                         peer!.style.display = "block"
                         document.getElementById('fullscreen')!.style.display = "none"
+                        setTimeout(() => router.push({
+                            pathname: '/ready',
+                        }), 15000)
                     }
                     break;
             }
@@ -64,15 +67,15 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     useEffect(() => {
         for (var cnt = 0; cnt < 6; cnt++) {
             if (itemListBefore[keys[cnt]] !== itemList[keys[cnt]]) {
-                dataChannel?.send(JSON.stringify({ type: "item", segementState: keys[cnt] }))
+                if (dataChannel)
+                    dataChannel.send(JSON.stringify({ type: "item", segementState: keys[cnt] }))
                 setItemListBefore(itemList);
                 setPeerSegmentState({ type: "item", segementState: keys[cnt] })
-                setTimeout(() => { makePeerDefaultSegment() }, 5000);
-                console.log(keys[cnt])
+                setTimeout(() => { makePeerDefaultSegment() }, 8000);
             }
             // peerface쪽 segmentState를 변경
             // 무엇의 상태가 변했는지 알려줘야함
-            //TODO 아이템 사용 도중일 땐 눌러도 소용 없게하는 로직 추가해야함 -> itemBar쪽에서 처리하자
+            //TODO 아이템 사용 도중일 땐 눌러도 소용 없게하는 로직 추가해야함
         }
     }, [itemList]);
 

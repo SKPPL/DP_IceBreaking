@@ -16,9 +16,9 @@ export default function Home() {
       </Head>
       <div className=''>
         <div className="container-2xl" >
-          <main className="flex flex-col justify-center items-center h-screen bg-[url('../public/images/background.png')]" >
+          <main className="flex flex-col bg-cover justify-center items-center h-screen bg-[url('../public/images/background.jpeg')]" >
             <div className="flex flex-row place-items-center bg-black basis-2/5  rounded-3xl ">
-              <MainPage/>
+              <MainPage />
               <BagicHome />
 
             </div>

@@ -17,7 +17,7 @@ interface DockCardProps {
 
 const INITIAL_WIDTH = 48
 
-const itemList = ['rocket', 'lip', 'nose', 'rotate', 'mirror', 'flash']
+const itemList = ['rocket', 'ice', 'lip', 'nose', 'rotate', 'divide']
 
 export const DockCard = ({ children, item }: DockCardProps) => {
   const dispatch = useDispatch();

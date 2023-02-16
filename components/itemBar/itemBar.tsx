@@ -10,19 +10,17 @@ import styles from './styles.module.scss'
 
 const GRADIENTS = [
     '/images/rocket.png',
+    '/images/iceIcon.png',
     '/images/lip.png',
     '/images/nose.png',
-    'https://products.ls.graphics/mesh-gradients/images/09.-Light-Sky-Blue-p-130x130q80.jpeg',
-    'https://products.ls.graphics/mesh-gradients/images/12.-Tumbleweed-p-130x130q80.jpeg',
-    'https://products.ls.graphics/mesh-gradients/images/15.-Perfume_1-p-130x130q80.jpeg',
+    '/images/rotation.png',
+    '/images/divide.png',
 ]
 
 export default function ItemBar() {
     return (
         <>
             <div className={styles.body}>
-
-
                 <Dock>
                     {GRADIENTS.map((src, index) =>
                         src ? (

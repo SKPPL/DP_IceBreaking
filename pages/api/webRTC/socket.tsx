@@ -133,8 +133,10 @@ const SocketHandler = (_: any, res: NextApiResponseServerIO): any => {
       }
     });
 
-    socket.on("disconnect", () => {
-      io.sockets.emit("room-list", publicRooms());
+    socket.on("peerleave", (roomName: string) => {
+      socket.broadcast.to(roomName).emit("leave");
+      console.log("[emit reload]");
+      socket.broadcast.to(roomName).emit("reload");
     });
   });
   return res.end();
