@@ -4,16 +4,14 @@ import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
 import dynamic from "next/dynamic";
-import { Provider, useSelector, useDispatch } from 'react-redux'
-import itemStore from '@/components/Game/store'
+import { Provider, useSelector, useDispatch } from "react-redux";
+import itemStore from "@/components/Game/store";
 import rocket from "../Game/rocket";
 import { useTimeout } from "usehooks-ts";
 import Rocket from "../Game/rocket";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import Waiting from "../PageElements/Waiting";
-
-
 
 const ICE_SERVERS = {
   iceServers: [
@@ -110,7 +108,13 @@ export default function WebRTC() {
 
     if (mounted && checkLeave) {
       // socketConnect.disconnect();
-      router.push("/ready");
+      setTimeout(() => {
+        router
+          .replace({
+            pathname: "/ready",
+          })
+          .then(() => router.reload());
+      }, 15000);
     }
     return () => {
       mounted = false;
@@ -140,13 +144,11 @@ export default function WebRTC() {
       if (typeof userStreamRef.current !== "undefined") {
         //TODO: 예외처리
         const currentCamera = userStreamRef.current.getVideoTracks()[0];
-
       }
     } catch (e) {
       console.log(e);
     }
   }
-
 
   async function getMedia(deviceId?: string): Promise<void> {
     const initialConstraints: MyConstraints = {
@@ -209,7 +211,7 @@ export default function WebRTC() {
         nickNameChannel.current = webRTCConnRef.current.createDataChannel("nickname");
         dataChannel = webRTCConnRef.current.createDataChannel("data");
         if (typeof nickNameChannel.current !== "undefined") {
-          //Client A에서 동작하는 코드 데이터 채널에 이벤트 리스너를 달아서 이벤트가 들어오면 
+          //Client A에서 동작하는 코드 데이터 채널에 이벤트 리스너를 달아서 이벤트가 들어오면
           //들어오는 데이터로 상대방 닉네임을 설정
           nickNameChannel.current.addEventListener("message", (event: MessageEvent<any>): void => {
             setPeerNickName(event.data);
@@ -218,7 +220,7 @@ export default function WebRTC() {
         const offer = await webRTCConnRef.current.createOffer();
         webRTCConnRef.current.setLocalDescription(offer);
         socketConnect.emit("offer", offer, roomName);
-        setDataChannel(dataChannel)
+        setDataChannel(dataChannel);
       } catch (e) {
         console.log(e);
       }
@@ -304,8 +306,6 @@ export default function WebRTC() {
             setDataChannel(event.channel);
             break;
         }
-
-
       });
       if (typeof userStreamRef.current !== "undefined") {
         userStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
@@ -358,16 +358,19 @@ export default function WebRTC() {
 
   return (
     <>
-
-      <button onClick={leaveRoom} type="button" className="bg-black hidden text-9xl box-border height width border-4 text-white">Leave</button>
+      <button onClick={leaveRoom} type="button" className="bg-black hidden text-9xl box-border height width border-4 text-white">
+        Leave
+      </button>
       <video className="w-full hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
       <video className="w-full hidden " id="myface" autoPlay playsInline ref={userVideoRef}></video>
-      {(!dataChannel) && <Waiting />}
-      <div className='flex flex-row' id="fullscreen">
+      {!dataChannel && <Waiting />}
+      <div className="flex flex-row" id="fullscreen">
         <div className="flex flex-col w-1/2 h-screen">
-          {(dataChannel) && <div className="flex justify-center h-[160px]">
-            <MyPuzzle auth={true} videoId={'peerface'} dataChannel={dataChannel} />
-          </div>}
+          {dataChannel && (
+            <div className="flex justify-center h-[160px]">
+              <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
+            </div>
+          )}
           <div className="h-[480px] w-[640px] self-center border border-black">
             <div className="flex flex-row h-1/3">
               <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
@@ -390,11 +393,11 @@ export default function WebRTC() {
           <select className="hidden" onChange={handleSelect} ref={selectRef}></select> */}
         </div>
         <div className="flex flex-col w-1/2 h-screen">
-          {(dataChannel) &&
+          {dataChannel && (
             <div className="flex justify-center h-[160px]">
-              <PeerPuzzle auth={false} videoId={'myface'} dataChannel={dataChannel} />
+              <PeerPuzzle auth={false} videoId={"myface"} dataChannel={dataChannel} />
             </div>
-          }
+          )}
           <div className="h-[480px] w-[640px] self-center border border-black">
             <div className="flex flex-row h-1/3">
               <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
@@ -412,7 +415,6 @@ export default function WebRTC() {
             </div>
           </div>
         </div>
-
       </div>
     </>
   );
