@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, memo } from "react";
-import { useSpring, animated, to } from "@react-spring/web";
+import { useSpring, animated, to, Spring } from "@react-spring/web";
 import { useGesture } from "react-use-gesture";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import itemStore from "@/components/Game/store";
@@ -90,7 +90,15 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         return (
           <>
             {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
-            {(peerPosition.i !== i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
+            {(peerPosition.i !== i) &&
+              <Spring from={{ x: -500, scale: 1.5 }} to={{ x: 0, scale: 1 }} delay={150 * i}>
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                @ts-ignore */}
+                {style => <animated.div style={style}>
+                  <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />
+                </animated.div>}
+              </Spring>
+            }
           </>
         );
       })}

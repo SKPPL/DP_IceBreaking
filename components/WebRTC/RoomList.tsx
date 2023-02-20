@@ -126,7 +126,8 @@ const RoomList = ({ nickName }: any) => {
                                     <td className="text-center text-xl px-10 py-4">{room.roomName}</td>
                                     <td className="text-center text-xl px-10 py-4">({room.roomSize}/2)</td>
                                     <td className="text-center text-xl px-10 py-4">
-                                        {room.roomSize < 2 ? <button onClick={onClickJoinRoom(room.roomName)}>입장하기</button> : <button className="text-red-600">입장하기</button>}
+                                    {room.roomSize < 2 ? <button className="p-2 text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+                                            onClick={onClickJoinRoom(room.roomName)}>입장하기</button> : <button className="text-red-600">입장하기</button>}
                                     </td>
                                 </tr>
                             ))}

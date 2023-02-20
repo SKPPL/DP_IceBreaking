@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, memo } from 'react'
-import { useSpring, animated, to } from '@react-spring/web'
+import { useSpring, animated, to, Spring } from '@react-spring/web'
 import { useGesture } from 'react-use-gesture'
 import { Provider, useSelector, useDispatch } from 'react-redux'
 import itemStore from '@/components/Game/store'
@@ -57,7 +57,13 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 [...Array(9)].map((_, i) => {
                     return (
                         <>
+                            <Spring from={{ x: -500, scale: 1.5 }} to={{ x: 0, scale:1}} delay={150*i}>
+                            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            @ts-ignore */}    
+                                {style => <animated.div style={style}>
                             <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />
+                            </animated.div>}
+                            </Spring>
                         </>
                     )
                 }
