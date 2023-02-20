@@ -1,9 +1,11 @@
 {
   "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/rooms/[roomName]": "pages/rooms/[roomName].js",
+  "/_error": "pages/_error.js",
   "/api/webRTC/socket": "pages/api/webRTC/socket.js",
-  "/ready": "pages/ready.js",
-  "/": "pages/index.js"
+  "/hooks/useSocket": "pages/hooks/useSocket.html",
+  "/": "pages/index.html",
+  "/ready": "pages/ready.html",
+  "/rooms/[roomName]": "pages/rooms/[roomName].html",
+  "/404": "pages/404.html"
 }

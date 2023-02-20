@@ -1,35 +1,158 @@
 "use strict";
-/*
- * ATTENTION: An "eval-source-map" devtool has been used.
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
 (() => {
 var exports = {};
-exports.id = "pages/api/webRTC/socket";
-exports.ids = ["pages/api/webRTC/socket"];
+exports.id = 49;
+exports.ids = [49];
 exports.modules = {
 
-/***/ "socket.io":
-/*!****************************!*\
-  !*** external "socket.io" ***!
-  \****************************/
+/***/ 9505:
 /***/ ((module) => {
 
 module.exports = import("socket.io");;
 
 /***/ }),
 
-/***/ "(api)/./pages/api/webRTC/socket.tsx":
-/*!*************************************!*\
-  !*** ./pages/api/webRTC/socket.tsx ***!
-  \*************************************/
+/***/ 7545:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var socket_io__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io */ \"socket.io\");\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([socket_io__WEBPACK_IMPORTED_MODULE_0__]);\nsocket_io__WEBPACK_IMPORTED_MODULE_0__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];\n\n// let createdRooms: string[] = [];\nconst SocketHandler = (_, res)=>{\n    if (res.socket.server.io) {\n        console.log(\"Socket is already attached\");\n        return res.end();\n    }\n    const io = new socket_io__WEBPACK_IMPORTED_MODULE_0__.Server(res.socket.server);\n    res.socket.server.io = io;\n    function publicRooms() {\n        const { sockets: { adapter: { sids , rooms  }  }  } = io;\n        const publicRooms = [];\n        rooms.forEach((_, key)=>{\n            if (sids.get(key) === undefined) {\n                publicRooms.push({\n                    roomName: key,\n                    roomSize: countRoomUser(key)\n                });\n            }\n        });\n        return publicRooms;\n    }\n    function countRoomUser(roomName) {\n        return io.sockets.adapter.rooms.get(roomName)?.size;\n    }\n    io.on(\"connection\", (socket)=>{\n        console.log(`[User Connected] : ${socket.id}`);\n        //peer가 room join 버튼을 눌렀을 경우 클라이언트에서 join이 트리거 되어 서버에 전달\n        socket.on(\"join\", (roomName)=>{\n            console.log(\"[join]\");\n            const { rooms  } = io.sockets.adapter;\n            const room = rooms.get(roomName);\n            //방이 없는 경우\n            if (room === undefined) {\n                console.log(\"[emit create]\");\n                socket.join(roomName);\n                socket.emit(\"created\");\n            } else if (room.size === 1) {\n                //방에 한 명만 있을 경우\n                console.log(\"[emit joined]\");\n                socket.join(roomName);\n                socket.emit(\"joined\");\n            } else {\n                //방에 두명인 경우 (full)\n                console.log(\"[emit full]\");\n                socket.emit(\"full\");\n            }\n            console.log(\"[room info] : \", rooms);\n            //사용자가 참가하여 방 상태가 변경되었으니 room-list emit\n            io.sockets.emit(\"room-list\", publicRooms());\n        });\n        //방에 참여한 사람이 connection 준비가 되면 ready가 트리거 됨\n        socket.on(\"ready\", (roomName)=>{\n            console.log(\"[emit ready]\");\n            socket.broadcast.to(roomName).emit(\"ready\");\n        });\n        //서버가 room의 peer로부터 \"icecandidate\"를 받을 때 트리거\n        socket.on(\"ice-candidate\", (candidate, roomName)=>{\n            console.log(\"[emit ice-candidate]\");\n            socket.broadcast.to(roomName).emit(\"ice-candidate\", candidate); // room에 있는 다른 peer에게 \"candidate\" emit\n        });\n        //서버가 room에 있는 peer로부터 \"offer\"를 받을 때 트리거\n        socket.on(\"offer\", (offer, roomName)=>{\n            console.log(\"[emit offer]\");\n            socket.broadcast.to(roomName).emit(\"offer\", offer); // room에 있는 다른 peer에게 \"offer\" emit\n        });\n        //서버가 room에 있는 peer로부터 \"answer\"를 받을 때 트리거\n        socket.on(\"answer\", (answer, roomName)=>{\n            console.log(\"[emit answer]\");\n            socket.broadcast.to(roomName).emit(\"answer\", answer); // room에 있는 다른 peer에게 \"answer\" emit\n        });\n        //서버가 room에 있는 peer로부터 \"leave\"를 받을 때 트리거\n        socket.on(\"leave\", (roomName)=>{\n            console.log(\"[emit leave]\", roomName);\n            socket.leave(roomName);\n            socket.broadcast.to(roomName).emit(\"leave\"); // room에 있는 다른 peer에게 \"leave\" emit\n            //방 상태가 변경 될 가능성이 있으니 room-list emit\n            io.sockets.emit(\"room-list\", publicRooms());\n        });\n        socket.on(\"room-list\", ()=>{\n            socket.emit(\"room-list\", publicRooms());\n            console.log(\"[room-list]\", publicRooms());\n        });\n        socket.on(\"request-create-room\", (roomName, done)=>{\n            console.log(\"[request-create-room]\", roomName);\n            const exists = publicRooms().find((createdRoom)=>createdRoom.roomName === roomName);\n            if (exists) {\n                console.log(\"[emit request-create-room : false]\");\n                done({\n                    success: false,\n                    payload: `${roomName}라는 방이 이미 존재합니다.`\n                });\n            } else {\n                console.log(\"[emit request-create-room : true]\");\n                done({\n                    success: true,\n                    payload: roomName\n                });\n            }\n        });\n        socket.on(\"request-join-room\", (roomName, done)=>{\n            console.log(\"[request-join-room]\", roomName);\n            const { rooms  } = io.sockets.adapter;\n            const room = rooms.get(roomName);\n            if (room === undefined || room.size >= 2) {\n                console.log(\"[emit request-join-room : false]\");\n                done({\n                    success: false,\n                    payload: `인원이 가득 찼습니다.`\n                });\n            } else {\n                console.log(\"[emit request-join-room : true]\");\n                done({\n                    success: true,\n                    payload: roomName\n                });\n            }\n        });\n        socket.on(\"peerleave\", (roomName)=>{\n            socket.broadcast.to(roomName).emit(\"leave\");\n            console.log(\"[emit reload]\");\n            socket.broadcast.to(roomName).emit(\"reload\");\n        });\n    });\n    return res.end();\n};\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SocketHandler);\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,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QkFBUztZQUMxQyxDQUFDO1FBQ0g7UUFFQWhCLE9BQU9vQixFQUFFLENBQUMscUJBQXFCLENBQUNKLFVBQWtCZSxPQUFTO1lBQ3pENUIsUUFBUUMsR0FBRyxDQUFDLHVCQUF1Qlk7WUFFbkMsTUFBTSxFQUFFTixNQUFLLEVBQUUsR0FBR1IsR0FBR0ssT0FBTyxDQUFDQyxPQUFPO1lBQ3BDLE1BQU1jLE9BQU9aLE1BQU1HLEdBQUcsQ0FBQ0c7WUFFdkIsSUFBSU0sU0FBU1IsYUFBYVEsS0FBS0gsSUFBSSxJQUFJLEdBQUc7Z0JBQ3hDaEIsUUFBUUMsR0FBRyxDQUFDO2dCQUNaMkIsS0FBSztvQkFBRUksU0FBUyxLQUFLO29CQUFFQyxTQUFTLENBQUMsWUFBWSxDQUFDO2dCQUFDO1lBQ2pELE9BQU87Z0JBQ0xqQyxRQUFRQyxHQUFHLENBQUM7Z0JBQ1oyQixLQUFLO29CQUFFSSxTQUFTLElBQUk7b0JBQUVDLFNBQVNwQjtnQkFBUztZQUMxQyxDQUFDO1FBQ0g7UUFFQWhCLE9BQU9vQixFQUFFLENBQUMsYUFBYSxDQUFDSixXQUFxQjtZQUMzQ2hCLE9BQU95QixTQUFTLENBQUNDLEVBQUUsQ0FBQ1YsVUFBVVEsSUFBSSxDQUFDO1lBQ25DckIsUUFBUUMsR0FBRyxDQUFDO1lBQ1pKLE9BQU95QixTQUFTLENBQUNDLEVBQUUsQ0FBQ1YsVUFBVVEsSUFBSSxDQUFDO1FBQ3JDO0lBQ0Y7SUFDQSxPQUFPekIsSUFBSU0sR0FBRztBQUNoQjtBQUVBLGlFQUFlUixhQUFhQSxFQUFDIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vY2FudmFzLWNvbXBvbmVudC8uL3BhZ2VzL2FwaS93ZWJSVEMvc29ja2V0LnRzeD8wMjc5Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE5leHRBcGlSZXNwb25zZSB9IGZyb20gXCJuZXh0XCI7XG5pbXBvcnQgeyBTZXJ2ZXIgYXMgTmV0U2VydmVyLCBTb2NrZXQgfSBmcm9tIFwibmV0XCI7XG5pbXBvcnQgeyBTZXJ2ZXIgYXMgU29ja2V0SU9TZXJ2ZXIgfSBmcm9tIFwic29ja2V0LmlvXCI7XG5cbnR5cGUgTmV4dEFwaVJlc3BvbnNlU2VydmVySU8gPSBOZXh0QXBpUmVzcG9uc2UgJiB7XG4gIHNvY2tldDogU29ja2V0ICYge1xuICAgIHNlcnZlcjogTmV0U2VydmVyICYge1xuICAgICAgaW86IFNvY2tldElPU2VydmVyO1xuICAgIH07XG4gIH07XG59O1xuXG5pbnRlcmZhY2Ugcm9vbXNJbmZvIHtcbiAgcm9vbU5hbWU6IHN0cmluZztcbiAgcm9vbVNpemU6IG51bWJlciB8IHVuZGVmaW5lZDtcbn1cblxuLy8gbGV0IGNyZWF0ZWRSb29tczogc3RyaW5nW10gPSBbXTtcbmNvbnN0IFNvY2tldEhhbmRsZXIgPSAoXzogYW55LCByZXM6IE5leHRBcGlSZXNwb25zZVNlcnZlcklPKTogYW55ID0+IHtcbiAgaWYgKHJlcy5zb2NrZXQuc2VydmVyLmlvKSB7XG4gICAgY29uc29sZS5sb2coXCJTb2NrZXQgaXMgYWxyZWFkeSBhdHRhY2hlZFwiKTtcbiAgICByZXR1cm4gcmVzLmVuZCgpO1xuICB9XG5cbiAgY29uc3QgaW8gPSBuZXcgU29ja2V0SU9TZXJ2ZXIocmVzLnNvY2tldC5zZXJ2ZXIgYXMgYW55KTtcbiAgcmVzLnNvY2tldC5zZXJ2ZXIuaW8gPSBpbztcblxuICBmdW5jdGlvbiBwdWJsaWNSb29tcygpIHtcbiAgICBjb25zdCB7XG4gICAgICBzb2NrZXRzOiB7XG4gICAgICAgIGFkYXB0ZXI6IHsgc2lkcywgcm9vbXMgfSxcbiAgICAgIH0sXG4gICAgfSA9IGlvO1xuICAgIGNvbnN0IHB1YmxpY1Jvb21zOiByb29tc0luZm9bXSA9IFtdO1xuICAgIHJvb21zLmZvckVhY2goKF8sIGtleSkgPT4ge1xuICAgICAgaWYgKHNpZHMuZ2V0KGtleSkgPT09IHVuZGVmaW5lZCkge1xuICAgICAgICBwdWJsaWNSb29tcy5wdXNoKHsgcm9vbU5hbWU6IGtleSwgcm9vbVNpemU6IGNvdW50Um9vbVVzZXIoa2V5KSB9KTtcbiAgICAgIH1cbiAgICB9KTtcbiAgICByZXR1cm4gcHVibGljUm9vbXM7XG4gIH1cblxuICBmdW5jdGlvbiBjb3VudFJvb21Vc2VyKHJvb21OYW1lOiBzdHJpbmcpOiBudW1iZXIgfCB1bmRlZmluZWQge1xuICAgIHJldHVybiBpby5zb2NrZXRzLmFkYXB0ZXIucm9vbXMuZ2V0KHJvb21OYW1lKT8uc2l6ZTtcbiAgfVxuXG4gIGlvLm9uKFwiY29ubmVjdGlvblwiLCAoc29ja2V0KSA9PiB7XG4gICAgY29uc29sZS5sb2coYFtVc2VyIENvbm5lY3RlZF0gOiAke3NvY2tldC5pZH1gKTtcblxuICAgIC8vcGVlcuqwgCByb29tIGpvaW4g67KE7Yq87J2EIOuIjOuggOydhCDqsr3smrAg7YG065287J207Ja47Yq47JeQ7IScIGpvaW7snbQg7Yq466as6rGwIOuQmOyWtCDshJzrsoTsl5Ag7KCE64usXG4gICAgc29ja2V0Lm9uKFwiam9pblwiLCAocm9vbU5hbWUpID0+IHtcbiAgICAgIGNvbnNvbGUubG9nKFwiW2pvaW5dXCIpO1xuICAgICAgY29uc3QgeyByb29tcyB9ID0gaW8uc29ja2V0cy5hZGFwdGVyO1xuICAgICAgY29uc3Qgcm9vbSA9IHJvb21zLmdldChyb29tTmFtZSk7XG4gICAgICAvL+uwqeydtCDsl4bripQg6rK97JqwXG4gICAgICBpZiAocm9vbSA9PT0gdW5kZWZpbmVkKSB7XG4gICAgICAgIGNvbnNvbGUubG9nKFwiW2VtaXQgY3JlYXRlXVwiKTtcbiAgICAgICAgc29ja2V0LmpvaW4ocm9vbU5hbWUpO1xuICAgICAgICBzb2NrZXQuZW1pdChcImNyZWF0ZWRcIik7XG4gICAgICB9IGVsc2UgaWYgKHJvb20uc2l6ZSA9PT0gMSkge1xuICAgICAgICAvL+uwqeyXkCDtlZwg66qF66eMIOyeiOydhCDqsr3smrBcbiAgICAgICAgY29uc29sZS5sb2coXCJbZW1pdCBqb2luZWRdXCIpO1xuICAgICAgICBzb2NrZXQuam9pbihyb29tTmFtZSk7XG4gICAgICAgIHNvY2tldC5lbWl0KFwiam9pbmVkXCIpO1xuICAgICAgfSBlbHNlIHtcbiAgICAgICAgLy/rsKnsl5Ag65GQ66qF7J24IOqyveyasCAoZnVsbClcbiAgICAgICAgY29uc29sZS5sb2coXCJbZW1pdCBmdWxsXVwiKTtcbiAgICAgICAgc29ja2V0LmVtaXQoXCJmdWxsXCIpO1xuICAgICAgfVxuICAgICAgY29uc29sZS5sb2coXCJbcm9vbSBpbmZvXSA6IFwiLCByb29tcyk7XG4gICAgICAvL+yCrOyaqeyekOqwgCDssLjqsIDtlZjsl6wg67CpIOyDge2DnOqwgCDrs4Dqsr3rkJjsl4jsnLzri4ggcm9vbS1saXN0IGVtaXRcbiAgICAgIGlvLnNvY2tldHMuZW1pdChcInJvb20tbGlzdFwiLCBwdWJsaWNSb29tcygpKTtcbiAgICB9KTtcbiAgICAvL+uwqeyXkCDssLjsl6ztlZwg7IKs656M7J20IGNvbm5lY3Rpb24g7KSA67mE6rCAIOuQmOuptCByZWFkeeqwgCDtirjrpqzqsbAg65CoXG4gICAgc29ja2V0Lm9uKFwicmVhZHlcIiwgKHJvb21OYW1lKSA9PiB7XG4gICAgICBjb25zb2xlLmxvZyhcIltlbWl0IHJlYWR5XVwiKTtcbiAgICAgIHNvY2tldC5icm9hZGNhc3QudG8ocm9vbU5hbWUpLmVtaXQoXCJyZWFkeVwiKTtcbiAgICB9KTtcbiAgICAvL+yEnOuyhOqwgCByb29t7J2YIHBlZXLroZzrtoDthLAgXCJpY2VjYW5kaWRhdGVcIuulvCDrsJvsnYQg65WMIO2KuOumrOqxsFxuICAgIHNvY2tldC5vbihcImljZS1jYW5kaWRhdGVcIiwgKGNhbmRpZGF0ZSwgcm9vbU5hbWUpID0+IHtcbiAgICAgIGNvbnNvbGUubG9nKFwiW2VtaXQgaWNlLWNhbmRpZGF0ZV1cIik7XG4gICAgICBzb2NrZXQuYnJvYWRjYXN0LnRvKHJvb21OYW1lKS5lbWl0KFwiaWNlLWNhbmRpZGF0ZVwiLCBjYW5kaWRhdGUpOyAvLyByb29t7JeQIOyeiOuKlCDri6TrpbggcGVlcuyXkOqyjCBcImNhbmRpZGF0ZVwiIGVtaXRcbiAgICB9KTtcbiAgICAvL+yEnOuyhOqwgCByb29t7JeQIOyeiOuKlCBwZWVy66Gc67aA7YSwIFwib2ZmZXJcIuulvCDrsJvsnYQg65WMIO2KuOumrOqxsFxuICAgIHNvY2tldC5vbihcIm9mZmVyXCIsIChvZmZlciwgcm9vbU5hbWUpID0+IHtcbiAgICAgIGNvbnNvbGUubG9nKFwiW2VtaXQgb2ZmZXJdXCIpO1xuICAgICAgc29ja2V0LmJyb2FkY2FzdC50byhyb29tTmFtZSkuZW1pdChcIm9mZmVyXCIsIG9mZmVyKTsgLy8gcm9vbeyXkCDsnojripQg64uk66W4IHBlZXLsl5DqsowgXCJvZmZlclwiIGVtaXRcbiAgICB9KTtcbiAgICAvL+yEnOuyhOqwgCByb29t7JeQIOyeiOuKlCBwZWVy66Gc67aA7YSwIFwiYW5zd2VyXCLrpbwg67Cb7J2EIOuVjCDtirjrpqzqsbBcbiAgICBzb2NrZXQub24oXCJhbnN3ZXJcIiwgKGFuc3dlciwgcm9vbU5hbWUpID0+IHtcbiAgICAgIGNvbnNvbGUubG9nKFwiW2VtaXQgYW5zd2VyXVwiKTtcbiAgICAgIHNvY2tldC5icm9hZGNhc3QudG8ocm9vbU5hbWUpLmVtaXQoXCJhbnN3ZXJcIiwgYW5zd2VyKTsgLy8gcm9vbeyXkCDsnojripQg64uk66W4IHBlZXLsl5DqsowgXCJhbnN3ZXJcIiBlbWl0XG4gICAgfSk7XG4gICAgLy/shJzrsoTqsIAgcm9vbeyXkCDsnojripQgcGVlcuuhnOu2gO2EsCBcImxlYXZlXCLrpbwg67Cb7J2EIOuVjCDtirjrpqzqsbBcbiAgICBzb2NrZXQub24oXCJsZWF2ZVwiLCAocm9vbU5hbWUpID0+IHtcbiAgICAgIGNvbnNvbGUubG9nKFwiW2VtaXQgbGVhdmVdXCIsIHJvb21OYW1lKTtcbiAgICAgIHNvY2tldC5sZWF2ZShyb29tTmFtZSk7XG5cbiAgICAgIHNvY2tldC5icm9hZGNhc3QudG8ocm9vbU5hbWUpLmVtaXQoXCJsZWF2ZVwiKTsgLy8gcm9vbeyXkCDsnojripQg64uk66W4IHBlZXLsl5DqsowgXCJsZWF2ZVwiIGVtaXRcbiAgICAgIC8v67CpIOyDge2DnOqwgCDrs4Dqsr0g65CgIOqwgOuKpeyEseydtCDsnojsnLzri4ggcm9vbS1saXN0IGVtaXRcbiAgICAgIGlvLnNvY2tldHMuZW1pdChcInJvb20tbGlzdFwiLCBwdWJsaWNSb29tcygpKTtcbiAgICB9KTtcblxuICAgIHNvY2tldC5vbihcInJvb20tbGlzdFwiLCAoKSA9PiB7XG4gICAgICBzb2NrZXQuZW1pdChcInJvb20tbGlzdFwiLCBwdWJsaWNSb29tcygpKTtcbiAgICAgIGNvbnNvbGUubG9nKFwiW3Jvb20tbGlzdF1cIiwgcHVibGljUm9vbXMoKSk7XG4gICAgfSk7XG5cbiAgICBzb2NrZXQub24oXCJyZXF1ZXN0LWNyZWF0ZS1yb29tXCIsIChyb29tTmFtZTogc3RyaW5nLCBkb25lKSA9PiB7XG4gICAgICBjb25zb2xlLmxvZyhcIltyZXF1ZXN0LWNyZWF0ZS1yb29tXVwiLCByb29tTmFtZSk7XG4gICAgICBjb25zdCBleGlzdHMgPSBwdWJsaWNSb29tcygpLmZpbmQoKGNyZWF0ZWRSb29tKSA9PiBjcmVhdGVkUm9vbS5yb29tTmFtZSA9PT0gcm9vbU5hbWUpO1xuICAgICAgaWYgKGV4aXN0cykge1xuICAgICAgICBjb25zb2xlLmxvZyhcIltlbWl0IHJlcXVlc3QtY3JlYXRlLXJvb20gOiBmYWxzZV1cIik7XG4gICAgICAgIGRvbmUoeyBzdWNjZXNzOiBmYWxzZSwgcGF5bG9hZDogYCR7cm9vbU5hbWV9652864qUIOuwqeydtCDsnbTrr7gg7KG07J6s7ZWp64uI64ukLmAgfSk7XG4gICAgICB9IGVsc2Uge1xuICAgICAgICBjb25zb2xlLmxvZyhcIltlbWl0IHJlcXVlc3QtY3JlYXRlLXJvb20gOiB0cnVlXVwiKTtcbiAgICAgICAgZG9uZSh7IHN1Y2Nlc3M6IHRydWUsIHBheWxvYWQ6IHJvb21OYW1lIH0pO1xuICAgICAgfVxuICAgIH0pO1xuXG4gICAgc29ja2V0Lm9uKFwicmVxdWVzdC1qb2luLXJvb21cIiwgKHJvb21OYW1lOiBzdHJpbmcsIGRvbmUpID0+IHtcbiAgICAgIGNvbnNvbGUubG9nKFwiW3JlcXVlc3Qtam9pbi1yb29tXVwiLCByb29tTmFtZSk7XG5cbiAgICAgIGNvbnN0IHsgcm9vbXMgfSA9IGlvLnNvY2tldHMuYWRhcHRlcjtcbiAgICAgIGNvbnN0IHJvb20gPSByb29tcy5nZXQocm9vbU5hbWUpO1xuXG4gICAgICBpZiAocm9vbSA9PT0gdW5kZWZpbmVkIHx8IHJvb20uc2l6ZSA+PSAyKSB7XG4gICAgICAgIGNvbnNvbGUubG9nKFwiW2VtaXQgcmVxdWVzdC1qb2luLXJvb20gOiBmYWxzZV1cIik7XG4gICAgICAgIGRvbmUoeyBzdWNjZXNzOiBmYWxzZSwgcGF5bG9hZDogYOyduOybkOydtCDqsIDrk50g7LC87Iq164uI64ukLmAgfSk7XG4gICAgICB9IGVsc2Uge1xuICAgICAgICBjb25zb2xlLmxvZyhcIltlbWl0IHJlcXVlc3Qtam9pbi1yb29tIDogdHJ1ZV1cIik7XG4gICAgICAgIGRvbmUoeyBzdWNjZXNzOiB0cnVlLCBwYXlsb2FkOiByb29tTmFtZSB9KTtcbiAgICAgIH1cbiAgICB9KTtcblxuICAgIHNvY2tldC5vbihcInBlZXJsZWF2ZVwiLCAocm9vbU5hbWU6IHN0cmluZykgPT4ge1xuICAgICAgc29ja2V0LmJyb2FkY2FzdC50byhyb29tTmFtZSkuZW1pdChcImxlYXZlXCIpO1xuICAgICAgY29uc29sZS5sb2coXCJbZW1pdCByZWxvYWRdXCIpO1xuICAgICAgc29ja2V0LmJyb2FkY2FzdC50byhyb29tTmFtZSkuZW1pdChcInJlbG9hZFwiKTtcbiAgICB9KTtcbiAgfSk7XG4gIHJldHVybiByZXMuZW5kKCk7XG59O1xuXG5leHBvcnQgZGVmYXVsdCBTb2NrZXRIYW5kbGVyOyJdLCJuYW1lcyI6WyJTZXJ2ZXIiLCJTb2NrZXRJT1NlcnZlciIsIlNvY2tldEhhbmRsZXIiLCJfIiwicmVzIiwic29ja2V0Iiwic2VydmVyIiwiaW8iLCJjb25zb2xlIiwibG9nIiwiZW5kIiwicHVibGljUm9vbXMiLCJzb2NrZXRzIiwiYWRhcHRlciIsInNpZHMiLCJyb29tcyIsImZvckVhY2giLCJrZXkiLCJnZXQiLCJ1bmRlZmluZWQiLCJwdXNoIiwicm9vbU5hbWUiLCJyb29tU2l6ZSIsImNvdW50Um9vbVVzZXIiLCJzaXplIiwib24iLCJpZCIsInJvb20iLCJqb2luIiwiZW1pdCIsImJyb2FkY2FzdCIsInRvIiwiY2FuZGlkYXRlIiwib2ZmZXIiLCJhbnN3ZXIiLCJsZWF2ZSIsImRvbmUiLCJleGlzdHMiLCJmaW5kIiwiY3JlYXRlZFJvb20iLCJzdWNjZXNzIiwicGF5bG9hZCJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(api)/./pages/api/webRTC/socket.tsx\n");
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var socket_io__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9505);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([socket_io__WEBPACK_IMPORTED_MODULE_0__]);
+socket_io__WEBPACK_IMPORTED_MODULE_0__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
+
+// let createdRooms: string[] = [];
+const SocketHandler = (_, res)=>{
+    if (res.socket.server.io) {
+        console.log("Socket is already attached");
+        return res.end();
+    }
+    const io = new socket_io__WEBPACK_IMPORTED_MODULE_0__.Server(res.socket.server);
+    res.socket.server.io = io;
+    function publicRooms() {
+        const { sockets: { adapter: { sids , rooms  }  }  } = io;
+        const publicRooms = [];
+        rooms.forEach((_, key)=>{
+            if (sids.get(key) === undefined) {
+                publicRooms.push({
+                    roomName: key,
+                    roomSize: countRoomUser(key)
+                });
+            }
+        });
+        return publicRooms;
+    }
+    function countRoomUser(roomName) {
+        return io.sockets.adapter.rooms.get(roomName)?.size;
+    }
+    io.on("connection", (socket)=>{
+        console.log(`[User Connected] : ${socket.id}`);
+        //peer가 room join 버튼을 눌렀을 경우 클라이언트에서 join이 트리거 되어 서버에 전달
+        socket.on("join", (roomName)=>{
+            console.log("[join]");
+            const { rooms  } = io.sockets.adapter;
+            const room = rooms.get(roomName);
+            //방이 없는 경우
+            if (room === undefined) {
+                console.log("[emit create]");
+                socket.join(roomName);
+                socket.emit("created");
+            } else if (room.size === 1) {
+                //방에 한 명만 있을 경우
+                console.log("[emit joined]");
+                socket.join(roomName);
+                socket.emit("joined");
+            } else {
+                //방에 두명인 경우 (full)
+                console.log("[emit full]");
+                socket.emit("full");
+            }
+            console.log("[room info] : ", rooms);
+            //사용자가 참가하여 방 상태가 변경되었으니 room-list emit
+            io.sockets.emit("room-list", publicRooms());
+        });
+        //방에 참여한 사람이 connection 준비가 되면 ready가 트리거 됨
+        socket.on("ready", (roomName)=>{
+            console.log("[emit ready]");
+            socket.broadcast.to(roomName).emit("ready");
+        });
+        //서버가 room의 peer로부터 "icecandidate"를 받을 때 트리거
+        socket.on("ice-candidate", (candidate, roomName)=>{
+            console.log("[emit ice-candidate]");
+            socket.broadcast.to(roomName).emit("ice-candidate", candidate); // room에 있는 다른 peer에게 "candidate" emit
+        });
+        //서버가 room에 있는 peer로부터 "offer"를 받을 때 트리거
+        socket.on("offer", (offer, roomName)=>{
+            console.log("[emit offer]");
+            socket.broadcast.to(roomName).emit("offer", offer); // room에 있는 다른 peer에게 "offer" emit
+        });
+        //서버가 room에 있는 peer로부터 "answer"를 받을 때 트리거
+        socket.on("answer", (answer, roomName)=>{
+            console.log("[emit answer]");
+            socket.broadcast.to(roomName).emit("answer", answer); // room에 있는 다른 peer에게 "answer" emit
+        });
+        //서버가 room에 있는 peer로부터 "leave"를 받을 때 트리거
+        socket.on("leave", (roomName)=>{
+            console.log("[emit leave]", roomName);
+            socket.leave(roomName);
+            socket.broadcast.to(roomName).emit("leave"); // room에 있는 다른 peer에게 "leave" emit
+            //방 상태가 변경 될 가능성이 있으니 room-list emit
+            io.sockets.emit("room-list", publicRooms());
+        });
+        socket.on("room-list", ()=>{
+            socket.emit("room-list", publicRooms());
+            console.log("[room-list]", publicRooms());
+        });
+        socket.on("request-create-room", (roomName, done)=>{
+            console.log("[request-create-room]", roomName);
+            const exists = publicRooms().find((createdRoom)=>createdRoom.roomName === roomName);
+            if (exists) {
+                console.log("[emit request-create-room : false]");
+                done({
+                    success: false,
+                    payload: `${roomName}라는 방이 이미 존재합니다.`
+                });
+            } else {
+                console.log("[emit request-create-room : true]");
+                done({
+                    success: true,
+                    payload: roomName
+                });
+            }
+        });
+        socket.on("request-join-room", (roomName, done)=>{
+            console.log("[request-join-room]", roomName);
+            const { rooms  } = io.sockets.adapter;
+            const room = rooms.get(roomName);
+            if (room === undefined || room.size >= 2) {
+                console.log("[emit request-join-room : false]");
+                done({
+                    success: false,
+                    payload: `인원이 가득 찼습니다.`
+                });
+            } else {
+                console.log("[emit request-join-room : true]");
+                done({
+                    success: true,
+                    payload: roomName
+                });
+            }
+        });
+        socket.on("peerleave", (roomName)=>{
+            socket.broadcast.to(roomName).emit("leave");
+            console.log("[emit reload]");
+            socket.broadcast.to(roomName).emit("reload");
+        });
+    });
+    return res.end();
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SocketHandler);
+
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
 
 /***/ })
 
@@ -40,7 +163,7 @@ eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__
 var __webpack_require__ = require("../../../webpack-api-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = (__webpack_exec__("(api)/./pages/api/webRTC/socket.tsx"));
+var __webpack_exports__ = (__webpack_exec__(7545));
 module.exports = __webpack_exports__;
 
 })();
