@@ -6,7 +6,7 @@ const fs = require("fs");
 const hostname = "54.180.1.140";
 const port = 3000;
 
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV === "production";
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
