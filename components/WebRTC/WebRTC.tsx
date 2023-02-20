@@ -6,9 +6,9 @@ import useSocket from "../../pages/hooks/useSocket";
 import dynamic from "next/dynamic";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import itemStore from "@/components/Game/store";
-import rocket from "../Game/rocket";
+import rocket from "../Game/SegmentState/rocket";
 import { useTimeout } from "usehooks-ts";
-import Rocket from "../Game/rocket";
+import Rocket from "../Game/SegmentState/rocket";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import Waiting from "../PageElements/Waiting";
@@ -45,6 +45,12 @@ interface MyConstraints {
 }
 
 export default function WebRTC() {
+
+  // const dispatch = useDispatch();
+  // dispatch({ type: `myPuzzle/init` });
+  // dispatch({ type: `peerPuzzle/init` });
+  // dispatch({ type: `item/init` });
+
   useSocket();
   const router = useRouter();
   //useRef은 특정컴포넌트에 접근할 수 있는 객체, 초기값 null
@@ -108,13 +114,11 @@ export default function WebRTC() {
 
     if (mounted && checkLeave) {
       // socketConnect.disconnect();
-      setTimeout(() => {
-        router
-          .replace({
-            pathname: "/ready",
-          })
-          .then(() => router.reload());
-      }, 15000);
+      router
+        .replace({
+          pathname: "/ready",
+        })
+        .then(() => router.reload());
     }
     return () => {
       mounted = false;

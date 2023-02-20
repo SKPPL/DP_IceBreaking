@@ -5,7 +5,7 @@ import { Provider, useSelector, useDispatch } from "react-redux";
 import itemStore from "@/components/Game/store";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
-import Rocket from "./rocket";
+import Rocket from "./SegmentState/rocket";
 import { useRouter } from "next/router";
 const PuzzleSegment = dynamic(import("@/components/Game/Segment"), {
   loading: () => <div></div>,
@@ -69,7 +69,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   // 상대의 퍼즐 변경은 useEffect로 처리하면서 데이터채널로 뭐 변했는지 보내자
   useEffect(() => {
-    for (var cnt = 0; cnt < 6; cnt++) {
+    for (var cnt = 0; cnt < keys.length; cnt++) {
       if (itemListBefore[keys[cnt]] !== itemList[keys[cnt]]) {
         if (dataChannel) dataChannel.send(JSON.stringify({ type: "item", segementState: keys[cnt] }));
         setItemListBefore(itemList);
@@ -89,31 +89,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       {[...Array(9)].map((_, i) => {
         return (
           <>
-            {peerPosition.i === i ? (
-              <PuzzleSegment
-                key={i}
-                i={i}
-                auth={auth}
-                videoId={videoId}
-                peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }}
-                dataChannel={dataChannel}
-                segmentState={peerSegmentState.segementState}
-              />
-            ) : (
-              <PuzzleSegment
-                key={i}
-                i={i}
-                auth={auth}
-                videoId={videoId}
-                peerxy={undefined}
-                dataChannel={dataChannel}
-                segmentState={peerSegmentState.segementState}
-              />
-            )}
-
-            {peerSegmentState.segementState === "rocket" && (
-              <Rocket key={`rocket_${i}_peerface`} i={i} auth={auth} peerxy={undefined} dataChannel={dataChannel} />
-            )}
+            {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
+            {(peerPosition.i !== i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
           </>
         );
       })}

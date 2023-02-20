@@ -5,8 +5,8 @@ import { Provider, useSelector, useDispatch } from 'react-redux'
 import itemStore from '@/components/Game/store'
 import styles from './styles.module.css'
 import dynamic from 'next/dynamic'
-import Rocket from './rocket'
-
+import Rocket from './SegmentState/rocket'
+// import Segment from './Segment'
 const PuzzleSegment = dynamic(
     import('@/components/Game/Segment'), {
     loading: () => (<div></div>),
@@ -57,8 +57,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 [...Array(9)].map((_, i) => {
                     return (
                         <>
-                            <PuzzleSegment key={i} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />
-                            {(mySegmentState.segementState === 'rocket') && <Rocket key={`rocket_${i}_myface`} i={i} auth={auth} peerxy={undefined} dataChannel={dataChannel} />}
+                            <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />
                         </>
                     )
                 }

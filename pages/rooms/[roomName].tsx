@@ -10,6 +10,7 @@ import store from "../../components/Game/store";
 
 
 export default function Play() {
+
     return (
         <>
             <Head>

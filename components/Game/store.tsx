@@ -28,10 +28,14 @@ const itemSlice = createSlice({
         divide: (state) => {
             if (state.divide > 0)
                 state.divide -= 1;
+        },
+        init: (state) => {
+            state = { rocket: 1, ice: 1, lip: 1, nose: 1, rotate: 1, divide: 1 };
+            console.log('초기화 했디ㅏ')
         }
     }
 });
-
+const initialState = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 //내 퍼즐의 상태를 저장
 const myPuzzleSlice = createSlice({
     name: "myPuzzle",
@@ -39,6 +43,9 @@ const myPuzzleSlice = createSlice({
     reducers: {
         setPosition: (state, action: PayloadAction<{ index: number; position: Array<number> }>) => {
             state[action.payload.index] = action.payload.position //index번째 퍼즐의 좌표를 position으로 변경
+        },
+        init: (state) => {
+            state = initialState;
         }
     }
 });
@@ -49,6 +56,9 @@ const peerPuzzleSlice = createSlice({
     reducers: {
         setPosition: (state, action: PayloadAction<{ index: number; position: Array<number> }>) => {
             state[action.payload.index] = action.payload.position //index번째 퍼즐의 좌표를 position으로 변경
+        },
+        init: (state) => {
+            state = initialState;
         }
     }
 });
