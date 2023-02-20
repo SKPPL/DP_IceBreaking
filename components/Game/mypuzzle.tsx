@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, memo } from 'react'
 import { useSpring, animated, to } from '@react-spring/web'
 import { useGesture } from 'react-use-gesture'
 import { Provider, useSelector, useDispatch } from 'react-redux'
-import itemStore from '@/pages/rooms/store'
+import itemStore from '@/components/Game/store'
 import styles from './styles.module.css'
 import dynamic from 'next/dynamic'
 import Rocket from './rocket'
@@ -28,17 +28,26 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const makeMyDefaultSegment = () => { setMySegmentState({ type: "item", segementState: "default" }) }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
-    dataChannel!.addEventListener("message", (event: MessageEvent<any>): void => {
-        if (event.data) {
-            var dataJSON = JSON.parse(event.data);
-            switch (dataJSON.type) {
-                case "item": // 상대방이 아이템을 사용했을 때, 그 아이템을 받아와서 내 퍼즐에 동기화 시킨다. 5초 후 원상복귀 시킨다. 
-                    setMySegmentState(dataJSON);
-                    //TODO : 5초 후 원상복귀 시키는 코드, 좌표도 원상복귀 시켜야함 -> 좌표 store에 저장시켜놓고
-                    setTimeout(() => { makeMyDefaultSegment() }, 8000);
-            }
+
+    useEffect(() => {
+        if (dataChannel) {
+            dataChannel!.addEventListener("message", function myData(event: MessageEvent<any>) {
+                let count = 0
+                if (event.data) {
+                    var dataJSON = JSON.parse(event.data);
+                    console.log(count++);
+                    switch (dataJSON.type) {
+                        case "item": // 상대방이 아이템을 사용했을 때, 그 아이템을 받아와서 내 퍼즐에 동기화 시킨다. 5초 후 원상복귀 시킨다. 
+                            setMySegmentState(dataJSON);
+                            console.log(dataJSON);
+
+                            //TODO : 5초 후 원상복귀 시키는 코드, 좌표도 원상복귀 시켜야함 -> 좌표 store에 저장시켜놓고
+                            setTimeout(() => { makeMyDefaultSegment() }, 8000);
+                    }
+                }
+            })
         }
-    })
+    }, []);
 
 
 
@@ -46,11 +55,6 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         <>
             {
                 [...Array(9)].map((_, i) => {
-                    // switch (mySegmentState.segementState) {
-                    //     case "default":
-                    //         return <PuzzleSegment key={i} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />
-                    //     case "rocket":
-                    //         return <Rocket key={i} auth={auth} peerxy={undefined} dataChannel={dataChannel} />
                     return (
                         <>
                             <PuzzleSegment key={i} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />

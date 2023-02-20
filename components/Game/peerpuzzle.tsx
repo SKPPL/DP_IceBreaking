@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, memo } from 'react'
 import { useSpring, animated, to } from '@react-spring/web'
 import { useGesture } from 'react-use-gesture'
 import { Provider, useSelector, useDispatch } from 'react-redux'
-import itemStore from '@/pages/rooms/store'
+import itemStore from '@/components/Game/store'
 import styles from './styles.module.css'
 import dynamic from 'next/dynamic'
 import Rocket from './rocket'
@@ -25,33 +25,36 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     // for peer Item state 
     const [peerSegmentState, setPeerSegmentState] = useState({ type: "item", segementState: "default" });
 
-    const [cnt, setCnt] = useState(1)
-
+    let cnt = 0;
     const makePeerDefaultSegment = () => { setPeerSegmentState({ type: "item", segementState: "default" }) }
     const router = useRouter();
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
-    dataChannel!.addEventListener("message", (event: any) => {
-        if (event.data) {
-            var dataJSON = JSON.parse(event.data);
-            switch (dataJSON.type) {
-                case "move": // 상대방이 움직였을 때 , 그 좌표를 받아와서 상대방 퍼즐에 동기화 시킨다. 
-                    // TODO : 상대방 퍼즐이 로켓 상태인 경우, 그 외의 경우로 나눠야함
-                    setPeerPosition(dataJSON);
-                    break;
-                case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가 
-                    setCnt(cnt + 1)
-                    if (cnt === 9) {
-                        const peer = document.getElementById('peerface')
-                        peer!.style.display = "block"
-                        document.getElementById('fullscreen')!.style.display = "none"
-                        setTimeout(() => router.push({
-                            pathname: '/ready',
-                        }), 15000)
+
+    useEffect(() => {
+        if (dataChannel) {
+            dataChannel!.addEventListener("message", function peerData(event: any) {
+                if (event.data) {
+                    var dataJSON = JSON.parse(event.data);
+                    switch (dataJSON.type) {
+                        case "move": // 상대방이 움직였을 때 , 그 좌표를 받아와서 상대방 퍼즐에 동기화 시킨다. 
+                            // TODO : 상대방 퍼즐이 로켓 상태인 경우, 그 외의 경우로 나눠야함
+                            setPeerPosition(dataJSON);
+                            break;
+                        case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가
+                            if (++cnt === 9) {
+                                const peer = document.getElementById('peerface')
+                                peer!.style.display = "block"
+                                document.getElementById('fullscreen')!.style.display = "none"
+                                setTimeout(() => router.push({
+                                    pathname: '/ready',
+                                }), 15000)
+                            }
+                            break;
                     }
-                    break;
-            }
+                }
+            })
         }
-    })
+    }, []);
 
 
 

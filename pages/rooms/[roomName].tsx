@@ -5,7 +5,7 @@ import Script from "next/script";
 import ItemBar from "@/components/itemBar/itemBar";
 import WebRTC from "@/components/WebRTC/WebRTC";
 import { Provider, useSelector, useDispatch } from 'react-redux'
-import store from "./store";
+import store from "../../components/Game/store";
 
 
 

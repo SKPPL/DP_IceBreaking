@@ -46,6 +46,8 @@ const RoomList = ({ nickName }: any) => {
     };
 
     const onClickCreateRoom = useCallback(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         const roomName = document.getElementById("roomInput").value;
         if (!roomName) {
             alert("방 이름은 반드시 입력해야 합니다.");
@@ -89,12 +91,14 @@ const RoomList = ({ nickName }: any) => {
 
 
 
+
     return (
         <>
             <div className="flex-col w-1/2 mt-10 p-5 relative inline-flex mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400">
                 <div className="place-self-end mb-5 mt-5">
                     <RoomMake onClickCreateRoom={onClickCreateRoom} />
                 </div>
+
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

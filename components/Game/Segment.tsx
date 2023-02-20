@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, memo } from 'react'
 import { useSpring, animated, to } from '@react-spring/web'
 import { useDrag, useGesture } from 'react-use-gesture'
 import { Provider, useSelector, useDispatch } from 'react-redux'
-import itemStore from '@/pages/rooms/store'
+import itemStore from '@/components/Game/store'
 import { useRouter } from 'next/router'
 import styles from './styles.module.css'
 import CloneVideo from './CloneVideo'
@@ -198,17 +198,7 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props)
         { domTarget, eventOptions: { passive: false } }
     )
 
-    // const [segmentStyle, setSegmentStyle] = useState('default');
 
-    // switch (segmentState) {
-    //     case 'ice':
-    //         setSegmentStyle('ice')
-    //         break;
-    //     default:
-    //         setSegmentStyle('default')
-    // }
-
-    //위와 같이 스위치 케이스 문으로 style을 처리하고 싶었으나 ㅠㅠ
 
     return (
         <>

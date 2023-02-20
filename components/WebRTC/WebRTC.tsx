@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
 import dynamic from "next/dynamic";
 import { Provider, useSelector, useDispatch } from 'react-redux'
-import itemStore from '@/pages/rooms/store'
+import itemStore from '@/components/Game/store'
 import rocket from "../Game/rocket";
 import { useTimeout } from "usehooks-ts";
 import Rocket from "../Game/rocket";

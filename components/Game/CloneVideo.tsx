@@ -17,9 +17,7 @@ export default function CloneVideo({ id, videoId, segmentState }: segmentData) {
     const draw = useCallback(() => {
 
         ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 640, 480);
-        setTimeout(function () {
-            draw();
-        }, 42);
+        setTimeout(draw, 16.666);
 
     }, [video]);
 
