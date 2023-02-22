@@ -12,9 +12,9 @@ import Bar from "@/components/PageElements/ProgressBar/Bar";
 import { useRecoilState } from "recoil";
 import { peerWaitState } from "./atom";
 
-let isShuffle = true;
-let isRightPlace = [false, false, false, false, false, false, false, false, false];
-let i;
+let isShuffle : boolean = true;
+let isRightPlace : boolean[] = [false, false, false, false, false, false, false, false, false];
+let i : number;
 
 const PuzzleSegment = dynamic(import("@/components/Game/Segment"), {
   loading: () => <div></div>,
@@ -115,7 +115,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   setTimeout(() => {
     isShuffle = false
-  }, 3500)
+  }, 2000)
 
 
   return (

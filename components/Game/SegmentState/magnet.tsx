@@ -1,8 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { Provider, useSelector, useDispatch } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
 import styles from "../styles.module.css";
 import useMeasure from "react-use-measure";
 import { useTrail, animated } from "@react-spring/web";
@@ -12,7 +9,6 @@ import useMousePosition from "./useMousePosition";
 import { useWindowSize } from "usehooks-ts";
 // const trans = (x: number, y: number) => `translate3d(${x}px,${y}px,0) translate3d(-50%,-50%,0)`;
 const trans = (x: number, y: number) => `translate3d(${x}px,${y}px,0) translate3d(-50%,-50%,0)`;
-
 import { myWaitState, peerWaitState } from "../atom";
 import { useSetRecoilState } from "recoil";
 interface Props {
@@ -23,9 +19,9 @@ interface Props {
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
 }
-
 let mpx: number;
 let mpy: number;
+let dataTransferCount = 0;
 const [widthOx, heightOx] = [640 / 3, 480 / 3];
 export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     //퍼즐 데이터 스토어와 연결 react-redux
@@ -33,7 +29,6 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
     const storedPosition = useSelector((state: any) => {
         return auth ? state.myPuzzle : state.peerPuzzle;
     });
-
     //마우스포인터가 카드의 left, top을 가리킴
     const [ref, { left, top }] = useMeasure();
     //마우스 포인터를 따라 카드 이동, 카드의 초기위치는 저장된 카드 위치
@@ -47,40 +42,38 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
     const { width, height } = useWindowSize();
     //현재 마우스 포인터 위치 계산
     const mousePosition = useMousePosition();
-
-
     const setMyWait = useSetRecoilState(myWaitState)
     const setPeerWait = useSetRecoilState(peerWaitState)
-
     useEffect(() => {
         if (!auth) return;
-        //나의 범위 안에서 카드가 움직이도록 설정
-        mpx = Math.min(mousePosition.clientX - left, width / 6);
-        mpx = Math.max(mpx, -left);
-        mpy = Math.max(mousePosition.clientY - top, top);
-        mpy = Math.min(mpy, height);
-
-        //useTail을 사용하여 마우스 움직임
-        api.start({ xy: [mpx, mpy], delay: 0 });
-
-        //나의 움직임을 상대방에게 그리기 위해 정보전달
-        if (dataChannel) {
-            dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: undefined, peery: undefined }));
-            dataChannel.send(
-                JSON.stringify({
-                    type: "magnet",
-                    i: i,
-                    xy: [mpx, mpy],
-                })
-            );
+        dataTransferCount += 1;
+        if (dataTransferCount < 100 || dataTransferCount % 20 === 0) {
+            //나의 범위 안에서 카드가 움직이도록 설정
+            mpx = Math.min(mousePosition.clientX - left, width / 6);
+            mpx = Math.max(mpx, -left);
+            mpy = Math.max(mousePosition.clientY - top, top);
+            mpy = Math.min(mpy, height);
+            //useTail을 사용하여 마우스 움직임
+            api.start({ xy: [mpx, mpy], delay: 0 });
+            //나의 움직임을 상대방에게 그리기 위해 정보전달
+            if (dataChannel) {
+                dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: undefined, peery: undefined }));
+                console.log(1)
+                dataChannel.send(
+                    JSON.stringify({
+                        type: "magnet",
+                        i: i,
+                        xy: [mpx, mpy],
+                    })
+                );
+            }
+            dispatch({
+                type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
+                payload: { index: i, position: [mpx - widthOx / 2, mpy - heightOx / 2] },
+            });
         }
-        dispatch({
-            type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
-            payload: { index: i, position: [mpx - widthOx / 2, mpy - heightOx / 2] },
-        });
         return () => { };
     }, [mousePosition]);
-
     //상대방쪽은 위에서 발생시킨 이벤트를 받아서 똑같이 그려줘야 함
     useEffect(() => {
         if (dataChannel) {
@@ -103,15 +96,12 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
                 }
             });
         }
-
     }, []);
-
     useEffect(() => {
         return () => {
             auth ? setMyWait(false) : setPeerWait(false);
         }
     }, [])
-
     return (
         <div>
             <div className={styles.container}>
