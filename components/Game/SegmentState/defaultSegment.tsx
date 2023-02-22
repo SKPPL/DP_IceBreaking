@@ -11,7 +11,6 @@ import useSound from 'use-sound'
 import { useSetRecoilState } from "recoil";
 import { myWaitState, peerWaitState } from "../atom";
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
@@ -35,9 +34,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     });
     const [isRightPlace, setIsRightPlace] = useState(false);
     //아래 조건문 위로 올리면 안됨
-    if (segmentState === "ice") {
-        auth = false;
-    }
+
     const [zindex, setZindex] = useState(Math.floor(Math.random() * 10));
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
@@ -58,7 +55,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
             document.removeEventListener("gesturechange", preventDefault);
         };
     }, []);
-    
+
     const domTarget = useRef<HTMLDivElement>(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => {
         return {
@@ -108,7 +105,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                 api.start({ x: width, y: height });
                 setIsRightPlace(true);
                 puzzleSoundPlay();
-                if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace : true, i: i }));
+                if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
                 dispatch({ type: "puzzleComplete/plus_mine" });
                 setZindex(0);
                 dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
@@ -153,7 +150,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
         },
         { domTarget, eventOptions: { passive: false } }
     );
-    
+
     var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] })
     const setMyWait = useSetRecoilState(myWaitState)
     const setPeerWait = useSetRecoilState(peerWaitState)
@@ -171,30 +168,30 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
         <>
             <div className="">
                 <div className={styles.container}>
-                        <animated.div
-                            ref={domTarget}
-                            className={isRightPlace?`${styles.rightCard}`:`${styles.card}`}
-                            {...bindBoardPos()}
-                            style={{
-                                transform: "perspective(600px)",
-                                x,
-                                y,
-                                scale: to([scale, zoom], (s, z) => {
-                                    memo.current.x = x.get();
-                                    memo.current.y = y.get();
-                                    return s + z
-                                }),
-                                rotateX,
-                                rotateY,
-                                rotateZ,
-                                zIndex: zindex,
-                            }}
-                        >
-                            <animated.div>
-                                <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
-                            </animated.div>
+                    <animated.div
+                        ref={domTarget}
+                        className={isRightPlace ? `${styles.rightCard}` : `${styles.card}`}
+                        {...bindBoardPos()}
+                        style={{
+                            transform: "perspective(600px)",
+                            x,
+                            y,
+                            scale: to([scale, zoom], (s, z) => {
+                                memo.current.x = x.get();
+                                memo.current.y = y.get();
+                                return s + z
+                            }),
+                            rotateX,
+                            rotateY,
+                            rotateZ,
+                            zIndex: zindex,
+                        }}
+                    >
+                        <animated.div>
+                            <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
                         </animated.div>
-                    </div>
+                    </animated.div>
+                </div>
             </div>
         </>
     );

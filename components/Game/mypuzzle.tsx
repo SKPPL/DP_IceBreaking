@@ -36,7 +36,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
-    
+
 
     useEffect(() => {
         if (dataChannel) {
@@ -73,11 +73,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             }, 15000);
         }
     }, [puzzleCompleteCounter.mine])
-    
+
     const [myWait, setMyWait] = useRecoilState(myWaitState)
     switch (mySegmentState.segementState) {
         case "rocket": setMyWait(true); break;
         case "magnet": setMyWait(true); break;
+        case "ice": setMyWait(true); break;
     }
 
     return (
@@ -89,13 +90,13 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                             <div className={styles.c1}>
                                 <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />
                             </div>
-                            </>
+                        </>
                     )
                 }
                 )
             }
-            <Modal segmentState={mySegmentState.segementState}/>
-            <MyBar score={puzzleCompleteCounter.mine}/>
+            <Modal segmentState={mySegmentState.segementState} />
+            <MyBar score={puzzleCompleteCounter.mine} />
         </>
     )
 }
