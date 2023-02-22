@@ -54,7 +54,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
               if (dataJSON.segementState === "magnet") {
                 setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
               }
-            
+              break;
             case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가
               dispatch({ type: `puzzleComplete/plus_peer` });
               i = dataJSON.i

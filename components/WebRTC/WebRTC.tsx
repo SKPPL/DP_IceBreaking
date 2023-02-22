@@ -376,7 +376,7 @@ export default function WebRTC() {
               <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className="h-[480px] w-[640px] self-center border border-black">
+          <div className="h-[480px] w-[640px] self-center border" id={styles.gamepan}>
             <div className="flex flex-row h-1/3">
               <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
               <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
@@ -404,7 +404,7 @@ export default function WebRTC() {
               <PeerPuzzle auth={false} videoId={"myface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className="h-[480px] w-[640px] self-center border border-black">
+          <div className="h-[480px] w-[640px] self-center" id={styles.gamepan}>
             <div className="flex flex-row h-1/3">
               <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
               <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
