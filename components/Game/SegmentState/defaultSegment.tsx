@@ -20,12 +20,8 @@ interface Props {
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
 }
-const initialState = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 
 function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
-    const isMounted = useIsMounted()
-
-
 
     //퍼즐 데이터 스토어와 연결 react-redux
     const dispatch = useDispatch();
@@ -56,28 +52,6 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
             document.removeEventListener("gesturechange", preventDefault);
         };
     }, []);
-    //for rocket
-    useEffect(() => {
-        //로켓의 경우는 다음과 같이 하면 됨..
-        if (auth && isRightPlace) return;
-        if (isMounted()) {
-            if (storedPosition !== initialState) {
-                x.set(storedPosition[i][0]);
-                y.set(storedPosition[i][1]);
-            }
-        }
-    }, [storedPosition])
-
-    //for magnet
-    useEffect(() => {
-        if (auth) return;
-        if (isMounted()) {
-            // api.start({ x: storedPosition[i][0], y: storedPosition[i][1], rotateX: 0, rotateY: 0 });
-            x.set(storedPosition[i][0]);
-            y.set(storedPosition[i][1]);
-        }
-    }, [storedPosition])
-
     
     const domTarget = useRef<HTMLDivElement>(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => {

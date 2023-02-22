@@ -4,6 +4,7 @@ const inter = Inter({ subsets: ['latin'] })
 import BagicHome from '@/components/PageElements/BagicHome'
 import Rocket from '@/components/Game/SegmentState/rocket'
 import MainPage from '@/components/PageElements/MainPage'
+import styles from '../components/PageElements/styles.module.css'
 
 export default function Home() {
   return (
@@ -17,7 +18,7 @@ export default function Home() {
       <div className=''>
         <div className="container-2xl" >
           <main className="flex flex-col bg-cover justify-center items-center h-screen bg-[url('../public/images/background.jpeg')]" >
-            <div className="flex flex-row place-items-center bg-black basis-2/5  rounded-3xl ">
+            <div className={styles.indexbox}>
               <MainPage />
               <BagicHome />
 

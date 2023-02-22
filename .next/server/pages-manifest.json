@@ -2,7 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/": "pages/index.js",
   "/api/webRTC/socket": "pages/api/webRTC/socket.js",
-  "/rooms/[roomName]": "pages/rooms/[roomName].js",
-  "/ready": "pages/ready.js"
+  "/ready": "pages/ready.js",
+  "/rooms/[roomName]": "pages/rooms/[roomName].js"
 }

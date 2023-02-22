@@ -8,7 +8,8 @@ import { Provider, useSelector, useDispatch } from 'react-redux'
 
 import styles from '../styles.module.css'
 import { useWindowSize } from 'usehooks-ts'
-
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil'
+import { myWaitState, peerWaitState } from '../atom'
 interface Props {
     i: number
     peerxy: { peerx: number, peery: number } | undefined
@@ -17,6 +18,7 @@ interface Props {
     auth: boolean
 }
 export default function rocket({ i, auth, dataChannel }: Props) {
+
     const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle });
     const dispatch = useDispatch();
 
@@ -113,12 +115,15 @@ export default function rocket({ i, auth, dataChannel }: Props) {
             });
         }
     }, []);
+    const setMyWait = useSetRecoilState(myWaitState)
+    const setPeerWait = useSetRecoilState(peerWaitState)
 
     useEffect(() => {
         return () => {
             dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
+            auth ? setMyWait(false) : setPeerWait(false);
         }
-    },)
+    }, [])
 
     return (
         <animated.div

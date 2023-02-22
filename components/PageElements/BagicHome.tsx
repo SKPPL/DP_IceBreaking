@@ -12,26 +12,20 @@ export default function BagicHome() {
   
 
   useEffect(() => {
-    setTimeout(() => setappear(true), 5000)    
+    setTimeout(() => setappear(true), 1700)    
   }, [])
 
   return (
     <>
-      {appear && <div className="flex flex-row p-8 rounded-3xl">
+      <div className="flex flex-row p-8 rounded-3xl">
       <div className= "flex flex-col">
         <div className="flex flex-col items-center w-72">
-          <Image
-            className="w-96 pb-10"
-            src={logo}
-            alt="logo"
-            priority
-          />
-          <Start />
+          { appear && <Start /> }
         </div>
       </div>
       
       </div>
-      }
+      
     </>
   )
 }

@@ -5,11 +5,11 @@ import styles from './styles.module.css'
 import { useRouter } from "next/router";
 
 const left = {
-  bg: `linear-gradient(120deg, #f093fb 0%, #f5576c 100%)`,
+  bg: `linear-gradient(120deg, #e74c3c 0%, #f9f586 100%)`,
   justifySelf: 'end',
 }
 const right = {
-  bg: `linear-gradient(120deg, #96fbc4 0%, #f9f586 100%)`,
+  bg: `linear-gradient(120deg, #2ecc71 0%, #f5576c 100%)`,
   justifySelf: 'start',
 }
 
@@ -56,7 +56,7 @@ const Slider = ({ children }: { children: ReactNode }) => {
 export default function Start() {
   return (
     <div className={styles.container}>
-      <Slider>Start</Slider>
+      <Slider>밀어서 게임시작</Slider>
     </div>
   )
 }

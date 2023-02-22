@@ -9,9 +9,8 @@ import Rocket from "./SegmentState/rocket";
 import { useRouter } from "next/router";
 import ModalPeer from "../PageElements/ItemAlertPeer/ModalPeer";
 import Bar from "@/components/PageElements/ProgressBar/Bar";
-
-
-
+import { useRecoilState } from "recoil";
+import { peerWaitState } from "./atom";
 
 let isShuffle = true;
 let isRightPlace = [false, false, false, false, false, false, false, false, false];
@@ -35,8 +34,6 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   const dispatch = useDispatch();
   const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
 
-
-  let cnt = 0;
   const makePeerDefaultSegment = () => {
     setPeerSegmentState({ type: "item", segementState: "default" });
   };
@@ -58,6 +55,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
               dispatch({ type: `puzzleComplete/plus_peer` });
               i = dataJSON.i
               { dataJSON.isRightPlace ? isRightPlace[i] = true : "" }
+              console.log(isRightPlace)
               break;
           }
         }
@@ -96,7 +94,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         if (dataChannel) dataChannel.send(JSON.stringify({ type: "item", segementState: keys[cnt] }));
         setItemListBefore(itemList);
         setPeerSegmentState({ type: "item", segementState: keys[cnt] });
-        if (keys[cnt] === "rocket") {
+        if (keys[cnt] === "rocket" || keys[cnt] === "magnet") {
           dispatch({ type: `puzzleComplete/init_peer` });
         }
         setTimeout(() => {
@@ -108,10 +106,17 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       //TODO 아이템 사용 도중일 땐 눌러도 소용 없게하는 로직 추가해야함
     }
   }, [itemList]);
+  
+    const [peerWait, setPeerWait] = useRecoilState(peerWaitState)
+    switch (peerSegmentState.segementState) {
+      case "rocket": setPeerWait(true); break;
+      case "magnet": setPeerWait(true); break;
+    }
 
   setTimeout(() => {
     isShuffle = false
   }, 3500)
+
 
   return (
     <>
@@ -127,6 +132,17 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
           </>
         );
       })}
+      <div className="absolute grid grid-cols-3 w-[640px] h-[480px] mt-[160px]">
+        <div className={isRightPlace[0] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
+        <div className={isRightPlace[1] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
+        <div className={isRightPlace[2] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>        
+        <div className={isRightPlace[3] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
+        <div className={isRightPlace[4] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
+        <div className={isRightPlace[5] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
+        <div className={isRightPlace[6] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
+        <div className={isRightPlace[7] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
+        <div className={isRightPlace[8] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
+      </div>
       <Bar score={puzzleCompleteCounter.peer} />
       <ModalPeer segmentState={peerSegmentState.segementState}/>
     </>

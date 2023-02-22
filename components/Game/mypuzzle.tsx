@@ -9,7 +9,8 @@ import Rocket from './SegmentState/rocket'
 import { useRouter } from 'next/router'
 import Modal from '../PageElements/ItemAlert/Modal'
 import MyBar from '../PageElements/ProgressBar/MyBar'
-
+import { myWaitState } from "./atom";
+import { useRecoilState } from 'recoil'
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
@@ -35,6 +36,8 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
+    
+
     useEffect(() => {
         if (dataChannel) {
             dataChannel!.addEventListener("message", function myData(event: MessageEvent<any>) {
@@ -43,11 +46,13 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                     switch (dataJSON.type) {
                         case "item": // 상대방이 아이템을 사용했을 때, 그 아이템을 받아와서 내 퍼즐에 동기화 시킨다. 5초 후 원상복귀 시킨다. 
                             setMySegmentState(dataJSON);
-                            if (dataJSON.segementState === "rocket") {
+                            if (dataJSON.segementState === "rocket" || dataJSON.segementState === "magnet") {
                                 dispatch({ type: "puzzleComplete/init_mine" })
                             }
                             //TODO : 5초 후 원상복귀 시키는 코드, 좌표도 원상복귀 시켜야함 -> 좌표 store에 저장시켜놓고
-                            setTimeout(() => { makeMyDefaultSegment() }, 8000);
+                            setTimeout(() => {
+                                makeMyDefaultSegment()
+                            }, 8000);
                     }
                 }
             })
@@ -68,8 +73,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             }, 15000);
         }
     }, [puzzleCompleteCounter.mine])
-
-
+    
+    const [myWait, setMyWait] = useRecoilState(myWaitState)
+    switch (mySegmentState.segementState) {
+        case "rocket": setMyWait(true); break;
+        case "magnet": setMyWait(true); break;
+    }
 
     return (
         <>

@@ -12,15 +12,15 @@ export default function MainPage() {
       height: 0,
       innerHeight: 0,
       transform: 'perspective(600px) rotateX(0deg)',
-      color: '#8fa5b6',
+      color: '#ecf0f1',
     },
     enter: [
       { opacity: 1, height: 80, innerHeight: 80 },
       { transform: 'perspective(600px) rotateX(180deg)', color: '#28d79f' },
       { transform: 'perspective(600px) rotateX(0deg)' },
     ],
-    leave: [{ color: '#c23369' }, { innerHeight: 0 }, { opacity: 0, height: 0 }],
-    update: { color: '#28b4d7' },
+    leave: [{ color: '#e74c3c' }, { innerHeight: 0 }, { opacity: 0, height: 0 }],
+    update: { color: '#ecf0f1' },
   })
 
   const reset = useCallback(() => {
@@ -30,7 +30,7 @@ export default function MainPage() {
     ref.current.push(setTimeout(() => set(['Dynamic', 'Funny', 'Puzzle']), 1000))
       ref.current.push(setTimeout(() => set(['Dynamic', 'Funny','Puzzle']), 2000))
       ref.current.push(setTimeout(() => set(['Dynamic', 'Puzzle']), 3000))
-    ref.current.push(setTimeout(() => set(['Dynamic', 'Puzzle','', "밀어서 게임시작!"]), 5000))
+    ref.current.push(setTimeout(() => set(['Dynamic', 'Puzzle','']), 5000))
       
   }, [])
 

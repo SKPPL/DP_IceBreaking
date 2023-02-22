@@ -12,7 +12,7 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number })
         <MyLinearProgress variant="determinate" {...props} />
       </Box>
       <Box sx={{ minWidth: 35 }}>
-      <Typography variant="body2" color="text.secondary">{`${props.value}%`}</Typography>
+      <MyTypography variant="body2" color="text.secondary">{`${props.value}%`}</MyTypography>
       </Box>
     </Box>
   );
@@ -45,12 +45,34 @@ const MyLinearProgress = styled(LinearProgress)`
   color: white;
   height: 40px;
   .MuiLinearProgress-bar {
-    background: linear-gradient(90deg, #fe6b8b 20%, #ff4757 50%);
+    background: #ff4757;
   }
 `;
 
 const MyBox = styled(Box)`
     position: absolute;
-    margin-top: 700px;
-    width: 50%;
+    margin-top: 670px;
+    width: 48%;
+    border: 0.2rem solid #fff;
+    // border-radius: 4rem;
+    padding: 0.4em;
+    box-shadow: 0 0 .2rem #fff,
+              0 0 .2rem #fff,
+              0 0 2rem #bc13fe,
+              0 0 0.8rem #bc13fe,
+              0 0 2.8rem #bc13fe,
+              inset 0 0 1.3rem #bc13fe; 
+`;
+
+const MyTypography = styled(Typography)`
+  color: #fff;
+  text-shadow:
+    0 0 7px #fff,
+    0 0 10px #fff,
+    0 0 21px #fff,
+    0 0 42px #0fa,
+    0 0 82px #0fa,
+    0 0 92px #0fa,
+    0 0 102px #0fa,
+    0 0 151px #0fa;
 `;
