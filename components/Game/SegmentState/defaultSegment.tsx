@@ -8,6 +8,8 @@ import styles from "../styles.module.css";
 import CloneVideo from "../CloneVideo";
 import { useIsMounted } from "usehooks-ts";
 import useSound from 'use-sound'
+import { useSetRecoilState } from "recoil";
+import { myWaitState, peerWaitState } from "../atom";
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -152,6 +154,17 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
         { domTarget, eventOptions: { passive: false } }
     );
     
+    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] })
+    const setMyWait = useSetRecoilState(myWaitState)
+    const setPeerWait = useSetRecoilState(peerWaitState)
+
+    useEffect(() => {
+        return () => {
+            dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
+
+            auth ? setMyWait(true) : setPeerWait(true);
+        }
+    }, []);
 
 
     return (
@@ -166,7 +179,11 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                                 transform: "perspective(600px)",
                                 x,
                                 y,
-                                scale: to([scale, zoom], (s, z) => s + z),
+                                scale: to([scale, zoom], (s, z) => {
+                                    memo.current.x = x.get();
+                                    memo.current.y = y.get();
+                                    return s + z
+                                }),
                                 rotateX,
                                 rotateY,
                                 rotateZ,
