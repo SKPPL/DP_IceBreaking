@@ -6,6 +6,11 @@ import itemStore from '@/components/Game/store'
 import styles from './styles.module.css'
 import dynamic from 'next/dynamic'
 import Rocket from './SegmentState/rocket'
+import { useRouter } from 'next/router'
+import Modal from '../PageElements/ItemAlert/Modal'
+import MyBar from '../PageElements/ProgressBar/MyBar'
+
+
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
     import('@/components/Game/Segment'), {
@@ -19,28 +24,28 @@ interface Props {
     dataChannel: RTCDataChannel | undefined
 }
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
-
-    const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle });
-
     // segmentState for item use
     const [mySegmentState, setMySegmentState] = useState({ type: "item", segementState: "default" });
     // using after store value changed, for restoring purpose
     const makeMyDefaultSegment = () => { setMySegmentState({ type: "item", segementState: "default" }) }
+    const dispatch = useDispatch();
+
+    const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
+    const router = useRouter();
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
     useEffect(() => {
         if (dataChannel) {
             dataChannel!.addEventListener("message", function myData(event: MessageEvent<any>) {
-                let count = 0
                 if (event.data) {
                     var dataJSON = JSON.parse(event.data);
-                    console.log(count++);
                     switch (dataJSON.type) {
                         case "item": // 상대방이 아이템을 사용했을 때, 그 아이템을 받아와서 내 퍼즐에 동기화 시킨다. 5초 후 원상복귀 시킨다. 
                             setMySegmentState(dataJSON);
-                            console.log(dataJSON);
-
+                            if (dataJSON.segementState === "rocket") {
+                                dispatch({ type: "puzzleComplete/init_mine" })
+                            }
                             //TODO : 5초 후 원상복귀 시키는 코드, 좌표도 원상복귀 시켜야함 -> 좌표 store에 저장시켜놓고
                             setTimeout(() => { makeMyDefaultSegment() }, 8000);
                     }
@@ -48,6 +53,21 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             })
         }
     }, []);
+
+    useEffect(() => {
+        if (puzzleCompleteCounter.mine === 9) {
+            const myface = document.getElementById("myface");
+            myface!.style.display = "block";
+            document.getElementById("fullscreen")!.style.display = "none";
+            setTimeout(() => {
+                router
+                    .replace({
+                        pathname: "/ready",
+                    })
+                    .then(() => router.reload());
+            }, 15000);
+        }
+    }, [puzzleCompleteCounter.mine])
 
 
 
@@ -57,18 +77,16 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 [...Array(9)].map((_, i) => {
                     return (
                         <>
-                            <Spring from={{ x: -500, scale: 1.5 }} to={{ x: 0, scale:1}} delay={150*i}>
-                            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                            @ts-ignore */}    
-                                {style => <animated.div style={style}>
-                            <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />
-                            </animated.div>}
-                            </Spring>
-                        </>
+                            <div className={styles.c1}>
+                                <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />
+                            </div>
+                            </>
                     )
                 }
                 )
             }
+            <Modal segmentState={mySegmentState.segementState}/>
+            <MyBar score={puzzleCompleteCounter.mine}/>
         </>
     )
 }

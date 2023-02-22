@@ -6,8 +6,8 @@ import itemStore from "@/components/Game/store";
 import { useRouter } from "next/router";
 import styles from "../styles.module.css";
 import CloneVideo from "../CloneVideo";
-
-let mycnt = 0;
+import { useIsMounted } from "usehooks-ts";
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
@@ -20,16 +20,19 @@ interface Props {
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
 }
+const initialState = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
+
 function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
+    const isMounted = useIsMounted()
+
+
+
     //퍼즐 데이터 스토어와 연결 react-redux
     const dispatch = useDispatch();
     const storedPosition = useSelector((state: any) => {
         return auth ? state.myPuzzle : state.peerPuzzle;
     });
-
-    const router = useRouter();
-
-    const [isRightPlace, setIsRightPlace] = useState(!auth);
+    const [isRightPlace, setIsRightPlace] = useState(false);
     //아래 조건문 위로 올리면 안됨
     if (segmentState === "ice") {
         auth = false;
@@ -53,7 +56,29 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
             document.removeEventListener("gesturechange", preventDefault);
         };
     }, []);
+    //for rocket
+    useEffect(() => {
+        //로켓의 경우는 다음과 같이 하면 됨..
+        if (auth && isRightPlace) return;
+        if (isMounted()) {
+            if (storedPosition !== initialState) {
+                x.set(storedPosition[i][0]);
+                y.set(storedPosition[i][1]);
+            }
+        }
+    }, [storedPosition])
 
+    //for magnet
+    useEffect(() => {
+        if (auth) return;
+        if (isMounted()) {
+            // api.start({ x: storedPosition[i][0], y: storedPosition[i][1], rotateX: 0, rotateY: 0 });
+            x.set(storedPosition[i][0]);
+            y.set(storedPosition[i][1]);
+        }
+    }, [storedPosition])
+
+    
     const domTarget = useRef<HTMLDivElement>(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => {
         return {
@@ -76,11 +101,11 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     }, [peerxy]);
 
 
-
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
     const bindBoardPos = useDrag(
         (params) => {
             if (isRightPlace) return;
+            if (!auth) return;
             // 저장된 좌표에 마우스의 움직임을 더해줌
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
@@ -98,20 +123,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                 domTarget.current!.setAttribute("style", "z-index: 0");
                 api.start({ x: width, y: height });
                 setIsRightPlace(true);
-                if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt" }));
-                mycnt += 1;
-                if (mycnt == 9) {
-                    const myface = document.getElementById("myface");
-                    myface!.style.display = "block";
-                    document.getElementById("fullscreen")!.style.display = "none";
-                    setTimeout(() => {
-                        router
-                            .replace({
-                                pathname: "/ready",
-                            })
-                            .then(() => router.reload());
-                    }, 15000);
-                }
+                if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace : true, i: i }));
+                dispatch({ type: "puzzleComplete/plus_mine" });
                 setZindex(0);
                 dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
                 if (dataChannel?.readyState === "open") {
@@ -152,31 +165,33 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
         },
         { domTarget, eventOptions: { passive: false } }
     );
+    
+
 
     return (
         <>
             <div className="">
                 <div className={styles.container}>
-                    <animated.div
-                        ref={domTarget}
-                        className={styles.card}
-                        {...bindBoardPos()}
-                        style={{
-                            transform: "perspective(600px)",
-                            x,
-                            y,
-                            scale: to([scale, zoom], (s, z) => s + z),
-                            rotateX,
-                            rotateY,
-                            rotateZ,
-                            zIndex: zindex,
-                        }}
-                    >
-                        <animated.div>
-                            <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                        <animated.div
+                            ref={domTarget}
+                            className={isRightPlace?`${styles.rightCard}`:`${styles.card}`}
+                            {...bindBoardPos()}
+                            style={{
+                                transform: "perspective(600px)",
+                                x,
+                                y,
+                                scale: to([scale, zoom], (s, z) => s + z),
+                                rotateX,
+                                rotateY,
+                                rotateZ,
+                                zIndex: zindex,
+                            }}
+                        >
+                            <animated.div>
+                                <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                            </animated.div>
                         </animated.div>
-                    </animated.div>
-                </div>
+                    </div>
             </div>
         </>
     );

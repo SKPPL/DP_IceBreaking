@@ -13,6 +13,7 @@
   touch-action: none;
 }
 
+
 .card:hover {
   box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3);
 }
@@ -24,6 +25,87 @@
 }
 
 .card>div>* {
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  margin: 0vw 0;
+}
+
+.rightCard:hover {
+  box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3);
+}
+
+.rightCard>div {
+  will-change: transform;
+  height: 100%;
+  margin: 0vw 0;
+}
+
+.rightCard {
+  position: absolute;
+  width: (640/3)px;
+  height: 160px;
+  background: transparent;
+  border-radius: 5px;
+  box-shadow: 10px 10px 30px 10px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.5s, opacity 0.5s;
+  will-change: transform;
+  border: 2px solid white;
+  cursor: grab;
+  overflow: visible;
+  touch-action: none;
+  animation-duration: 1s;
+  animation-name: rightcard;
+}
+
+@keyframes rightcard {
+  0% {
+    border: 1rem solid;
+}
+
+10% {
+    border-color :aqua;
+}
+
+20% {
+    border-color :green;
+}
+
+30% {
+    border-color : blueviolet;
+}
+
+40% {
+    border-color : burlywood;
+}
+
+50% {
+    border-color : red;
+}
+
+60% {
+    border-color : purple;
+}
+
+70% {
+    border-color : gainsboro;
+}
+
+80% {
+    border-color : paleturquoise;
+}
+
+90% {
+    border-color : lightcoral;
+}
+
+100% {
+    border-color : wheat;
+    border: solid;
+}
+}
+
+.rightCard>div>* {
   height: 100%;
   background-size: cover;
   background-position: center center;
@@ -84,4 +166,100 @@
   background-size: cover;
   background-position: center center;
   margin: 0vw 0;
+}
+
+.c1 {
+  animation-duration: 3s;
+  animation-name: cardstart;
+}
+
+@keyframes cardstart {
+  0% {
+    margin-left: 10%;
+    scale:2;
+  }
+
+  100% {
+    margin-left: 0%;
+    
+  }
+}
+
+.rightCard2:hover {
+  box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3);
+}
+
+.rightCard2>div {
+  will-change: transform;
+  height: 100%;
+}
+
+.rightCard2 {
+  position: absolute;
+  width: (640/3)px;
+  height: 160px;
+  background: transparent;
+  border-radius: 5px;
+  box-shadow: 10px 10px 30px 10px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.5s, opacity 0.5s;
+  will-change: transform;
+  border: 2px solid white;
+  cursor: grab;
+  overflow: visible;
+  touch-action: none;
+  animation-duration: 1s;
+  animation-name: rightcard2;
+}
+
+@keyframes rightcard2 {
+  0% {
+    border: 1rem solid;
+}
+
+10% {
+    border-color :aqua;
+}
+
+20% {
+    border-color :green;
+}
+
+30% {
+    border-color : blueviolet;
+}
+
+40% {
+    border-color : burlywood;
+}
+
+50% {
+    border-color : red;
+}
+
+60% {
+    border-color : purple;
+}
+
+70% {
+    border-color : gainsboro;
+}
+
+80% {
+    border-color : paleturquoise;
+}
+
+90% {
+    border-color : lightcoral;
+}
+
+100% {
+    border-color : wheat;
+    border: solid;
+}
+}
+
+.rightCard2>div>* {
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
 }

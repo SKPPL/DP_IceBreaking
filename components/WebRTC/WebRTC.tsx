@@ -12,6 +12,7 @@ import Rocket from "../Game/SegmentState/rocket";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import Waiting from "../PageElements/Waiting";
+import styles from './styles.module.css'
 
 const ICE_SERVERS = {
   iceServers: [
@@ -389,6 +390,7 @@ export default function WebRTC() {
             <div className="flex flex-row h-1/3">
               <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
               <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
+              <div className="w-1/3 border border-dotted" ></div>
             </div>
           </div>
           {/* <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="hidden box-border height width mb-5 border-4 text-white">
@@ -404,18 +406,19 @@ export default function WebRTC() {
           )}
           <div className="h-[480px] w-[640px] self-center border border-black">
             <div className="flex flex-row h-1/3">
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
-              <div className="w-1/3 border border-dotted border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
+              <div className="w-1/3 border border-dotted border-b-gray-400" ></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
-              <div className="w-1/3 border border-dotted border-b-gray-400"></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
+              <div className="w-1/3 border border-dotted border-b-gray-400" ></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
-              <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 " ></div>
+              <div className="w-1/3 border border-dotted border-r-gray-400 " ></div>
+              <div className="w-1/3 border border-dotted" ></div>
             </div>
           </div>
         </div>

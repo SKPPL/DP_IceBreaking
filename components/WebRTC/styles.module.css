@@ -1,0 +1,54 @@
+#p {
+    animation-duration:3s;
+    animation-iteration-count: infinite;
+    animation-name : bomb;
+    position : relative;
+    overflow : visible;
+}
+
+@keyframes bomb {
+    0% {
+        border:solid
+    }
+
+    10% {
+        border-color :aqua;
+    }
+
+    20% {
+        border-color :green;
+    }
+
+    30% {
+        border-color : blueviolet;
+    }
+
+    40% {
+        border-color : burlywood;
+    }
+
+    50% {
+        border-color : red;
+    }
+
+    60% {
+        border-color : purple;
+    }
+
+    70% {
+        border-color : gainsboro;
+    }
+
+    80% {
+        border-color : paleturquoise;
+    }
+
+    90% {
+        border-color : lightcoral;
+    }
+
+    100% {
+        border-color : wheat;
+        border: 3rem solid;
+    }
+}

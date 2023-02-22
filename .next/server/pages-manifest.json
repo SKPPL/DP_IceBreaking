@@ -3,6 +3,6 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/api/webRTC/socket": "pages/api/webRTC/socket.js",
-  "/ready": "pages/ready.js",
-  "/rooms/[roomName]": "pages/rooms/[roomName].js"
+  "/rooms/[roomName]": "pages/rooms/[roomName].js",
+  "/ready": "pages/ready.js"
 }

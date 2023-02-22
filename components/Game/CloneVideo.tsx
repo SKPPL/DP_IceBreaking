@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from "react";
-
 interface segmentData {
     auth: boolean;
     id: number;
