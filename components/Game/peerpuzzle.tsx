@@ -12,7 +12,6 @@ import Bar from "@/components/PageElements/ProgressBar/Bar";
 import { useRecoilState } from "recoil";
 import { peerWaitState } from "./atom";
 
-let isShuffle : boolean = true;
 let isRightPlace : boolean[] = [false, false, false, false, false, false, false, false, false];
 let i : number;
 
@@ -50,12 +49,16 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
               // TODO : 상대방 퍼즐이 로켓 상태인 경우, 그 외의 경우로 나눠야함
               setPeerPosition(dataJSON);
               break;
-
+            
+            case "item":
+              if (dataJSON.segementState === "magnet") {
+                setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
+              }
+            
             case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가
               dispatch({ type: `puzzleComplete/plus_peer` });
               i = dataJSON.i
               { dataJSON.isRightPlace ? isRightPlace[i] = true : "" }
-              console.log(isRightPlace)
               break;
           }
         }
@@ -113,9 +116,6 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       case "magnet": setPeerWait(true); break;
     }
 
-  setTimeout(() => {
-    isShuffle = false
-  }, 2000)
 
 
   return (
@@ -123,12 +123,13 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       {[...Array(9)].map((_, i) => {
         return (
           <>
+            <div className={styles.c1}>
             {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
             {(peerPosition.i !== i) &&
-              <div className={isShuffle ? styles.c1 : ""}>
+
                 <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />
-              </div>
-            }
+              }
+            </div>
           </>
         );
       })}

@@ -96,6 +96,7 @@
 }
 
 .text {
+  color:white;
   font-weight: 600;
   font-size: 6.67em;
   will-change: opacity;
