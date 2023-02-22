@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, memo } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import styles from "../styles.module.css";
+import useSound from "use-sound"
 
 interface Props {
     i: number;
@@ -14,6 +15,8 @@ const img = new Image();
 img.src = "../images/new_ice.png";
 img.width= 640
 img.height = 480
+
+const iceCrackSoundUrl = '/sounds/can.wav'
 
 function Ice({ i, auth, segmentState, videoId }: Props) {
     //퍼즐 데이터 스토어와 연결 react-redux
@@ -43,10 +46,12 @@ function Ice({ i, auth, segmentState, videoId }: Props) {
     });
 
     var iceCount = 2;
+    const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, {playbackRate: 1})
 
     function breakTheIce(){
         if (iceCount > 0) {
             iceCount -= 1
+            iceCrackSoundPlay();
         }
     }
 

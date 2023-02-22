@@ -363,7 +363,7 @@ export default function WebRTC() {
 
   return (
     <>
-      <button onClick={leaveRoom} type="button" className="bg-black hidden text-9xl box-border height width border-4 text-white">
+      <button onClick={leaveRoom} type="button" className="bg-black hidden text-9xl box-border height width-4 text-white">
         Leave
       </button>
       <video className="w-full hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
@@ -376,24 +376,24 @@ export default function WebRTC() {
               <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className="h-[480px] w-[640px] self-center border" id={styles.gamepan}>
+          <div className="h-[480px] w-[640px] self-center" id={styles.gamepan}>
             <div className="flex flex-row h-1/3">
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
-              <div className="w-1/3 border border-dotted border-b-gray-400"></div>
+              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpan}`}></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400"></div>
-              <div className="w-1/3 border border-dotted border-b-gray-400"></div>
+              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpan}`}></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
-              <div className="w-1/3 border border-dotted border-r-gray-400 "></div>
-              <div className="w-1/3 border border-dotted" ></div>
+              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
             </div>
           </div>
-          {/* <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="hidden box-border height width mb-5 border-4 text-white">
+          {/* <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="hidden box-border height width mb-5-4 text-white">
             {cameraSetting ? "화면 끄기" : "화면 켜기"}
           </button>
           <select className="hidden" onChange={handleSelect} ref={selectRef}></select> */}
@@ -406,19 +406,19 @@ export default function WebRTC() {
           )}
           <div className="h-[480px] w-[640px] self-center" id={styles.gamepan}>
             <div className="flex flex-row h-1/3">
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
-              <div className="w-1/3 border border-dotted border-b-gray-400" ></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
-              <div className="w-1/3 border border-dotted border-r-gray-400 border-b-gray-400" ></div>
-              <div className="w-1/3 border border-dotted border-b-gray-400" ></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className="w-1/3 border border-dotted border-r-gray-400 " ></div>
-              <div className="w-1/3 border border-dotted border-r-gray-400 " ></div>
-              <div className="w-1/3 border border-dotted" ></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
+              <div className={`w-1/3 ${styles.eachpan}`} ></div>
             </div>
           </div>
         </div>

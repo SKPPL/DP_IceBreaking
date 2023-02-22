@@ -2,6 +2,8 @@ import React, { useRef, useState, useMemo, useEffect, MouseEvent } from 'react'
 import { X } from 'react-feather'
 import { useTransition } from '@react-spring/web'
 import { Main, Container, Message, Button, Content, Life } from './styles'
+import useSound from "use-sound"
+import magnet from '@/components/Game/SegmentState/magnet'
 
 let id = 0
 
@@ -89,14 +91,33 @@ interface Props {
   segmentState: string;
 }
 
+const icesoundUrl = '/sounds/iceCrack.mp3'
+const magnetSoundUrl = '/sounds/MagnetSound.mp3'
+const rocketSoundUrl = '/sounds/rocketLaunch.mp3'
+
+
 export default function Modal({ segmentState }:Props) {
   const ref = useRef<null | AddFunction>(null)
+  
+  const [iceSoundPlay] = useSound(icesoundUrl, { playbackRate: 1.5 })
+  const [magnetPlay] = useSound(magnetSoundUrl)
+  const [rocketPlay] = useSound(rocketSoundUrl)
 
+  
   useEffect(() => {
     switch(segmentState){
-      case 'rocket': ref.current?.(`적이 로켓 아이템을 사용하였습니다.`);  break;
-      case 'magnet': ref.current?.(`적이 자석 아이템을 사용하였습니다.`);  break;
-      case 'ice': ref.current?.(`적이 얼음 아이템을 사용하였습니다.`);  break;
+      case 'rocket':
+        ref.current?.(`적이 로켓 아이템을 사용하였습니다.`);
+        rocketPlay();
+        break;
+      case 'magnet':
+        ref.current?.(`적이 자석 아이템을 사용하였습니다.`);
+        magnetPlay();
+        break;
+      case 'ice':
+        ref.current?.(`적이 얼음 아이템을 사용하였습니다.`);
+        iceSoundPlay();
+        break;
     }
   }, [segmentState]);
 

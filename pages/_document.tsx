@@ -5,7 +5,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
       </Head>
-      <body>
+      <body className="bg-[url('../public/images/backgroundNeon.jpg')]">
         <Main />
         <NextScript />
       </body>

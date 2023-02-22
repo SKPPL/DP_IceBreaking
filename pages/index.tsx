@@ -17,7 +17,7 @@ export default function Home() {
       </Head>
       <div className=''>
         <div className="container-2xl" >
-          <main className="flex flex-col bg-center bg-cover justify-center items-center h-screen bg-[url('../public/images/backgroundNeon.jpg')]" >
+          <main className="flex flex-col bg-center bg-cover justify-center items-center h-screen" >
             <div className={styles.indexbox}>
               <MainPage />
               <BagicHome />

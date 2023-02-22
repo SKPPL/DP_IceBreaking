@@ -7,10 +7,13 @@ import { useRouter } from "next/router";
 import styles from "../styles.module.css";
 import CloneVideo from "../CloneVideo";
 import { useIsMounted } from "usehooks-ts";
+import useSound from 'use-sound'
+
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
+const puzzleSoundUrl = '/sounds/puzzleHit.mp3'
 
 interface Props {
     i: number;
@@ -40,6 +43,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [(640 / 3) * d, (480 / 3) * d];
     const [width, height] = [(640 / 3) * (i % 3) - widthOx * 1.5, (480 / 3) * ((i - (i % 3)) / 3) + heightOx];
+    const [puzzleSoundPlay] = useSound(puzzleSoundUrl);
 
     // TODO : 옆으로 init 시 api.start 이동
 
@@ -76,16 +80,20 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
 
 
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
+    let dataTransferCount = 0;
     const bindBoardPos = useDrag(
         (params) => {
             if (isRightPlace) return;
             if (!auth) return;
             // 저장된 좌표에 마우스의 움직임을 더해줌
+            if (params.hovering) return;
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
             // !params.down : 마우스를 떼는 순간
+
             if (!params.down) {
                 // 마우스를 떼는 순간에 좌표+offset한 값을 저장
+                //TODO 저장 잘 되게 해야함
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
@@ -97,6 +105,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                 domTarget.current!.setAttribute("style", "z-index: 0");
                 api.start({ x: width, y: height });
                 setIsRightPlace(true);
+                puzzleSoundPlay();
                 if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace : true, i: i }));
                 dispatch({ type: "puzzleComplete/plus_mine" });
                 setZindex(0);
@@ -106,9 +115,12 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                     return;
                 }
             }
-            // 알맞은 위치에 놓지 않더라도 아무튼 좌표 보냄
-            if (dataChannel?.readyState === "open") {
-                dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
+            dataTransferCount += 1;
+            if (dataTransferCount < 30 || dataTransferCount % 5 === 0) {
+                // 알맞은 위치에 놓지 않더라도 아무튼 좌표 보냄
+                if (dataChannel?.readyState === "open") {
+                    dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
+                }
             }
         },
         {

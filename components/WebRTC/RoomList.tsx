@@ -17,7 +17,7 @@ interface roomsInfo {
     roomSize: number;
 }
 
-const RoomList = ({ nickName }: any) => {
+const RoomList = () => {
     useSocket();
     const router = useRouter();
     const [rooms, setRooms] = useState<roomsInfo[]>([]);
