@@ -271,3 +271,54 @@
     transform: rotate(0deg);
   }
 }
+
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Odibee+Sans&display=swap');
+
+$progress-height: 20px;
+$progress-width: 550px;
+$progress-padding: 0.3em;
+$progress-value-color: #03fcc2;
+$value-color: #fc0349;
+$value-size: 28px;
+
+.neonbar {
+  position: absolute;
+  box-sizing: border-box;
+  font-family: 'Odibee Sans', cursive;
+  margin-top: 670px;
+}
+
+.bar {
+  -webkit-appearance: none;
+  height: $progress-height;
+  width: $progress-width;
+
+  &::-webkit-progress-bar {
+    padding: $progress-padding;
+    border-radius: calc(#{$progress-height} / 2);
+    background: lighten(#111, 5);
+  }
+  &::-webkit-progress-value {
+    background: $progress-value-color;
+    box-shadow: 0 0 0.6em lighten($progress-value-color, 2),
+      0 0 0.8em lighten($progress-value-color, 4);
+    border-radius: calc(#{$progress-height}/2);
+  }
+}
+
+.mybar {
+  direction: rtl;
+}
+
+.barvalue {
+  color: $value-color;
+  font-size: $value-size;
+  line-height: $progress-height;
+  letter-spacing: 1px;
+  text-shadow: 0 0 .3em darken($value-color, 1),
+    0 0 .6em darken($value-color, 6);
+  margin: 0.5em;
+}
