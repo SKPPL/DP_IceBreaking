@@ -191,7 +191,6 @@
   box-shadow: 10px 10px 30px 10px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.5s, opacity 0.5s;
   will-change: transform;
-  border: 2px solid white;
   overflow: visible;
   touch-action: none;
   animation-duration: 1s;
@@ -243,4 +242,5 @@
     outline-color : wheat;
     outline: solid;
 }
+
 }
