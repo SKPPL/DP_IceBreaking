@@ -30,19 +30,13 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
 
 
 
-    const iceAuthTemp = auth;
-    //아래 조건문 위로 올리면 안됨
-    if (segmentState === "ice") {
-        auth = false;
-    }
-
     const [iceCount, setIceCount] = useState(2);
     const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, { playbackRate: 1 })
 
     function breakTheIce() {
-        if (!iceAuthTemp) return;
+        if (!auth) return;
         if (iceCount > 0) {
-            if (dataChannel) dataChannel.send(JSON.stringify({ type: "ice", i: i, auth: iceAuthTemp, iceCount: iceCount - 1 }));
+            if (dataChannel) dataChannel.send(JSON.stringify({ type: "ice", i: i, auth: auth, iceCount: iceCount - 1 }));
             setIceCount(iceCount - 1);
             iceCrackSoundPlay();
         }
@@ -54,7 +48,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                     let dataJSON = JSON.parse(event.data);
                     switch (dataJSON.type) {
                         case "ice":
-                            if (i === dataJSON.i && iceAuthTemp !== dataJSON.auth) {
+                            if (i === dataJSON.i && auth !== dataJSON.auth) {
                                 setIceCount(dataJSON.iceCount);
                                 // console.log(iceCount, dataJSON.iceCount, '왜 실행안해')
                                 iceCrackSoundPlay();
@@ -68,7 +62,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     //퍼즐 데이터 스토어와 연결 react-redux
     const dispatch = useDispatch();
     const storedPosition = useSelector((state: any) => {
-        return iceAuthTemp ? state.myPuzzle : state.peerPuzzle;
+        return auth ? state.myPuzzle : state.peerPuzzle;
     });
     const [isRightPlace, setIsRightPlace] = useState(false);
 
@@ -117,12 +111,11 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
 
 
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    let dataTransferCount = 0;
 
     const bindBoardPos = useDrag(
         (params) => {
-            if (isRightPlace) return;
-            if (!iceAuthTemp) return;
+            if (isRightPlace || isSameOutline(x.get(), y.get(), width, height)) return;
+            if (!auth) return;
             if (iceCount !== 0) return;
             // 저장된 좌표에 마우스의 움직임을 더해줌
             if (params.hovering) return;
@@ -130,14 +123,6 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
             y.set(storedPosition[i][1] + params.offset[1]);
             // !params.down : 마우스를 떼는 순간
 
-            if (!params.down) {
-                // 마우스를 떼는 순간에 좌표+offset한 값을 저장
-                //TODO 저장 잘 되게 해야함
-                dispatch({ type: `${!iceAuthTemp ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
-                //마우스 떼면 offset 아예 초기화
-                params.offset[0] = 0;
-                params.offset[1] = 0;
-            }
 
             //알맞은 위치에 놓았을 때
             if (!params.down && !isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
@@ -148,18 +133,25 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                 if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
                 dispatch({ type: "puzzleComplete/plus_mine" });
                 setZindex(0);
-                dispatch({ type: `${iceAuthTemp ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
+                dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
                 if (dataChannel?.readyState === "open") {
                     dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
                     return;
                 }
             }
-            dataTransferCount += 1;
-            if (dataTransferCount < 30 || dataTransferCount % 5 === 0) {
-                // 알맞은 위치에 놓지 않더라도 아무튼 좌표 보냄
-                if (dataChannel?.readyState === "open") {
-                    dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
-                }
+            if (!params.down) {
+                // 마우스를 떼는 순간에 좌표+offset한 값을 저장
+                //TODO 저장 잘 되게 해야함
+                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
+                //마우스 떼면 offset 아예 초기화
+                params.offset[0] = 0;
+                params.offset[1] = 0;
+            }
+
+            // 알맞은 위치에 놓지 않더라도 아무튼 좌표 보냄
+            if (dataChannel?.readyState === "open") {
+                dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
+
             }
         },
         {
@@ -196,8 +188,13 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     const setPeerWait = useSetRecoilState(peerWaitState)
     useEffect(() => {
         return () => {
-            dispatch({ type: `${!iceAuthTemp ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
-            iceAuthTemp ? setMyWait(false) : setPeerWait(false);
+            if (isRightPlace) {
+                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0], storedPosition[i][1]] } });
+            }
+            else {
+                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
+            }
+            auth ? setMyWait(false) : setPeerWait(false);
         };
     }, [])
     return (
@@ -224,7 +221,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                         }}
                     >
                         <animated.div>
-                            {(iceCount <= 0) ? <CloneVideo key={i} id={i} auth={iceAuthTemp} videoId={videoId} segmentState={segmentState} /> : <IcedVideo iceCount={iceCount} id={i} auth={iceAuthTemp} videoId={videoId} segmentState={segmentState} />}
+                            {(iceCount <= 0) ? <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} /> : <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
                         </animated.div>
                     </animated.div>
                 </div>
@@ -236,6 +233,13 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
 export function isNearOutline(x: number, y: number, positionx: number, positiony: number) {
     const diff = 30;
     if (x > positionx - diff && x < positionx + diff && y > positiony - diff && y < positiony + diff) {
+        return true;
+    } else return false;
+}
+
+export function isSameOutline(x: number, y: number, positionx: number, positiony: number) {
+    const diff = 0;
+    if (x === positionx && y === positiony) {
         return true;
     } else return false;
 }

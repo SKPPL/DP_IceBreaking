@@ -78,7 +78,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     switch (mySegmentState.segementState) {
         case "rocket": setMyWait(true); break;
         case "magnet": setMyWait(true); break;
-        case "ice": setMyWait(true); break;
+
     }
 
     return (

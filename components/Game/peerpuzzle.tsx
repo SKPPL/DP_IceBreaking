@@ -114,7 +114,6 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   switch (peerSegmentState.segementState) {
     case "rocket": setPeerWait(true); break;
     case "magnet": setPeerWait(true); break;
-    case "ice": setPeerWait(true); break;
   }
 
 

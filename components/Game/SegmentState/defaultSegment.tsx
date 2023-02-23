@@ -70,6 +70,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
         };
     });
 
+
     useEffect(() => {
         if (peerxy !== undefined) {
             dispatch({ type: `${peerxy ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [peerxy.peerx, peerxy.peery] } });
@@ -82,7 +83,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     let dataTransferCount = 0;
     const bindBoardPos = useDrag(
         (params) => {
-            if (isRightPlace) return;
+            if (isRightPlace || isSameOutline(x.get(), y.get(), width, height)) return;
             if (!auth) return;
             // 저장된 좌표에 마우스의 움직임을 더해줌
             if (params.hovering) return;
@@ -90,14 +91,6 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
             y.set(storedPosition[i][1] + params.offset[1]);
             // !params.down : 마우스를 떼는 순간
 
-            if (!params.down) {
-                // 마우스를 떼는 순간에 좌표+offset한 값을 저장
-                //TODO 저장 잘 되게 해야함
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
-                //마우스 떼면 offset 아예 초기화
-                params.offset[0] = 0;
-                params.offset[1] = 0;
-            }
 
             //알맞은 위치에 놓았을 때
             if (!params.down && !isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
@@ -114,12 +107,19 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                     return;
                 }
             }
-            dataTransferCount += 1;
-            if (dataTransferCount < 30 || dataTransferCount % 5 === 0) {
-                // 알맞은 위치에 놓지 않더라도 아무튼 좌표 보냄
-                if (dataChannel?.readyState === "open") {
-                    dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
-                }
+            if (!params.down) {
+                // 마우스를 떼는 순간에 좌표+offset한 값을 저장
+                //TODO 저장 잘 되게 해야함
+                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
+                //마우스 떼면 offset 아예 초기화
+                params.offset[0] = 0;
+                params.offset[1] = 0;
+            }
+
+            // 알맞은 위치에 놓지 않더라도 아무튼 좌표 보냄
+            if (dataChannel?.readyState === "open") {
+                dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
+
             }
         },
         {
@@ -157,8 +157,12 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
 
     useEffect(() => {
         return () => {
-            dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
-
+            if (isRightPlace) {
+                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0], storedPosition[i][1]] } });
+            }
+            else {
+                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
+            }
             auth ? setMyWait(true) : setPeerWait(true);
         }
     }, []);
@@ -203,5 +207,12 @@ export function isNearOutline(x: number, y: number, positionx: number, positiony
         return true;
     } else return false;
 }
+export function isSameOutline(x: number, y: number, positionx: number, positiony: number) {
+    const diff = 0;
+    if (x === positionx && y === positiony) {
+        return true;
+    } else return false;
+}
+
 
 export default memo(DefaultSegment);
