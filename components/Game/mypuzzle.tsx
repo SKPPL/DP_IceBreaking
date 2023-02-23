@@ -64,6 +64,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             const myface = document.getElementById("myface");
             myface!.style.display = "block";
             document.getElementById("fullscreen")!.style.display = "none";
+            document.getElementById("cremony_my")!.style.display = "block";
             setTimeout(() => {
                 router
                     .replace({

@@ -22,8 +22,8 @@ const Ceremony = React.forwardRef(() => {
           variants={variants}
         >
           <p className="text-black text-7xl">
-            승리하셨습니다!👍 <br />
-            🕺세레모니 타임💃
+            <br />
+            🕺승리자의 세레모니 타임💃
           </p>
         </motion.div>
       </div>

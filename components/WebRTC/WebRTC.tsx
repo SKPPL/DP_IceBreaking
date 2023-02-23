@@ -13,6 +13,7 @@ import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import Waiting from "../PageElements/Waiting";
 import styles from './styles.module.css'
+import Ceremony from "../Game/Ceremony";
 
 const ICE_SERVERS = {
   iceServers: [
@@ -366,8 +367,15 @@ export default function WebRTC() {
       <button onClick={leaveRoom} type="button" className="bg-black hidden text-9xl box-border height width-4 text-white">
         Leave
       </button>
+      <div id="cremony_my" className="hidden">
+        <Ceremony />
+      </div>
+      <div id="cremony_peer" className="hidden">
+        <Ceremony />
+      </div>
       <video className="w-full hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
       <video className="w-full hidden " id="myface" autoPlay playsInline ref={userVideoRef}></video>
+
       {!dataChannel && <Waiting />}
       <div className="flex flex-row" id="fullscreen">
         <div className="flex flex-col w-1/2 h-screen">
