@@ -26,7 +26,7 @@ interface Props {
     dataChannel: RTCDataChannel | undefined
 }
 
-const fanFareSoundUrl = 'sounds/Fanfare.mp3';
+const fanFareSoundUrl = '/sounds/Fanfare.mp3';
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     // segmentState for item use

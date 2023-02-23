@@ -27,7 +27,7 @@ interface Props {
   dataChannel: RTCDataChannel | undefined;
 }
 
-const fanFareSoundUrl = 'sounds/Fanfare.mp3';
+const fanFareSoundUrl = '/sounds/Fanfare.mp3';
 
 function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   // peerPosition for concurrent position sync
