@@ -11,6 +11,8 @@ import ModalPeer from "../PageElements/ItemAlertPeer/ModalPeer";
 import Bar from "@/components/PageElements/ProgressBar/Bar";
 import { useRecoilState } from "recoil";
 import { peerWaitState } from "./atom";
+import useSound from 'use-sound'
+
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
 let i: number;
@@ -24,6 +26,9 @@ interface Props {
   auth: boolean;
   dataChannel: RTCDataChannel | undefined;
 }
+
+const fanFareSoundUrl = 'sounds/Fanfare.mp3';
+
 function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   // peerPosition for concurrent position sync
   const [peerPosition, setPeerPosition] = useState({ type: "move", i: -1, peerx: 0, peery: 0 });
@@ -37,6 +42,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     setPeerSegmentState({ type: "item", segementState: "default" });
   };
   const router = useRouter();
+
+  const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
   //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
   useEffect(() => {
@@ -73,6 +80,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       peer!.style.display = "block";
       document.getElementById("fullscreen")!.style.display = "none";
       document.getElementById("cremony_peer")!.style.display = "block";
+      fanFareSoundPlay();
       setTimeout(() => {
         router
           .replace({

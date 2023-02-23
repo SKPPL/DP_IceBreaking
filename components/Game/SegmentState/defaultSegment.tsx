@@ -159,7 +159,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     useEffect(() => {
         return () => {
             if (isRightPlace) {
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0], storedPosition[i][1]] } });
+                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
             }
             else {
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });

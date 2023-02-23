@@ -14,7 +14,7 @@ const GRADIENTS = [
     '/images/lip.png',
     '/images/nose.png',
     '/images/rotation.png',
-    '/images/divide.png',
+    '/images/magnet.png',
 ]
 
 export default function ItemBar() {
