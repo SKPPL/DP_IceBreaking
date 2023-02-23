@@ -94,9 +94,9 @@ export default function ModalPeer({ segmentState }:Props) {
 
   useEffect(() => {
     switch(segmentState){
-      case 'rocket': ref.current?.(`적에게 로켓 아이템을 사용하였습니다.`);  break;
-      case 'magnet': ref.current?.(`적에게 자석 아이템을 사용하였습니다.`);  break;
-      case 'ice': ref.current?.(`적에게 얼음 아이템을 사용하였습니다.`);  break;
+      case 'rocket': ref.current?.(`적의 조각이 로켓으로 변했습니다.`);  break;
+      case 'magnet': ref.current?.(`적의 조각이 빨려들어갑니다.`);  break;
+      case 'ice': ref.current?.(`적의 조각이 얼어붙었습니다.`);  break;
     }
   }, [segmentState]);
 

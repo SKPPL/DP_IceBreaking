@@ -83,10 +83,11 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     let dataTransferCount = 0;
     const bindBoardPos = useDrag(
         (params) => {
-            if (isRightPlace || isSameOutline(x.get(), y.get(), width, height)) return;
+            if (isRightPlace) return;
             if (!auth) return;
             // 저장된 좌표에 마우스의 움직임을 더해줌
             if (params.hovering) return;
+            if (isSameOutline(x.get(), y.get(), width, height)) return;
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
             // !params.down : 마우스를 떼는 순간

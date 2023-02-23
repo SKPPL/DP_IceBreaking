@@ -20,7 +20,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
     const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle });
     const dispatch = useDispatch();
     // storedPosition[i][0], storedPosition[i][1]] 
-    const [{ pos }, api] = useSpring(() => ({ pos: [0, 0] }))
+    const [{ pos }, api] = useSpring(() => ({ pos: [35, 35] }))
     const [{ angle }, angleApi] = useSpring(() => ({
         angle: 90,
         config: config.wobbly,

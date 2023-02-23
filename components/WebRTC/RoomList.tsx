@@ -6,6 +6,7 @@ import useSocket from "../../pages/hooks/useSocket";
 import { animated, useSpring } from "@react-spring/web";
 import WebRTC from "./WebRTC";
 import RoomMake from "../PageElements/MakeRoom";
+import styles from './styles.module.css'
 
 interface RoomInfoResponse {
     success: boolean;
@@ -94,7 +95,7 @@ const RoomList = () => {
 
     return (
         <>
-            <div className="flex-col w-1/2 mt-10 p-5 relative inline-flex mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400">
+            <div className={`flex-col w-1/2 mt-10 p-5 relative inline-flex mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg bg-slate-700 ${styles.readypan}`}>
                 <div className="place-self-end mb-5 mt-5">
                     <RoomMake onClickCreateRoom={onClickCreateRoom} />
                 </div>
