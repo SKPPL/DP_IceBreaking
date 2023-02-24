@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import styles from "./styles.module.css"
 
 const SKILLS = [
   {
@@ -48,9 +49,9 @@ export default function Tutorial() {
 
   return (
     <>
-      <Button variant="warning" onClick={openModal} className=" bg-warning rounded-circle text-black">
+      <button onClick={openModal} className={styles.mulum}>
         ?
-      </Button>
+      </button>
       <Modal size="lg" aria-labelledby="contained-modal-title-vcente" centered show={isOpen} onHide={closeModal}>
         <Modal.Header closeButton className="bg-black">
           <Modal.Title>
