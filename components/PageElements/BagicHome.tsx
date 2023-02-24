@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Start from "./Start";
+import PuzzleScreen from "@/components/PageElements/puzzle";
 
 
 export default function BagicHome() {
@@ -17,10 +18,11 @@ export default function BagicHome() {
 
   return (
     <>
-      <div className="flex flex-row p-8 rounded-3xl">
+      <div className="flex flex-row p-2 rounded-3xl">
       <div className= "flex flex-col">
-        <div className="flex flex-col items-center w-72">
-          { appear && <Start /> }
+        <div className="flex flex-col items-center w-96">
+          {/* { appear && <Start /> } */}
+          <PuzzleScreen/>
         </div>
       </div>
       
