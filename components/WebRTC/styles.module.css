@@ -71,21 +71,11 @@
     0 0 0.2rem #e5affa,
     inset 0 0 0.2rem #e5affa; 
 }
-.readypan{
-    /* animation: pulsate 1.5s infinite alternate;   */
-    border: 0.2rem solid #fff;
-    box-shadow: 0 0 .2rem #fff,
-              0 0 .2rem #fff,
-              0 0 2rem #bc13fe,
-              0 0 0.8rem #bc13fe,
-              0 0 2.8rem #bc13fe,
-              inset 0 0 1.3rem #bc13fe; 
-}
 
 @keyframes pulsate {
     
     100% {
-  
+        
         text-shadow:
         0 0 4px #fff,
         0 0 11px #fff,
@@ -95,20 +85,267 @@
         0 0 90px #bc13fe,
         0 0 100px #bc13fe,
         0 0 150px #bc13fe;
-    
+        
     }
     
     0% {
-  
-      text-shadow:
-      0 0 2px #fff,
-      0 0 4px #fff,
-      0 0 6px #fff,
-      0 0 10px #bc13fe,
-      0 0 45px #bc13fe,
-      0 0 55px #bc13fe,
-      0 0 70px #bc13fe,
-      0 0 80px #bc13fe;
-  
-  }
+        
+        text-shadow:
+        0 0 2px #fff,
+        0 0 4px #fff,
+        0 0 6px #fff,
+        0 0 10px #bc13fe,
+        0 0 45px #bc13fe,
+        0 0 55px #bc13fe,
+        0 0 70px #bc13fe,
+        0 0 80px #bc13fe;
+        
+    }
+}
+
+/* -------------------------- RoomList -------------------------- */
+.readyContainer{
+    height: 100vh;
+}
+
+.btnReady{
+    display: flex;
+    justify-content: space-between;
+}
+
+.readypan{
+    position: relative;
+    top: 10%;
+    bottom:10%;
+    left: 25%;
+    flex-direction: column;
+    padding: 30px;
+    width: 50%;
+    height: 80%;
+    display: inline-flex;
+    border-radius: 0.5rem/* 8px */;
+    background-color: rgb(51 65 85);
+    border: 0.2rem solid #fff;
+    box-shadow: 0 0 .2rem #fff,
+              0 0 .2rem #fff,
+              0 0 2rem #bc13fe,
+              0 0 0.8rem #bc13fe,
+              0 0 2.8rem #bc13fe,
+              inset 0 0 1.3rem #bc13fe; 
+}
+
+.roomInput{
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    place-self: end;
+    margin-bottom: 20px;
+    padding: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background-color: rgb(51 65 85);
+    border: none;
+    outline: none;
+    color: #fff;
+    z-index: 0;
+    border: 0.1rem solid #fff;
+    box-shadow: 0 0 .05rem #fff,
+              0 0 .5rem #fff,
+              0 0 0.5rem #e2aff6,
+              0 0 0.2rem #e2aff6,
+              0 0 0.7rem #e2aff6,
+              inset 0 0 0.15rem #e2aff6;
+}
+
+.glowOnHover {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 30px;
+    padding: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background-color: rgb(51 65 85);
+    border: none;
+    outline: none;
+    color: #fff;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+    border: 0.1rem solid #fff;
+    box-shadow: 0 0 .05rem #fff,
+              0 0 .5rem #fff,
+              0 0 0.5rem #e2aff6,
+              0 0 0.2rem #e2aff6,
+              0 0 0.7rem #e2aff6,
+              inset 0 0 0.15rem #e2aff6;
+}
+
+.glowOnHover:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+}
+
+.glowOnHover:hover:before {
+    opacity: 1;
+}
+
+.glowOnHover:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(51 65 85);
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}
+
+
+
+.joinBtn {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background-color: rgb(51 65 85);
+    border: none;
+    outline: none;
+    color: #fff;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+    border: 0.1rem solid #fff;
+    box-shadow: 0 0 .05rem #fff,
+              0 0 .5rem #fff,
+              0 0 0.5rem #e2aff6,
+              0 0 0.2rem #e2aff6,
+              0 0 0.7rem #e2aff6,
+              inset 0 0 0.15rem #e2aff6;
+}
+
+.joinBtn:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+}
+
+.joinBtn:hover:before {
+    opacity: 1;
+}
+
+.joinBtn:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(51 65 85);
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+.tableDiv{
+    max-height: 80%; overflow-y: scroll;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.readyTable{
+    z-index: 0;
+    background-color: rgb(51 65 85);
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    border: 0.1rem solid #fff;
+    box-shadow: 0 0 .05rem #fff,
+              0 0 .5rem #fff,
+              0 0 0.5rem #e2aff6,
+              0 0 0.2rem #e2aff6,
+              0 0 0.7rem #e2aff6,
+              inset 0 0 0.15rem #e2aff6;
+}
+
+
+.readyTbody{
+    border: 0.1rem solid #fff;
+    box-shadow: 0 0 .05rem #fff,
+              0 0 .5rem #fff,
+              0 0 0.5rem #e2aff6,
+              0 0 0.2rem #e2aff6,
+              0 0 0.7rem #e2aff6,
+              inset 0 0 0.15rem #e2aff6;
+}
+
+.readyTbody:hover{
+    z-index: 10;
+    background-color: #34495e;
+    cursor: pointer;
+    border: 0.1rem solid #fff;
+    box-shadow: 0 0 .1rem #fff,
+              0 0 1rem #fff,
+              0 0 1rem #e2aff6,
+              0 0 0.4rem #e2aff6,
+              0 0 1.4rem #e2aff6,
+              inset 0 0 0.3rem #e2aff6;
+}
+
+
+
+.modal {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    top: 30%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+
+.modalContent{
+    display: flex;
+    flex-direction: column;
+    border: 0.1rem solid #fff;
+    box-shadow: 0 0 .1rem #fff,
+              0 0 .1rem #fff,
+              0 0 1rem #bc13fe,
+              0 0 0.4rem #bc13fe,
+              0 0 1.4rem #bc13fe,
+              inset 0 0 0.3rem #bc13fe;
 }
