@@ -57,7 +57,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                             //TODO : 5초 후 원상복귀 시키는 코드, 좌표도 원상복귀 시켜야함 -> 좌표 store에 저장시켜놓고
                             setTimeout(() => {
                                 makeMyDefaultSegment()
-                            }, 7000);
+                            }, 8000);
                     }
                 }
             })
