@@ -5,8 +5,10 @@ import { useRouter } from "next/router";
 import useSocket from "../../pages/hooks/useSocket";
 import { animated, useSpring } from "@react-spring/web";
 import WebRTC from "./WebRTC";
-import RoomMake from "../PageElements/MakeRoom";
+import RoomMake from "./MakeRoom";
 import styles from './styles.module.css'
+import Tutorial from "@/components/PageElements/Modal/Tutorial";
+
 
 interface RoomInfoResponse {
     success: boolean;
@@ -91,49 +93,41 @@ const RoomList = () => {
     );
 
 
-
-
     return (
         <>
-            <div className={`flex-col w-1/2 mt-10 p-5 relative inline-flex mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg bg-slate-700 ${styles.readypan}`}>
-                <div className="place-self-end mb-5 mt-5">
+            <div className={styles.readyContainer}>
+                <div className={styles.readypan}>
+                    <div className={styles.btnReady}>
+                    <Tutorial />
                     <RoomMake onClickCreateRoom={onClickCreateRoom} />
-                </div>
-
-                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" className="text-center text-2xl px-10 py-3">
-                                    방 번호
-                                </th>
-                                <th scope="col" className="text-center text-2xl px-10 py-3">
-                                    방 제목
-                                </th>
-                                <th scope="col" className="text-center text-2xl px-10 py-3">
-                                    참가 인원
-                                </th>
-                                <th scope="col" className="text-center px-10 py-3">
-                                    <span className="sr-only">Enter</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rooms?.map((room, index) => (
-                                <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                    <th scope="row" className="text-center text-xl px-10 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {index + 1}
-                                    </th>
-                                    <td className="text-center text-xl px-10 py-4">{room.roomName}</td>
-                                    <td className="text-center text-xl px-10 py-4">({room.roomSize}/2)</td>
-                                    <td className="text-center text-xl px-10 py-4">
-                                    {room.roomSize < 2 ? <button className="p-2 text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
-                                            onClick={onClickJoinRoom(room.roomName)}>입장하기</button> : <button className="text-red-600">입장하기</button>}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    </div>
+                            <table className={styles.readyTable}>
+                                <thead className=" bg-gray-50">
+                                    <tr className={styles.readyTable}>
+                                        <th scope="col" className="text-center text-xl px-10 py-3">
+                                            방 제목
+                                        </th>
+                                        <th scope="col" className="text-center text-xl px-10 py-3">
+                                            참가 인원
+                                        </th>
+                                        <th scope="col" className="text-center px-10 py-3">
+                                            Enter
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rooms?.map((room, index) => (
+                                        <tr key={index} className={styles.readyTbody} onClick={onClickJoinRoom(room.roomName)}>
+                                            <td className="text-xl px-10 py-4">{room.roomName}</td>
+                                            <td className="text-xl px-10 py-4">({room.roomSize}/2)</td>
+                                            <td className="text-xl px-10 py-4">
+                                            {room.roomSize < 2 ? <button className={styles.joinBtn}
+                                                    onClick={onClickJoinRoom(room.roomName)}>입장하기</button> : <button className="text-red-600">입장하기</button>}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                 </div>
             </div>
         </>
