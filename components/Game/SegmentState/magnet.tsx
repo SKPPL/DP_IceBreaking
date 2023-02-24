@@ -111,7 +111,7 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
                         key={index}
                         className={styles.card}
                         style={{
-                            zIndex: 100,
+                            zIndex: 20,
                             transform: props.xy.to(trans),
                         }}
                     >
