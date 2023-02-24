@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import styles from "./styles.module.css"
+import styles from "./styles.module.css";
 
 const SKILLS = [
   {
@@ -39,7 +39,7 @@ export default function Tutorial() {
     setIsOpen(false);
   };
 
-  const handleClickSkill = (e: Event) => {
+  const handleClickSkill = (e: any) => {
     if (e) {
       setCurrentSkillIndex(e.currentTarget.getAttribute("data-value"));
     }
@@ -95,9 +95,7 @@ export default function Tutorial() {
                   width="300"
                   height="300"
                   src={`${currentSkill.videoUrl}?autoplay=1&mute=1`}
-                  frameborder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen
                 />
               </div>
             </div>
