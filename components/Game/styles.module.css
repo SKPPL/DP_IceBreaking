@@ -61,48 +61,48 @@
 @keyframes rightcard {
   0% {
     outline: 1rem solid;
-}
+  }
 
-10% {
-    outline-color :aqua;
-}
+  10% {
+    outline-color: aqua;
+  }
 
-20% {
-    outline-color :green;
-}
+  20% {
+    outline-color: green;
+  }
 
-30% {
-    outline-color : blueviolet;
-}
+  30% {
+    outline-color: blueviolet;
+  }
 
-40% {
-    outline-color : burlywood;
-}
+  40% {
+    outline-color: burlywood;
+  }
 
-50% {
-    outline-color : red;
-}
+  50% {
+    outline-color: red;
+  }
 
-60% {
-    outline-color : purple;
-}
+  60% {
+    outline-color: purple;
+  }
 
-70% {
-    outline-color : gainsboro;
-}
+  70% {
+    outline-color: gainsboro;
+  }
 
-80% {
-    outline-color : paleturquoise;
-}
+  80% {
+    outline-color: paleturquoise;
+  }
 
-90% {
-    outline-color : lightcoral;
-}
+  90% {
+    outline-color: lightcoral;
+  }
 
-100% {
-    outline-color : wheat;
+  100% {
+    outline-color: wheat;
     outline: solid;
-}
+  }
 }
 
 .rightCard>div>* {
@@ -176,7 +176,7 @@
 @keyframes cardstart {
   0% {
     margin-left: 10%;
-    scale:2;
+    scale: 2;
   }
 
 
@@ -200,47 +200,79 @@
 @keyframes rightcard2 {
   0% {
     outline: 1rem solid;
-}
+  }
 
-10% {
-    outline-color :aqua;
-}
+  10% {
+    outline-color: aqua;
+  }
 
-20% {
-    outline-color :green;
-}
+  20% {
+    outline-color: green;
+  }
 
-30% {
-    outline-color : blueviolet;
-}
+  30% {
+    outline-color: blueviolet;
+  }
 
-40% {
-    outline-color : burlywood;
-}
+  40% {
+    outline-color: burlywood;
+  }
 
-50% {
-    outline-color : red;
-}
+  50% {
+    outline-color: red;
+  }
 
-60% {
-    outline-color : purple;
-}
+  60% {
+    outline-color: purple;
+  }
 
-70% {
-    outline-color : gainsboro;
-}
+  70% {
+    outline-color: gainsboro;
+  }
 
-80% {
-    outline-color : paleturquoise;
-}
+  80% {
+    outline-color: paleturquoise;
+  }
 
-90% {
-    outline-color : lightcoral;
-}
+  90% {
+    outline-color: lightcoral;
+  }
 
-100% {
-    outline-color : wheat;
+  100% {
+    outline-color: wheat;
     outline: solid;
+  }
+
 }
 
+
+
+.gifSlide>div {
+  cursor: pointer;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 800;
+  font-size: 25em;
+  will-change: transform, opacity;
+  text-shadow: 0px 2px 40px #00000020, 0px 2px 5px #00000030;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.gif {
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
 }
