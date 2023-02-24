@@ -121,10 +121,10 @@
 
 .rocket {
   position: absolute;
-  background: url("../../public/images/rocket.gif") no-repeat;
+  background: url("../../public/images/rocket.gif") repeat;
   background-size: contain;
-  width: 140px;
-  height: 140px;
+  width: 147px;
+  height: 112px;
   cursor: -webkit-grab;
   will-change: transform;
   user-select: none;
