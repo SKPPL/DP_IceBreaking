@@ -123,8 +123,8 @@
   position: absolute;
   background: url("../../public/images/rocket.gif") repeat;
   background-size: contain;
-  width: 147px;
-  height: 112px;
+  width: 180px;
+  height: 137px;
   cursor: -webkit-grab;
   will-change: transform;
   user-select: none;

@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState, memo } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
-import { useDrag, useGesture } from "react-use-gesture";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import itemStore from "@/components/Game/store";
 import { useRouter } from "next/router";

@@ -19,8 +19,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
 
     const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle });
     const dispatch = useDispatch();
-    // storedPosition[i][0], storedPosition[i][1]] 
-    const [{ pos }, api] = useSpring(() => ({ pos: [35, 35] }))
+    const [{ pos }, api] = useSpring(() => ({ pos: [25, 25] }))
     const [{ angle }, angleApi] = useSpring(() => ({
         angle: 0,
         config: config.wobbly,
@@ -34,21 +33,27 @@ export default function rocket({ i, auth, dataChannel }: Props) {
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [(640 / 3) * d, (480 / 3) * d];
     const [width, height] = [(640 / 3) * (i % 3) - widthOx * 1.5, (480 / 3) * ((i - (i % 3)) / 3) + heightOx];
+    let dataTransferCount = 0;
     const bind = useDrag(
         ({ xy, previous, down, movement: pos, velocity, direction }) => {
             // 내꺼든 상대방 것이든 아무튼 움직일 수 있음
             // if (!auth) return
             // 상대방에게 내가 발생시킨 이벤트를 모두 전달
             api.start({
-                pos,
+                pos: [Math.min(Math.max(pos[0], -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]), Math.min(Math.max(pos[1], 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1])],
                 immediate: down,
                 config: { velocity: scale(direction, velocity), decay: true },
             })
             if (dist(xy, previous) > 10 || !down)
-                angleApi.start({ angle: Math.atan2(direction[0], -direction[1]) })
-            if (dataChannel)
-                dataChannel.send(JSON.stringify({ type: 'rocket', i: i, auth: auth, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction }));
-            console.log(xy, previous, pos)
+                angleApi.start({ angle: Math.atan2(direction[0], 1) })
+            if (!down || dataTransferCount % 2 === 0) {
+                //마우스 뗐을 때는 무조건 데이터 보내고, 그 외에는 2번 중 한 번만 보냄. 5번 중 1번은 너무 끊김. 2번 중 한 번은 스무스함
+                if (dataChannel) {
+                    dataChannel.send(JSON.stringify({ type: 'rocket', i: i, auth: auth, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction }));
+                }
+            }
+            dataTransferCount++;
+
         },
         {
             initial: () => pos.get(),
@@ -65,12 +70,12 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                         case "rocket":
                             if (i === dataJSON.i && auth === !dataJSON.auth) {
                                 api.start({
-                                    pos: dataJSON.pos,
+                                    pos: [Math.min(Math.max(dataJSON.pos[0], -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]), Math.min(Math.max(dataJSON.pos[1], 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1])],
                                     immediate: dataJSON.down,
                                     config: { velocity: scale(dataJSON.direction, dataJSON.velocity), decay: true },
                                 })
                                 if (dist(dataJSON.xy, dataJSON.previous) > 10 || !dataJSON.down)
-                                    angleApi.start({ angle: Math.atan2(dataJSON.direction[0], -dataJSON.direction[1]) })
+                                    angleApi.start({ angle: Math.atan2(dataJSON.direction[0], 1) })
                                 break;
                             }
                     }
@@ -98,10 +103,10 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                     [pos, angle],
                     // @ts-ignore
                     ([x, y], a) => {
-                        x = Math.min(Math.max(x, -widthOx * 1.5 - storedPosition[i][0]), widthOx * 1.5 - storedPosition[i][0]);
+                        x = Math.min(Math.max(x, -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]);
                         y = Math.min(Math.max(y, 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1]);
                         memo.current.x = storedPosition[i][0] + x;
-                        memo.current.y = storedPosition[i][1] + y;
+                        memo.current.y = storedPosition[i][0] + y;
                         return `translate3d(${x}px,${y}px,0) rotate(${a}rad)`
                     },
                 ),
