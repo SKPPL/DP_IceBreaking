@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, memo } from "react";
+import React, { useRef, useEffect, useState, memo, useCallback } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
 import { useDrag, useGesture } from "@use-gesture/react";
 import { Provider, useSelector, useDispatch } from "react-redux";
@@ -66,7 +66,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
             zoom: 0,
             x: storedPosition[i][0], // 초기 기준 좌표를 말하는 것 같음, offset은 상관없는듯
             y: storedPosition[i][1],
-            config: { mass: 2, tension: 750, friction: 50 },
+            config: { mass: 2, tension: 750, friction: 30 },
         };
     });
 
@@ -78,12 +78,11 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
         }
     }, [peerxy]);
 
-
-    const positionDataSend = () => {
+    const positionDataSend = useCallback(() => {
         if (dataChannel?.readyState === "open") {
             dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
         }
-    }
+    }, [dataChannel]);
 
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
     let dataTransferCount = 0; // 좌표 데이터 10번 중 한 번 보내기 위한 변수
@@ -93,7 +92,6 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
             if (isRightPlace) return;
             if (!auth) return;
             if (isSameOutline(x.get(), y.get(), width, height)) return;
-            api.start({ rotateX: 0, rotateY: 0, scale: params.active ? 1 : 1.05 });
 
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
@@ -142,12 +140,15 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     //useGesture는 움직임의 디테일을 위해서 있음
     useGesture(
         {
+            // onDrag: (active) => {
+            //     api.start({ rotateX: 0, rotateY: 0, scale: active ? 1 : 1.03 });
+            // },
             onMove: ({ xy: [px, py], dragging, down }) => {
                 !dragging &&
                     api.start({
                         rotateX: calcX(py, y.get()),
                         rotateY: calcY(px, x.get()),
-                        scale: 1.05,
+                        scale: 1.03,
                     });
             },
             onHover: (params) => {
