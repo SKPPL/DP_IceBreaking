@@ -8,3 +8,8 @@ export const peerWaitState = atom({
     key: 'peerWaitState',
     default: false,
 });
+
+export const dataChannelState = atom({
+    key: 'dataChannelState',
+    default: false,
+});

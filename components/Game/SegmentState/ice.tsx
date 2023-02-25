@@ -24,7 +24,7 @@ interface Props {
 
 function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
 
-
+    //TODO ice 버그 수정하기
 
     const iceCrackSoundUrl = '/sounds/can.wav'
 

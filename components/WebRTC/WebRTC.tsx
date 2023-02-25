@@ -14,6 +14,8 @@ import PeerPuzzle from "../Game/peerpuzzle";
 import Waiting from "../PageElements/Waiting";
 import styles from './styles.module.css'
 import Ceremony from "../Game/Ceremony";
+import { useRecoilState } from "recoil";
+import { dataChannelState } from "../Game/atom";
 
 const ICE_SERVERS = {
   iceServers: [
@@ -361,6 +363,11 @@ export default function WebRTC() {
       });
     }
   };
+  const [dataChannelExist, setDataChannelExist] = useRecoilState(dataChannelState);
+  useEffect(() => {
+    if (dataChannel)
+      setDataChannelExist(true)
+  }, [dataChannel])
 
   return (
     <>
