@@ -30,7 +30,8 @@ jobs:
               git fetch
               git pull origin main
               npm install 
-              npm run build 
+              npm run build
+              sudo pkill node
               nohup node server.js &
               
               
