@@ -34,7 +34,7 @@ jobs:
               sudo npm install 
               sudo npm run build
               ./remove.sh
-              /start.sh
+              ./start.sh
               
               
           
