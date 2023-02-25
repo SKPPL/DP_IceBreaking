@@ -6,18 +6,14 @@ import styles from "./styles.module.css";
 import { useRouter } from "next/router";
 
 
-const backgroundImageUrl = '/images/background.jpeg'
+const backgroundImageUrl = '/images/transparentPuzzle.png'
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
 
-function givePosition() {
-    const startButtonPosi = document.getElementById("startButton")?.getBoundingClientRect();
-    console.log(startButtonPosi)
-}
 
 export default function PuzzleScreen() {
-    
+
     const [targetX, setTargetX] = useState();
     const [targetY, setTargetY] = useState();
     const router = useRouter();
@@ -58,7 +54,7 @@ export default function PuzzleScreen() {
                     console.log(x.get(), y.get(), targetX, targetY);
                     console.log(targetX, targetY);
                 }
-                if(!params.down && isNearOutline(x.get(), y.get(), targetX, targetY)) {
+                if(!params.down && isPuzzleMatched(x.get(), y.get(), targetX, targetY)) {
                     router.push({
                         pathname: '/ready',
                     })
@@ -87,13 +83,8 @@ export default function PuzzleScreen() {
 
     return (
         <>
-            <div className="flex flex-row bg-slate-50 place-items-center">
+            <div className="flex flex-row place-items-center">
                 <div className={styles.container}>
-                    {/* <span className="t"></span>
-                    <span className="r"></span>
-                    <span className="b"></span>
-                    <span className="l"></span> */}
-                    {/* TODO: jigsaw 모양으로 만들기 */}
                     <animated.div
                     ref={domTarget}
                     className={styles.card}
@@ -112,20 +103,21 @@ export default function PuzzleScreen() {
                     </animated.div>
                     </animated.div>
                 </div>
-
             </div>
-            <div id= "startButton" className="text-black w-56 absolute" onClick={givePosition}>
-                비어있음
+            
+            <div className={styles.startButton}>
+                <div id="startButton" ></div>
             </div>
         </>
     )
 }
 
 
-export function isNearOutline(x: number, y: number, positionx: number | undefined, positiony: number | undefined) {
-    const diff = 30;
-    if (x > positionx - 140 - diff && x < positionx - 140 + diff && y > positiony - 446 - diff && y < positiony - 446 + diff) {
-        console.log('성공')
+export function isPuzzleMatched(x: number, y: number, positionx: number | undefined, positiony: number | undefined) {
+    const diff = 60;
+    if (x > positionx -360 - diff && x < positionx -360 + diff && y > positiony - 443 - diff && y < positiony - 443 + diff) {
+        return true;
+    } else if( x > 0 - diff && x < 0+ diff && y > 240- diff && y < 240 + diff ) {
         return true;
     } else return false;
 }
