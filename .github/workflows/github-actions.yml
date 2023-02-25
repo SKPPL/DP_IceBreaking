@@ -1,4 +1,5 @@
 name: project github-action
+
 #github actions은 main에 push될 때 트리거
 on:
     push:
@@ -12,7 +13,6 @@ jobs:
       matrix:
         node-version: [16.X]
 
-
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -22,20 +22,8 @@ jobs:
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          port : 22
-          script : |
-            whoami
-            ls -al
-            pwd
-            cd DP_IceBreaking
-            git reset --hard
-            git fetch
-            git pull
-            npm install 
-            npm run build
-            node server.js
-            
-            
+          port: ${{ secrets.PORT }}
+          script: whoami
 
