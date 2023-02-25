@@ -21,9 +21,9 @@ jobs:
       - name : SSH Command
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.AWS_SSH_HOST }}
-          username: ${{ secrets.AWS_SSH_USERNAME }}
-          key: ${{ secrets.AWS_SSH_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
           script-stop : true
           script : |
             cd DP_IceBreaking
