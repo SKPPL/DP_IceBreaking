@@ -1,0 +1,38 @@
+name: project github-action
+#github actions은 main에 push될 때 트리거
+on:
+    push:
+      branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+    
+    strategy:
+      matrix:
+        node-version: [16.X]
+
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+        
+          
+      - name : SSH Command
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.AWS_SSH_HOST }}
+          username: ${{ secrets.AWS_SSH_USERNAME }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script-stop : true
+          script : |
+            cd DP_IceBreaking
+            git reset --hard
+            git fetch
+            git pull
+            npm install 
+            npm run build
+            node server.js
+            
+            
+
