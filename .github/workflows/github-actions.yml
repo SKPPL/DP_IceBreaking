@@ -34,7 +34,7 @@ jobs:
               sudo npm install 
               sudo npm run build
               cd ../
-              ./start.sh
+              sudo ./start.sh
               cd DP_IceBreaking
               node server.js
               
