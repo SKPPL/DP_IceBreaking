@@ -26,7 +26,14 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-              whoami 
-              pwd
+              cd DP_IceBreaking
+              git fetch
+              git pull origin main
+              npm install 
+              npm run build 
+              sudo pkill -9 ef node server.js
+              node server.js
+              
+              
           
 
