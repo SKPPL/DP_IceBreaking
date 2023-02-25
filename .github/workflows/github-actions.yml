@@ -31,10 +31,9 @@ jobs:
               cd DP_IceBreaking
               git fetch
               git pull origin main
-              sudo rm -rf node_modules
               sudo npm install 
               sudo npm run build
-              sudo nohup node server.js &
+              sudo node server.js
               
               
           
