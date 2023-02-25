@@ -33,8 +33,7 @@ jobs:
               git pull origin main
               sudo npm install 
               sudo npm run build
-              ./remove.sh
-              ./start.sh
+              npm run dev
               
               
           
