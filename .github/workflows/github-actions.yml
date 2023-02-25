@@ -32,8 +32,7 @@ jobs:
               git fetch
               git pull origin main
               sudo npm install 
-              sudo npm run build
-              sudo node server.js
+              node server.js
               
               
           
