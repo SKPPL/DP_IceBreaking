@@ -108,9 +108,9 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                     // @ts-ignore
                     ([x, y], a) => {
                         x = Math.min(Math.max(x, -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]);
-                        y = Math.min(Math.max(y, 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1]);
+                        y = Math.min(Math.max(y, 0 - storedPosition[i][1]), heightOx * 4 - storedPosition[i][1]);
                         memo.current.x = storedPosition[i][0] + x;
-                        memo.current.y = storedPosition[i][0] + y;
+                        memo.current.y = storedPosition[i][1] + y;
                         return `translate3d(${x}px,${y}px,0) rotate(${a}rad) rotateY(${flipped ? 180 : 0}deg)`
                     },
                 ),
