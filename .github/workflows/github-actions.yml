@@ -26,6 +26,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script_stop : true
           script : |
+            whoami
+            ls -al
+            pwd
             cd DP_IceBreaking
             git reset --hard
             git fetch
