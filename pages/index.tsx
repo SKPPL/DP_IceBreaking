@@ -21,7 +21,9 @@ export default function Home() {
             <div className={styles.indexbox}>
               <MainPage />
               <BagicHome />
-
+              <div className={styles.startBox} style={{ pointerEvents: "none" }}>
+                <div className="w-[213px] h-[160px] text-white text-center ">Start</div>
+              </div>
             </div>
           </main>
         </div>
