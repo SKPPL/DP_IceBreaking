@@ -19,12 +19,14 @@ jobs:
         
           
       - name : SSH Command
+        timeout-minutes: 5
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
+          
           script: |
               cd DP_IceBreaking
               git fetch
