@@ -18,12 +18,10 @@ export default function BagicHome() {
 
   return (
     <>
-      <div className="flex flex-row p-2 rounded-3xl">
+      <div className="flex rounded-3xl absolute mt-[400px] mr-[10px]">
       <div className= "flex flex-col">
-        <div className="flex flex-col items-center w-96">
           {/* { appear && <Start /> } */}
-          <PuzzleScreen/>
-        </div>
+          { appear && <PuzzleScreen/> }
       </div>
       
       </div>

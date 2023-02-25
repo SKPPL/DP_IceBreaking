@@ -4,27 +4,92 @@ import { useSpring, animated, to } from '@react-spring/web'
 import { useDrag, useGesture } from 'react-use-gesture'
 import styles from "./styles.module.css";
 import { useRouter } from "next/router";
+import CloneVideo from "../Game/CloneVideo";
+import dynamic from "next/dynamic";
 
+const PuzzleSegment = dynamic(
+    import('@/components/Game/CloneVideo'), {
+    loading: () => (<div></div>),
+    ssr: false
+    },
+);
 
 const backgroundImageUrl = '/images/transparentPuzzle.png'
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
 
+const auth = true;
+const id = 4;
+
+interface MyConstraints {
+    audio?: boolean | MediaTrackConstraints;
+    video?: boolean | MediaTrackConstraints;
+}
+
 
 export default function PuzzleScreen() {
 
-    const [targetX, setTargetX] = useState();
-    const [targetY, setTargetY] = useState();
     const router = useRouter();
+    const userVideoRef = useRef<any>();
+    const userStreamRef = useRef<MediaStream>();
+
+    async function getCameras(): Promise<void> {
+        try  {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const cameras = devices.filter((device) => device.kind === "videoinput");
+            if (typeof userStreamRef.current !== "undefined") {
+                const currentCamera = userStreamRef.current.getVideoTracks()[0];
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function getMedia(deviceId?: string): Promise<void> {
+        const initialConstraints: MyConstraints = {
+          audio: false,
+          // video: { facingMode: "user" },
+          video: { width: 640, height: 480 },
+        };
+        const cameraConstraints: MyConstraints = {
+          audio: false,
+          video: { deviceId: { exact: deviceId } },
+        };
     
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia(deviceId ? cameraConstraints : initialConstraints);
+          userStreamRef.current = stream;
+          userVideoRef.current.srcObject = stream;
+          userVideoRef.current.onloadedmetadata = () => {
+            userVideoRef.current.play();
+          };
+          if (!deviceId) {
+            console.log("[get Cameras]");
+            await getCameras();
+          }
+        } catch (e) {
+          console.log(e);
+        }
+    }
+
+    const handleRoomCreated = async (): Promise<void> => {
+        try {
+          console.log("[Homepage joined]");
+          await getMedia();
+        } catch (e) {
+          console.log(e);
+        }
+      };
+
     useEffect(() => {
         const preventDefault = (e: Event) => e.preventDefault()
         document.addEventListener('gesturestart', preventDefault)
         document.addEventListener('gesturechange', preventDefault)
-        const startButtonPosition = document.getElementById("startButton")?.getBoundingClientRect();
-        setTargetX(startButtonPosition?.x);
-        setTargetY(startButtonPosition?.y);
+        // const startButtonPosition = document.getElementById("startButton")?.getBoundingClientRect();
+        // setTargetX(startButtonPosition?.x);
+        // setTargetY(startButtonPosition?.y);
+        handleRoomCreated();
     
         return () => {
           document.removeEventListener('gesturestart', preventDefault)
@@ -51,10 +116,9 @@ export default function PuzzleScreen() {
         const bind = useDrag(
             (params) => {
                 if(!params.down) {
-                    console.log(x.get(), y.get(), targetX, targetY);
-                    console.log(targetX, targetY);
+                    console.log(x.get(), y.get());
                 }
-                if(!params.down && isPuzzleMatched(x.get(), y.get(), targetX, targetY)) {
+                if(!params.down && isPuzzleMatched(x.get(), y.get())) {
                     router.push({
                         pathname: '/ready',
                     })
@@ -83,6 +147,7 @@ export default function PuzzleScreen() {
 
     return (
         <>
+            <video className="w-full hidden" id="myface" autoPlay playsInline ref={userVideoRef}></video>
             <div className="flex flex-row place-items-center">
                 <div className={styles.container}>
                     <animated.div
@@ -99,25 +164,19 @@ export default function PuzzleScreen() {
                         rotateZ,
                     }}>
                     <animated.div>
-                        <div style={{ backgroundImage: `url(${backgroundImageUrl})` }} />
+                        <PuzzleSegment auth={auth} id={id} videoId="myface" segmentState="" />
                     </animated.div>
                     </animated.div>
                 </div>
-            </div>
-            
-            <div className={styles.startButton}>
-                <div id="startButton" ></div>
             </div>
         </>
     )
 }
 
 
-export function isPuzzleMatched(x: number, y: number, positionx: number | undefined, positiony: number | undefined) {
+export function isPuzzleMatched(x: number, y: number) {
     const diff = 60;
-    if (x > positionx -360 - diff && x < positionx -360 + diff && y > positiony - 443 - diff && y < positiony - 443 + diff) {
-        return true;
-    } else if( x > 0 - diff && x < 0+ diff && y > 240- diff && y < 240 + diff ) {
+    if( x > 375 - diff && x < 375 + diff && y > -65 - diff && y < -65 + diff ) {
         return true;
     } else return false;
 }
