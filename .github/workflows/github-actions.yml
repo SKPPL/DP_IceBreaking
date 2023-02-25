@@ -33,7 +33,7 @@ jobs:
               git pull origin main
               sudo npm install 
               sudo npm run build
-              pkill -9 node
+              sudo pkill -9 node
               sudo node server.js
               
               
