@@ -24,7 +24,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script-stop : true
+          script_stop : true
           script : |
             cd DP_IceBreaking
             git reset --hard
