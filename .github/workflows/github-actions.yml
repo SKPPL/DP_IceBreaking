@@ -19,12 +19,12 @@ jobs:
         
           
       - name : SSH Command
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script_stop : true
+          port : 22
           script : |
             whoami
             ls -al
