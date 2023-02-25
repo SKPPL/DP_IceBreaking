@@ -92,18 +92,10 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
             if (isRightPlace) return;
             if (!auth) return;
             if (isSameOutline(x.get(), y.get(), width, height)) return;
-
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
-
-
             // !params.down : 마우스를 떼는 순간
             if (!params.down) {
-                positionDataSend();
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
-                //마우스 떼면 offset 아예 초기화
-                params.offset[0] = 0;
-                params.offset[1] = 0;
                 //알맞은 위치에 놓았을 때
                 if (!isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
                     target.current!.setAttribute("style", "z-index: 0");
@@ -119,6 +111,11 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                         return;
                     }
                 }
+                positionDataSend();
+                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
+                //마우스 떼면 offset 아예 초기화
+                params.offset[0] = 0;
+                params.offset[1] = 0;
                 // 마우스를 떼는 순간에는 무조건 좌표+offset한 값을 저장하고 데이터를 보냄
             } else if (dataTransferCount % 4 === 0) {
                 // 알맞은 위치에 놓지 않더라도, 아무튼 좌표 보냄
