@@ -1,7 +1,9 @@
 import React, { useRef, useState, useMemo, useEffect, MouseEvent } from 'react'
 import { X } from 'react-feather'
 import { useTransition } from '@react-spring/web'
-import { Main, Container, Message, Button, Content, Life } from './styles'
+import { MainR, ContainerR, MessageR, ButtonR, ContentR, LifeR } from './rocketStyles'
+import { MainM, ContainerM, MessageM, ButtonM, ContentM, LifeM } from './magnetStyles'
+import { MainI, ContainerI, MessageI, ButtonI, ContentI, LifeI } from './iceStyles'
 
 let id = 0
 
@@ -33,21 +35,21 @@ function MessageHub({
 
   let timeout;
 
-  switch (segmentState) {
-    case 'rocket': timeout = 9000; break;
-    case 'magnet': timeout = 7000; break;
-    case 'ice': timeout = 15000; break;
+  switch(segmentState){
+    case 'rocket': timeout = 8500;  break;
+    case 'magnet': timeout = 6500;  break;
+    case 'ice': timeout = 14500;  break;
   }
 
   const transitions = useTransition(items, {
-    from: { opacity: 0, height: 0, life: '100%' },
+    from: { transform: 'translateX(100%)', life: '100%' },
     keys: item => item.key,
     enter: item => async (next, cancel) => {
-      cancelMap.set(item, cancel)
-      await next({ opacity: 1, height: refMap.get(item).offsetHeight + 10 })  // 아이템 사용 알람 높이 조절
+      // cancelMap.set(item, cancel)
+      await next({ transform: 'translateX(0%)' })  // 아이템 사용 알람 높이 조절
       await next({ life: '0%' })
     },
-    leave: [{ opacity: 0 }, { height: 0 }],
+    leave: [{ transform: 'translateX(100%)'}],
     onRest: (result, ctrl, item) => {
       setItems(state =>
         state.filter(i => {
@@ -64,50 +66,73 @@ function MessageHub({
     })
   }, [])
 
-  return (
-    <Container>
-      {transitions(({ life, ...style }, item) => (
-        <Message style={style}>
-          <Content ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-            <Life style={{ right: life }} />
-            <p>{item.msg}</p>
-            <Button
-              onClick={(e: MouseEvent) => {
-                e.stopPropagation()
-                if (cancelMap.has(item) && life.get() !== '0%') cancelMap.get(item)()
-              }}>
-              <X size={18} />
-            </Button>
-          </Content>
-        </Message>
-      ))}
-    </Container>
-  )
+  switch(segmentState){
+    case 'rocket':
+      return (
+        <ContainerR>
+          {transitions(({ life, ...style }, item) => (
+            <MessageR style={style}>
+              <ContentR ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                <LifeR style={{ right: life }} />
+                <p>{item.msg}</p>
+              </ContentR>
+            </MessageR>
+          ))}
+        </ContainerR>
+      )
+    case 'magnet':
+      return (
+        <ContainerM>
+          {transitions(({ life, ...style }, item) => (
+            <MessageM style={style}>
+              <ContentM ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                <LifeM style={{ right: life }} />
+                <p>{item.msg}</p>
+              </ContentM>
+            </MessageM>
+          ))}
+        </ContainerM>
+      )
+    case 'ice':
+      return (
+        <ContainerI>
+          {transitions(({ life, ...style }, item) => (
+            <MessageI style={style}>
+              <ContentI ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                <LifeI style={{ right: life }} />
+                <p>{item.msg}</p>
+              </ContentI>
+            </MessageI>
+          ))}
+        </ContainerI>
+      )
+  }
+  return(<></>)
 }
 
 interface Props {
   segmentState: string;
 }
 
-export default function ModalPeer({ segmentState }: Props) {
+export default function ModalPeer({ segmentState }:Props) {
   const ref = useRef<null | AddFunction>(null)
 
   useEffect(() => {
-    switch (segmentState) {
-      case 'rocket': ref.current?.(`적의 조각이 로켓으로 변했습니다.`); break;
-      case 'magnet': ref.current?.(`적의 조각이 빨려들어갑니다.`); break;
-      case 'ice': ref.current?.(`적의 조각이 얼어붙었습니다.`); break;
+    switch(segmentState){
+      case 'rocket': ref.current?.(`적의 로켓을 움직이세요!`);  break;
+      case 'magnet': ref.current?.(`블랙홀로 조각이 빨려들어갑니다!`);  break;
+      case 'ice': ref.current?.(`적의 조각이 얼어붙었습니다!`);  break;
     }
   }, [segmentState]);
 
 
   return (
-
-    <MessageHub segmentState={segmentState}
-      children={(add: AddFunction) => {
-        ref.current = add
-      }}
-    />
+      <MessageHub segmentState = {segmentState}
+        children={(add: AddFunction) => {
+          ref.current = add
+        }}
+      />
 
   )
 }
+
