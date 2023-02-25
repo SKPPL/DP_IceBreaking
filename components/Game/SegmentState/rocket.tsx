@@ -22,7 +22,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
     // storedPosition[i][0], storedPosition[i][1]] 
     const [{ pos }, api] = useSpring(() => ({ pos: [35, 35] }))
     const [{ angle }, angleApi] = useSpring(() => ({
-        angle: 90,
+        angle: 0,
         config: config.wobbly,
     }))
     // direction calculates pointer direction

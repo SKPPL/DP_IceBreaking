@@ -102,8 +102,15 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 }
                 )
             }
-            <Modal segmentState={mySegmentState.segementState} />
+            {/* 아이템 쓸 때 나오는 효과 */}
+            <div className="absolute grid w-[640px] h-[480px] mt-[160px]" style={{ pointerEvents: "none" }}>
+                {mySegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+
+            </div>
             <MyBar score={puzzleCompleteCounter.mine} />
+            <Modal segmentState={mySegmentState.segementState} />
+
         </>
     )
 }
