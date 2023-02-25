@@ -6,7 +6,7 @@ import useSound from "use-sound"
 import { useSetRecoilState } from "recoil";
 import { myWaitState, peerWaitState } from "../atom";
 import IcedVideo from "../IcedVideo";
-import { useDrag, useGesture } from "react-use-gesture";
+import { useDrag, useGesture } from "@use-gesture/react";
 import CloneVideo from "../CloneVideo";
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
@@ -88,7 +88,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     }, []);
 
 
-    const domTarget = useRef<HTMLDivElement>(null);
+    const target = useRef<HTMLDivElement>(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => {
         return {
             rotateX: 0,
@@ -127,7 +127,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
 
             //알맞은 위치에 놓았을 때
             if (!params.down && !isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
-                domTarget.current!.setAttribute("style", "z-index: 0");
+                target.current!.setAttribute("style", "z-index: 0");
                 api.start({ x: width, y: height });
                 setIsRightPlace(true);
                 puzzleSoundPlay();
@@ -180,7 +180,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
             onHover: ({ hovering }) => !hovering && api.start({ rotateX: 0, rotateY: 0, scale: 1 }),
 
         },
-        { domTarget, eventOptions: { passive: false } }
+        { target, eventOptions: { passive: false } }
     );
 
 
@@ -203,7 +203,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
             <div className="">
                 <div className={styles.container} onClick={breakTheIce}>
                     <animated.div
-                        ref={domTarget}
+                        ref={target}
                         className={isRightPlace ? `${styles.rightCard}` : `${styles.card}`}
                         {...bindBoardPos()}
                         style={{

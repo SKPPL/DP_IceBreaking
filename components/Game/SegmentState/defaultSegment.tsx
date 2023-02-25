@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, memo } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
-import { useDrag, useGesture } from "react-use-gesture";
+import { useDrag, useGesture } from "@use-gesture/react";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import itemStore from "@/components/Game/store";
 import { useRouter } from "next/router";
@@ -56,7 +56,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
         };
     }, []);
 
-    const domTarget = useRef<HTMLDivElement>(null);
+    const target = useRef<HTMLDivElement>(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => {
         return {
             rotateX: 0,
@@ -79,66 +79,70 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     }, [peerxy]);
 
 
+    const positionDataSend = () => {
+        if (dataChannel?.readyState === "open") {
+            dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
+        }
+    }
+
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    let dataTransferCount = 0;
-    const bindBoardPos = useDrag(
+    let dataTransferCount = 0; // 좌표 데이터 10번 중 한 번 보내기 위한 변수
+
+    useDrag(
         (params) => {
             if (isRightPlace) return;
             if (!auth) return;
-            // 저장된 좌표에 마우스의 움직임을 더해줌
-            if (params.hovering) return;
             if (isSameOutline(x.get(), y.get(), width, height)) return;
+            api.start({ rotateX: 0, rotateY: 0, scale: params.active ? 1 : 1.05 });
+
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
+
+
             // !params.down : 마우스를 떼는 순간
-
-
-            //알맞은 위치에 놓았을 때
-            if (!params.down && !isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
-                domTarget.current!.setAttribute("style", "z-index: 0");
-                api.start({ x: width, y: height });
-                setIsRightPlace(true);
-                puzzleSoundPlay();
-                if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
-                dispatch({ type: "puzzleComplete/plus_mine" });
-                setZindex(0);
-                dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
-                if (dataChannel?.readyState === "open") {
-                    dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
-                    return;
-                }
-            }
             if (!params.down) {
-                // 마우스를 떼는 순간에 좌표+offset한 값을 저장
-                //TODO 저장 잘 되게 해야함
+                positionDataSend();
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;
+                //알맞은 위치에 놓았을 때
+                if (!isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
+                    target.current!.setAttribute("style", "z-index: 0");
+                    api.start({ x: width, y: height });
+                    setIsRightPlace(true);
+                    puzzleSoundPlay();
+                    if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
+                    dispatch({ type: "puzzleComplete/plus_mine" });
+                    setZindex(0);
+                    dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
+                    if (dataChannel?.readyState === "open") {
+                        dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
+                        return;
+                    }
+                }
+                // 마우스를 떼는 순간에는 무조건 좌표+offset한 값을 저장하고 데이터를 보냄
+            } else if (dataTransferCount % 4 === 0) {
+                // 알맞은 위치에 놓지 않더라도, 아무튼 좌표 보냄
+                positionDataSend();
             }
-
-            // 알맞은 위치에 놓지 않더라도 아무튼 좌표 보냄
-            if (dataChannel?.readyState === "open") {
-                dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
-
-            }
+            dataTransferCount++;
         },
         {
+            target,
             bounds: { top: 0 - storedPosition[i][1], bottom: heightOx * 4 - storedPosition[i][1], left: -widthOx * 2 - storedPosition[i][0], right: widthOx * 1 - storedPosition[i][0] },
             rubberband: 0.8,
+            delay: true,
+            pointer: { capture: true },
         }
     );
 
+    const memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1], cnt: 0 }) // 이름은 memo인데 useRef해서 ㅈㅅ
 
     //useGesture는 움직임의 디테일을 위해서 있음
     useGesture(
         {
-            onDrag: ({ active }) => {
-                if (isRightPlace) return;
-                api.start({ rotateX: 0, rotateY: 0, scale: active ? 1 : 1.05 });
-
-            },
-            onMove: ({ xy: [px, py], dragging }) => {
+            onMove: ({ xy: [px, py], dragging, down }) => {
                 !dragging &&
                     api.start({
                         rotateX: calcX(py, y.get()),
@@ -146,22 +150,27 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                         scale: 1.05,
                     });
             },
-            onHover: ({ hovering }) => !hovering && api.start({ rotateX: 0, rotateY: 0, scale: 1 }),
+            onHover: (params) => {
+                !params.hovering && api.start({ rotateX: 0, rotateY: 0, scale: 1 })
+            },
 
         },
-        { domTarget, eventOptions: { passive: false } }
+        { target, eventOptions: { passive: false }, }
     );
 
-    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] })
+
+
     const setMyWait = useSetRecoilState(myWaitState)
     const setPeerWait = useSetRecoilState(peerWaitState)
 
     useEffect(() => {
         return () => {
+            // unmount될 떄, 즉 아이템을 써서 segmentState가 변할 때 좌표를 저장함에 있어 오차가 없도록 하기 위해 isRightPlace가 true인 경우와 아닌 경우로 나눠서 저장함
             if (isRightPlace) {
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
             }
             else {
+                //isRightPlace가 false인 경우, 마지막으로 저장된 좌표를 저장함, 이는 부정확해도 되므로 아래 animated.div에서 memo를 매번 저장하지 않도록 함. 8번에 한 번씩만 저장함
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
             }
             auth ? setMyWait(true) : setPeerWait(true);
@@ -174,9 +183,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
             <div className="">
                 <div className={styles.container}>
                     <animated.div
-                        ref={domTarget}
+                        ref={target}
                         className={isRightPlace ? `${styles.rightCard}` : `${styles.card}`}
-                        {...bindBoardPos()}
                         style={{
                             transform: "perspective(600px)",
                             x,
