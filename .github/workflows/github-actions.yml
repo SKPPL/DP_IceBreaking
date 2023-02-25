@@ -33,6 +33,9 @@ jobs:
               git pull origin main
               sudo npm install 
               sudo npm run build
+              cd ../
+              ./start.wh
+              cd DP_IceBreaking
               node server.js
               
               
