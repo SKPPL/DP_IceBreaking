@@ -22,8 +22,12 @@ export default function rocket({ i, auth, dataChannel }: Props) {
     const [{ pos }, api] = useSpring(() => ({ pos: [25, 25] }))
     const [{ angle }, angleApi] = useSpring(() => ({
         angle: 0,
-        config: config.wobbly,
+        config: config.slow,
     }))
+    const [flipped, setFlip] = useState(false)
+    const { transform } = useSpring({
+        transform: `rotateY(${flipped ? 180 : 0}deg)`,
+    })
     // direction calculates pointer direction
     // memo is like a cache, it contains the values that you return inside "set"
     // this way we can inject the springs current coordinates on the initial event and
@@ -33,7 +37,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [(640 / 3) * d, (480 / 3) * d];
     const [width, height] = [(640 / 3) * (i % 3) - widthOx * 1.5, (480 / 3) * ((i - (i % 3)) / 3) + heightOx];
-    let dataTransferCount = 0;
+
     const bind = useDrag(
         ({ xy, previous, down, movement: pos, velocity, direction }) => {
             // 내꺼든 상대방 것이든 아무튼 움직일 수 있음
@@ -44,16 +48,14 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                 immediate: down,
                 config: { velocity: scale(direction, velocity), decay: true },
             })
-            if (dist(xy, previous) > 10 || !down)
-                angleApi.start({ angle: Math.atan2(direction[0], 1) })
-            if (!down || dataTransferCount % 2 === 0) {
-                //마우스 뗐을 때는 무조건 데이터 보내고, 그 외에는 2번 중 한 번만 보냄. 5번 중 1번은 너무 끊김. 2번 중 한 번은 스무스함
-                if (dataChannel) {
-                    dataChannel.send(JSON.stringify({ type: 'rocket', i: i, auth: auth, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction }));
-                }
-            }
-            dataTransferCount++;
 
+            if (direction[0] < 0 && flipped === false) { setFlip(true) }
+            if (direction[0] > 0 && flipped === true) { setFlip(false) }
+            if (dist(xy, previous) > 10 || !down)
+                angleApi.start({ angle: flipped ? (Math.atan2(direction[0], 1) + 0.5) : (Math.atan2(direction[0], 1) - 0.5) })
+            if (dataChannel) {
+                dataChannel.send(JSON.stringify({ type: 'rocket', i: i, auth: auth, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction, flipped: flipped }));
+            }
         },
         {
             initial: () => pos.get(),
@@ -69,13 +71,15 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                     switch (dataJSON.type) {
                         case "rocket":
                             if (i === dataJSON.i && auth === !dataJSON.auth) {
+                                if (dataJSON.direction[0] < 0 && dataJSON.flipped === false) { setFlip(true) }
+                                else if (dataJSON.direction[0] > 0 && dataJSON.flipped === true) { setFlip(false) }
                                 api.start({
                                     pos: [Math.min(Math.max(dataJSON.pos[0], -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]), Math.min(Math.max(dataJSON.pos[1], 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1])],
                                     immediate: dataJSON.down,
                                     config: { velocity: scale(dataJSON.direction, dataJSON.velocity), decay: true },
                                 })
                                 if (dist(dataJSON.xy, dataJSON.previous) > 10 || !dataJSON.down)
-                                    angleApi.start({ angle: Math.atan2(dataJSON.direction[0], 1) })
+                                    angleApi.start({ angle: dataJSON.flipped ? (Math.atan2(dataJSON.direction[0], 1) + 0.5) : (Math.atan2(dataJSON.direction[0], 1) - 0.5) })
                                 break;
                             }
                     }
@@ -100,14 +104,14 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                 y: storedPosition[i][1],
                 zIndex: 100,
                 transform: to(
-                    [pos, angle],
+                    [pos, angle, transform],
                     // @ts-ignore
                     ([x, y], a) => {
                         x = Math.min(Math.max(x, -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]);
                         y = Math.min(Math.max(y, 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1]);
                         memo.current.x = storedPosition[i][0] + x;
                         memo.current.y = storedPosition[i][0] + y;
-                        return `translate3d(${x}px,${y}px,0) rotate(${a}rad)`
+                        return `translate3d(${x}px,${y}px,0) rotate(${a}rad) rotateY(${flipped ? 180 : 0}deg)`
                     },
                 ),
             }}

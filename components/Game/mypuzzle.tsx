@@ -49,15 +49,16 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 if (event.data) {
                     var dataJSON = JSON.parse(event.data);
                     switch (dataJSON.type) {
-                        case "item": // 상대방이 아이템을 사용했을 때, 그 아이템을 받아와서 내 퍼즐에 동기화 시킨다. 5초 후 원상복귀 시킨다. 
+                        case "item":
                             setMySegmentState(dataJSON);
                             if (dataJSON.segementState === "rocket" || dataJSON.segementState === "magnet") {
                                 dispatch({ type: "puzzleComplete/init_mine" })
                             }
-                            //TODO : 5초 후 원상복귀 시키는 코드, 좌표도 원상복귀 시켜야함 -> 좌표 store에 저장시켜놓고
-                            setTimeout(() => {
-                                makeMyDefaultSegment()
-                            }, 8000);
+                            switch (dataJSON.segementState) {
+                                case "rocket": setTimeout(() => { makeMyDefaultSegment() }, 9000); break;
+                                case "ice": setTimeout(() => { makeMyDefaultSegment() }, 15000); break;
+                                case "magnet": setTimeout(() => { makeMyDefaultSegment() }, 7000); break;
+                            }
                     }
                 }
             })

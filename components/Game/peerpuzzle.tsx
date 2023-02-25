@@ -109,9 +109,11 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         if (keys[cnt] === "rocket" || keys[cnt] === "magnet") {
           dispatch({ type: `puzzleComplete/init_peer` });
         }
-        setTimeout(() => {
-          makePeerDefaultSegment();
-        }, 8000);
+        switch (keys[cnt]) {
+          case "rocket": setTimeout(() => { makePeerDefaultSegment() }, 9000); break;
+          case "ice": setTimeout(() => { makePeerDefaultSegment() }, 15000); break;
+          case "magnet": setTimeout(() => { makePeerDefaultSegment() }, 7000); break;
+        }
       }
       // peerface쪽 segmentState를 변경
       // 무엇의 상태가 변했는지 알려줘야함

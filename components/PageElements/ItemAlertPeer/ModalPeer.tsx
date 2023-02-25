@@ -33,10 +33,10 @@ function MessageHub({
 
   let timeout;
 
-  switch(segmentState){
-    case 'rocket': timeout = 7500;  break;
-    case 'magnet': timeout = 7500;  break;
-    case 'ice': timeout = 7500;  break;
+  switch (segmentState) {
+    case 'rocket': timeout = 9000; break;
+    case 'magnet': timeout = 7000; break;
+    case 'ice': timeout = 15000; break;
   }
 
   const transitions = useTransition(items, {
@@ -89,25 +89,25 @@ interface Props {
   segmentState: string;
 }
 
-export default function ModalPeer({ segmentState }:Props) {
+export default function ModalPeer({ segmentState }: Props) {
   const ref = useRef<null | AddFunction>(null)
 
   useEffect(() => {
-    switch(segmentState){
-      case 'rocket': ref.current?.(`적의 조각이 로켓으로 변했습니다.`);  break;
-      case 'magnet': ref.current?.(`적의 조각이 빨려들어갑니다.`);  break;
-      case 'ice': ref.current?.(`적의 조각이 얼어붙었습니다.`);  break;
+    switch (segmentState) {
+      case 'rocket': ref.current?.(`적의 조각이 로켓으로 변했습니다.`); break;
+      case 'magnet': ref.current?.(`적의 조각이 빨려들어갑니다.`); break;
+      case 'ice': ref.current?.(`적의 조각이 얼어붙었습니다.`); break;
     }
   }, [segmentState]);
 
 
   return (
 
-      <MessageHub segmentState = {segmentState}
-        children={(add: AddFunction) => {
-          ref.current = add
-        }}
-      />
+    <MessageHub segmentState={segmentState}
+      children={(add: AddFunction) => {
+        ref.current = add
+      }}
+    />
 
   )
 }

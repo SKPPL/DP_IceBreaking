@@ -35,10 +35,10 @@ function MessageHub({
 
   let timeout;
 
-  switch(segmentState){
-    case 'rocket': timeout = 7500;  break;
-    case 'magnet': timeout = 7500;  break;
-    case 'ice': timeout = 7500;  break;
+  switch (segmentState) {
+    case 'rocket': timeout = 9000; break;
+    case 'magnet': timeout = 7000; break;
+    case 'ice': timeout = 15000; break;
   }
 
   const transitions = useTransition(items, {
@@ -96,16 +96,16 @@ const magnetSoundUrl = '/sounds/MagnetSound.mp3'
 const rocketSoundUrl = '/sounds/rocketLaunch.mp3'
 
 
-export default function Modal({ segmentState }:Props) {
+export default function Modal({ segmentState }: Props) {
   const ref = useRef<null | AddFunction>(null)
-  
+
   const [iceSoundPlay] = useSound(icesoundUrl, { playbackRate: 1.5 })
   const [magnetPlay] = useSound(magnetSoundUrl)
   const [rocketPlay] = useSound(rocketSoundUrl)
 
-  
+
   useEffect(() => {
-    switch(segmentState){
+    switch (segmentState) {
       case 'rocket':
         ref.current?.(`내 조각이 로켓으로 변했습니다.`);
         rocketPlay();
@@ -124,11 +124,11 @@ export default function Modal({ segmentState }:Props) {
 
   return (
 
-      <MessageHub segmentState = {segmentState}
-        children={(add: AddFunction) => {
-          ref.current = add
-        }}
-      />
+    <MessageHub segmentState={segmentState}
+      children={(add: AddFunction) => {
+        ref.current = add
+      }}
+    />
 
   )
 }
