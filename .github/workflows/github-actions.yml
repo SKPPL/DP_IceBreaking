@@ -32,10 +32,6 @@ jobs:
               git fetch
               git pull origin main
               sudo npm install 
-              sudo npm run build
-              cd ..
-              sudo ./start.sh > /dev/null 2>&1
-              cd DP_IceBreaking
               node server.js
               
               
