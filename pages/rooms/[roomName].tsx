@@ -35,7 +35,9 @@ export default function Play() {
                     <WebRTC />
                     {/* <MakeFaceLandMark i={'host'} /> */}
                     {/* <MakeFaceLandMark i={'peer'} /> */}
-                    <ItemBar />
+                    <div id = "itembar">
+                        <ItemBar />
+                    </div>
                 </Provider>
             </RecoilRoot>
             </div>

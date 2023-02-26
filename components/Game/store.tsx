@@ -38,7 +38,7 @@ const initialState = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0
 //내 퍼즐의 상태를 저장
 const myPuzzleSlice = createSlice({
     name: "myPuzzle",
-    initialState: [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]], //9개의 퍼즐의 좌표를 저장
+    initialState: [[-320, 0], [-270, 0], [-220, 0], [-170, 0], [-120, 0], [-70, 0], [-20, 0], [30, 0], [80, 0]], //9개의 퍼즐의 좌표를 저장
     reducers: {
         setPosition: (state, action: PayloadAction<{ index: number; position: Array<number> }>) => {
             state[action.payload.index] = action.payload.position //index번째 퍼즐의 좌표를 position으로 변경
@@ -51,7 +51,7 @@ const myPuzzleSlice = createSlice({
 //상대 퍼즐의 상태를 저장
 const peerPuzzleSlice = createSlice({
     name: "peerPuzzle",
-    initialState: [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]], //9개의 퍼즐의 좌표를 저장
+    initialState: [[-320, 0], [-270, 0], [-220, 0], [-170, 0], [-120, 0], [-70, 0], [-20, 0], [30, 0], [80, 0]], //9개의 퍼즐의 좌표를 저장
     reducers: {
         setPosition: (state, action: PayloadAction<{ index: number; position: Array<number> }>) => {
             state[action.payload.index] = action.payload.position //index번째 퍼즐의 좌표를 position으로 변경

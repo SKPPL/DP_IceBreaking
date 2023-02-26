@@ -380,9 +380,12 @@ export default function WebRTC() {
       <div id="cremony_peer" className="hidden">
         <Ceremony />
       </div>
-      <video className="w-full hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
-      <video className="w-full hidden " id="myface" autoPlay playsInline ref={userVideoRef}></video>
-
+      <div className="hidden" id="face">
+        <div className={`flex justify-center mt-12`}>
+          <video className={`${styles.gamepan} w-7/12 hidden rounded-2xl`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
+          <video className={`${styles.gamepan} w-7/12 hidden rounded-2xl`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
+        </div>
+      </div>
       {!dataChannel && <Waiting />}
       <div className="flex flex-row" id="fullscreen">
         <div className="flex flex-col w-1/2 h-screen">

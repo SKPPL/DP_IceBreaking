@@ -79,6 +79,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       const peer = document.getElementById("peerface");
       peer!.style.display = "block";
       document.getElementById("fullscreen")!.style.display = "none";
+      document.getElementById("itembar")!.style.display = "none";
+      document.getElementById("face")!.style.display = "block";
       document.getElementById("cremony_peer")!.style.display = "block";
       fanFareSoundPlay();
       setTimeout(() => {
