@@ -15,6 +15,12 @@ import {
 } from 'recoil';
 import styles from '../rooms/styles.module.css'
 
+const MakeFaceLandMark = dynamic(
+    import('@/components/FaceDetection/FaceLandMark'), {
+    // loading: () => (<div></div>),
+    ssr: false,
+  },
+  );
 
 export default function Play() {
 
@@ -27,6 +33,8 @@ export default function Play() {
             <RecoilRoot>
                 <Provider store={store}>
                     <WebRTC />
+                    {/* <MakeFaceLandMark i={'host'} /> */}
+                    {/* <MakeFaceLandMark i={'peer'} /> */}
                     <ItemBar />
                 </Provider>
             </RecoilRoot>
