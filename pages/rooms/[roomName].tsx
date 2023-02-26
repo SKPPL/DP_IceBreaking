@@ -33,8 +33,8 @@ export default function Play() {
             <RecoilRoot>
                 <Provider store={store}>
                     <WebRTC />
-                    <MakeFaceLandMark i={'host'} />
-                    <MakeFaceLandMark i={'peer'} />
+                    {/* <MakeFaceLandMark i={'host'} /> */}
+                    {/* <MakeFaceLandMark i={'peer'} /> */}
                     <ItemBar />
                 </Provider>
             </RecoilRoot>
