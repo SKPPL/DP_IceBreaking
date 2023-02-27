@@ -33,7 +33,8 @@ jobs:
               git pull origin main
               sudo npm install 
               sudo npm run build
-              npx pm2 restart node
+              npx pm2 restart nextjs
+              npx pm2 list
               
               
           
