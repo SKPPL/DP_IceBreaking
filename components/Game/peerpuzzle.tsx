@@ -81,7 +81,6 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       document.getElementById("fullscreen")!.style.display = "none";
       document.getElementById("itembar")!.style.display = "none";
       document.getElementById("face")!.style.display = "block";
-      document.getElementById("cremony_peer")!.style.display = "block";
       fanFareSoundPlay();
       setTimeout(() => {
         router
