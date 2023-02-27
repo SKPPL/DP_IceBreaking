@@ -27,6 +27,8 @@ interface Props {
 }
 
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
+const shuffleSoundUrl = '/sounds/shuffle.mp3';
+let isStart = true;
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     // segmentState for item use
@@ -38,6 +40,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
     const router = useRouter();
     const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
+    const [shuffleSoundPlay] = useSound(shuffleSoundUrl);
+
+    if (isStart) {
+        shuffleSoundPlay()
+        setTimeout(() => isStart = false, 1000)   
+    }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
@@ -70,6 +78,8 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             const myface = document.getElementById("myface");
             myface!.style.display = "block";
             document.getElementById("fullscreen")!.style.display = "none";
+            document.getElementById("itembar")!.style.display = "none";
+            document.getElementById("face")!.style.display = "block";
             document.getElementById("cremony_my")!.style.display = "block";
             fanFareSoundPlay();
             setTimeout(() => {
