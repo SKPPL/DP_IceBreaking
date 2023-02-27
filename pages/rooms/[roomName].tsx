@@ -29,7 +29,7 @@ export default function Play() {
             <Head>
                 <title>Jigsaw Puzzle</title>
             </Head>
-            <div className={styles.gameBackGround}>
+            <div className={`h-full ${styles.gameBackGround}`}>
             <RecoilRoot>
                 <Provider store={store}>
                     <WebRTC />
