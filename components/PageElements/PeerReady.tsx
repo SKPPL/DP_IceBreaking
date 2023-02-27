@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import styles from './styles.module.css'
 
-export default function Waiting() {
+export default function PeerReady() {
     const [state, toggle] = useState(true)
     setInterval(function () { toggle(!state) }, 1000)
     const { x } = useSpring({
@@ -22,7 +22,7 @@ export default function Waiting() {
                         output: [1, 0.97, 0.9, 1.1, 0.9, 1.1, 1.03, 1],
                     }),
                 }}>
-                Peer Waiting...
+                Peer Ready!
             </animated.div>
         </div>
     )

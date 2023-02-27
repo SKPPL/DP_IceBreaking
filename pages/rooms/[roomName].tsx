@@ -35,7 +35,7 @@ export default function Play() {
                     <WebRTC />
                     {/* <MakeFaceLandMark i={'host'} /> */}
                     {/* <MakeFaceLandMark i={'peer'} /> */}
-                    <div id = "itembar">
+                    <div id = "itembar" className="hidden">
                         <ItemBar />
                     </div>
                 </Provider>

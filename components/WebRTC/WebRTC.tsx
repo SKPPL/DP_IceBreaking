@@ -338,10 +338,10 @@ export default function WebRTC() {
         Leave
       </button> */}
       <div className="hidden h-screen" id="face">
-        <Ceremony />
+          <Ceremony />
         <div className={`flex justify-center`}>
-          <video className={`${styles.gamepan} w-7/12 hidden rounded-2xl`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
-          <video className={`${styles.gamepan} w-7/12 hidden rounded-2xl`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
+          <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
+          <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
         </div>
       </div>
       {!dataChannel &&

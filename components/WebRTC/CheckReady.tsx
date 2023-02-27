@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./styles.module.css";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
+import PeerReady from "../PageElements/PeerReady";
 
 interface Props {
     dataChannel: RTCDataChannel | undefined;
@@ -15,6 +16,8 @@ export default function CheckReady({ dataChannel }: Props) {
     //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
     useEffect(() => {
         setGameReadyState(myReadyState && peerReadyState);
+        if (myReadyState && peerReadyState)
+        document.getElementById("itembar")!.style.display = "block";
     }, [myReadyState, peerReadyState]);
     
     //ready 버튼 누를 시 myReady 상태 변경 및 상대방 전송
@@ -50,10 +53,10 @@ export default function CheckReady({ dataChannel }: Props) {
         {!gameReadyState &&
             <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
                 <button className={styles.ready} id="myReadyButton" onClick={changeMyReadyState}>
-                    Ready
+                    {!myReadyState ? "Ready" : "Cancel" } 
                 </button>
             </div>
-        }      
+        }          
           {gameReadyState && dataChannel && (
             <div className="flex justify-center">
               <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
@@ -82,7 +85,12 @@ export default function CheckReady({ dataChannel }: Props) {
           <select className="hidden" onChange={handleSelect} ref={selectRef}></select> */}
         </div>
         <div className="flex flex-col w-1/2 h-screen">
-          {gameReadyState && dataChannel && (
+            {peerReadyState && !myReadyState &&
+                <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
+                    <PeerReady />
+                </div>
+            }
+            {gameReadyState && dataChannel && (
             <div className="flex justify-center">
               <PeerPuzzle auth={false} videoId={"myface"} dataChannel={dataChannel} />
             </div>
