@@ -2,17 +2,6 @@ import React, { useState } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import styles from './styles.module.css'
 
-/*
-0 % { transform: scale(1); }
-25 % { transform: scale(.97); }
-35 % { transform: scale(.9); }
-45 % { transform: scale(1.1); }
-55 % { transform: scale(.9); }
-65 % { transform: scale(1.1); }
-75 % { transform: scale(1.03); }
-100 % { transform: scale(1); }
-`*/
-
 export default function Waiting() {
     const [state, toggle] = useState(true)
     setInterval(function () { toggle(!state) }, 1000)

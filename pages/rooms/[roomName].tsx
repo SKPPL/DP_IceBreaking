@@ -24,11 +24,13 @@ export default function Play() {
             <Head>
                 <title>Jigsaw Puzzle</title>
             </Head>
-            <div className={styles.gameBackGround}>
+            <div className={`h-full ${styles.gameBackGround}`}>
                 <RecoilRoot>
                     <Provider store={store}>
                         <WebRTC />
-                        <ItemBar />
+                        <div id="itembar" className="hidden">
+                            <ItemBar />
+                        </div>
                     </Provider>
                 </RecoilRoot>
             </div>

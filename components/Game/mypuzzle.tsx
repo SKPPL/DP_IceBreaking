@@ -12,6 +12,8 @@ import MyBar from '../PageElements/ProgressBar/MyBar'
 import { myWaitState } from "./atom";
 import { useRecoilState, useRecoilValue } from 'recoil'
 import useSound from 'use-sound'
+import IceFlakeParticles from '../PageElements/Particles/iceFlakeParticles'
+import BlackhallParticles from '../PageElements/Particles/blackhallParticles'
 import FaceLandMark from '../FaceDetection/FaceLandMark'
 
 // import Segment from './Segment'
@@ -30,6 +32,8 @@ interface Props {
 }
 
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
+const shuffleSoundUrl = '/sounds/shuffle.mp3';
+let isStart = true;
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     // segmentState for item use
@@ -41,6 +45,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
     const router = useRouter();
     const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
+    const [shuffleSoundPlay] = useSound(shuffleSoundUrl);
+
+    if (isStart) {
+        shuffleSoundPlay()
+        setTimeout(() => isStart = false, 1000)
+    }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
@@ -76,7 +86,8 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             const myface = document.getElementById("myface");
             myface!.style.display = "block";
             document.getElementById("fullscreen")!.style.display = "none";
-            document.getElementById("cremony_my")!.style.display = "block";
+            document.getElementById("itembar")!.style.display = "none";
+            document.getElementById("face")!.style.display = "block";
             fanFareSoundPlay();
             setTimeout(() => {
                 router
@@ -107,9 +118,10 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             }
             {/* 아이템 쓸 때 나오는 효과 */}
             <div className="absolute grid w-[640px] h-[480px] mt-[160px]" style={{ pointerEvents: "none" }}>
-                {mySegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-                {mySegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles /> <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
                 {mySegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lipmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+
             </div>
             {mySegmentState.segementState === 'lip' && <FaceLandMark auth={auth} id={videoId} />}
             <MyBar score={puzzleCompleteCounter.mine} />

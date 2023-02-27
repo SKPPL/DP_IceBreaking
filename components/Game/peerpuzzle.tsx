@@ -10,6 +10,8 @@ import { useRouter } from "next/router";
 import ModalPeer from "../PageElements/ItemAlertPeer/ModalPeer";
 import Bar from "@/components/PageElements/ProgressBar/Bar";
 import useSound from 'use-sound'
+import IceFlakeParticles from "../PageElements/Particles/iceFlakeParticles";
+import BlackhallParticles from "../PageElements/Particles/blackhallParticles";
 import FaceLandMark from "../FaceDetection/FaceLandMark";
 
 
@@ -80,7 +82,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       const peer = document.getElementById("peerface");
       peer!.style.display = "block";
       document.getElementById("fullscreen")!.style.display = "none";
-      document.getElementById("cremony_peer")!.style.display = "block";
+      document.getElementById("itembar")!.style.display = "none";
+      document.getElementById("face")!.style.display = "block";
       fanFareSoundPlay();
       setTimeout(() => {
         router
@@ -153,8 +156,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
       {/* 아이템 쓸 때 나오는 효과 */}
       <div className="absolute grid w-[640px] h-[480px] mt-[160px] flex items-center" style={{ pointerEvents: "none" }}>
-        {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles /> <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lippeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
       </div>
       {peerSegmentState.segementState === 'lip' && <FaceLandMark auth={auth} id={videoId} />}
