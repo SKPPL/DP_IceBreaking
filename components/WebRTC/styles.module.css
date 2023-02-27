@@ -365,6 +365,10 @@
 .ready {
     
     position: absolute;
+    border-radius: 1.5rem;
+    width: 20rem;
+    height: 5rem;
+    font-size: 3rem;
     animation: pulsate 1.5s infinite alternate;  
     border: 0.2rem solid #fff;
     box-shadow: 0 0 .2rem #fff,
