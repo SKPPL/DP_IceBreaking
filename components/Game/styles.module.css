@@ -140,7 +140,7 @@
   position: absolute;
   width: (640/3)px;
   height: 160px;
-  background: url("../../public/images/ice.png");
+  /* background: url("../../public/images/ice.png"); */
   border-radius: 5px;
   box-shadow: 0px 10px 30px -5px rgba(18, 118, 225, 0.2);
   transition: box-shadow 0.5s, opacity 0.5s;
