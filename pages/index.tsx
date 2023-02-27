@@ -17,13 +17,10 @@ export default function Home() {
       </Head>
       <div>
         <div className="container-2xl" >
-          <main className="flex flex-col bg-center bg-cover justify-center items-center h-screen" >
+          <main className="flex flex-col bg-center bg-cover bg-[url('../public/images/puzzleFilledBackground.jpg')] justify-center items-center h-screen" >
             <div className={styles.indexbox}>
-              <MainPage />
+              {/* <MainPage /> */}
               <BagicHome />
-              <div className={styles.startBox} style={{ pointerEvents: "none" }}>
-                <div className="w-[213px] h-[160px] text-white text-center ">Start</div>
-              </div>
             </div>
           </main>
         </div>

@@ -7,20 +7,21 @@ import { useRouter } from "next/router";
 import CloneVideo from "../Game/CloneVideo";
 import dynamic from "next/dynamic";
 
-const PuzzleSegment = dynamic(
-    import('@/components/Game/CloneVideo'), {
-    loading: () => (<div></div>),
-    ssr: false
-    },
-);
+// const PuzzleSegment = dynamic(
+//     import('@/components/Game/CloneVideo'), {
+//     loading: () => (<div></div>),
+//     ssr: false
+//     },
+// );
 
-const backgroundImageUrl = '/images/transparentPuzzle.png'
+const puzzleImageUrl = '/images/puzzleKeyFixed.png'
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
 
 const auth = true;
 const id = 4;
+
 
 interface MyConstraints {
     audio?: boolean | MediaTrackConstraints;
@@ -29,11 +30,15 @@ interface MyConstraints {
 
 
 export default function PuzzleScreen() {
-
+    
     const router = useRouter();
     const userVideoRef = useRef<any>();
     const userStreamRef = useRef<MediaStream>();
-
+    var cloneRef = useRef<HTMLCanvasElement>(null);
+    var ctx: CanvasRenderingContext2D | null = null;
+    const puzzleImage = new Image();
+    puzzleImage.src = puzzleImageUrl;
+    
     async function getCameras(): Promise<void> {
         try  {
             const devices = await navigator.mediaDevices.enumerateDevices();
@@ -82,20 +87,24 @@ export default function PuzzleScreen() {
         }
       };
 
+
     useEffect(() => {
+        ctx = cloneRef.current.getContext('2d');
+        ctx.drawImage(puzzleImage,0,0,230, 255);
+        
         const preventDefault = (e: Event) => e.preventDefault()
         document.addEventListener('gesturestart', preventDefault)
         document.addEventListener('gesturechange', preventDefault)
-        // const startButtonPosition = document.getElementById("startButton")?.getBoundingClientRect();
-        // setTargetX(startButtonPosition?.x);
-        // setTargetY(startButtonPosition?.y);
-        handleRoomCreated();
+        
+        
+        // 원래 얼굴 영상 가져오기 실행하던 함수
+        // handleRoomCreated();
     
         return () => {
           document.removeEventListener('gesturestart', preventDefault)
           document.removeEventListener('gesturechange', preventDefault)
         }
-      }, [])
+      }, [cloneRef])
 
     const domTarget = useRef(null);
     const [{ x, y,rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
@@ -164,7 +173,8 @@ export default function PuzzleScreen() {
                         rotateZ,
                     }}>
                     <animated.div>
-                        <PuzzleSegment auth={auth} id={id} videoId="myface" segmentState="" />
+                        {/* <PuzzleSegment auth={auth} id={id} videoId="myface" segmentState="" /> */}
+                        <canvas id="puzzlePiece" width={300} height={350} ref={cloneRef}></canvas>
                     </animated.div>
                     </animated.div>
                 </div>
@@ -175,8 +185,8 @@ export default function PuzzleScreen() {
 
 
 export function isPuzzleMatched(x: number, y: number) {
-    const diff = 60;
-    if( x > 375 - diff && x < 375 + diff && y > -65 - diff && y < -65 + diff ) {
+    const diff = 45;
+    if( x > 497 - diff && x < 495 + diff && y > 70 - diff && y < 70 + diff ) {
         return true;
     } else return false;
 }
