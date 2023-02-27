@@ -3,17 +3,14 @@ import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
-import dynamic from "next/dynamic";
-import { Provider, useSelector, useDispatch } from "react-redux";
-import itemStore from "@/components/Game/store";
-import rocket from "../Game/SegmentState/rocket";
-import { useTimeout } from "usehooks-ts";
-import Rocket from "../Game/SegmentState/rocket";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import Waiting from "../PageElements/Waiting";
 import styles from './styles.module.css'
 import Ceremony from "../Game/Ceremony";
+import { useRecoilState } from "recoil";
+import { dataChannelState } from "../Game/atom";
+import CheckReady from "./CheckReady";
 
 const ICE_SERVERS = {
   iceServers: [
@@ -40,7 +37,6 @@ const ICE_SERVERS = {
     },
   ],
 };
-
 interface MyConstraints {
   audio?: boolean | MediaTrackConstraints;
   video?: boolean | MediaTrackConstraints;
@@ -52,7 +48,6 @@ export default function WebRTC() {
   // dispatch({ type: `myPuzzle/init` });
   // dispatch({ type: `peerPuzzle/init` });
   // dispatch({ type: `item/init` });
-
   useSocket();
   const router = useRouter();
   //useRef은 특정컴포넌트에 접근할 수 있는 객체, 초기값 null
@@ -64,10 +59,8 @@ export default function WebRTC() {
   const hostRef = useRef(false);
   const userStreamRef = useRef<MediaStream>();
   const nickNameChannel = useRef<RTCDataChannel>();
-
   // call setDataChannel when dataChannel created
   var [dataChannel, setDataChannel] = useState<RTCDataChannel>();
-
   //State
   const [micSetting, setMicSetting] = useState(true);
   const [cameraSetting, setCameraSetting] = useState(true);
@@ -102,7 +95,6 @@ export default function WebRTC() {
       };
     }
   }, [socketConnect]);
-
   //처음 마운트시에 호출
   useEffect(() => {
     // 서버 <-> 브라우저 간 socket io 통신 연결
@@ -110,10 +102,8 @@ export default function WebRTC() {
     // 초기 room이름 설정
     setRoomName(router.query.roomName);
   }, []);
-
   useEffect(() => {
     let mounted = true;
-
     if (mounted && checkLeave) {
       // socketConnect.disconnect();
       router
@@ -126,23 +116,19 @@ export default function WebRTC() {
       mounted = false;
     };
   }, [checkLeave]);
-
   const handleBackButton = () => {
     leaveRoom();
   };
-
   //닉네임 설정
   const handleNickName = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setNickName(e.currentTarget.value);
     // console.log(nickNameChannel);
-
     if (typeof nickNameChannel.current !== "undefined" && nickNameChannel.current.label == "nickname") {
       nickNameChannel.current.send(e.currentTarget.value);
     } else {
       console.log("[No data Channel]");
     }
   };
-
   async function getCameras(): Promise<void> {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -155,7 +141,6 @@ export default function WebRTC() {
       console.log(e);
     }
   }
-
   async function getMedia(deviceId?: string): Promise<void> {
     const initialConstraints: MyConstraints = {
       audio: false,
@@ -166,7 +151,6 @@ export default function WebRTC() {
       audio: false,
       video: { deviceId: { exact: deviceId } },
     };
-
     try {
       const stream = await navigator.mediaDevices.getUserMedia(deviceId ? cameraConstraints : initialConstraints);
       userStreamRef.current = stream;
@@ -182,7 +166,6 @@ export default function WebRTC() {
       console.log(e);
     }
   }
-
   const handleRoomCreated = async (): Promise<void> => {
     try {
       console.log("[room created]");
@@ -192,7 +175,6 @@ export default function WebRTC() {
       console.log(e);
     }
   };
-
   const handleRoomJoined = async (): Promise<void> => {
     try {
       await getMedia();
@@ -202,7 +184,6 @@ export default function WebRTC() {
       console.log(e);
     }
   };
-
   //peer와 연결 생성 시작
   const initiateCall = async (): Promise<void> => {
     console.log("[initiateCall]");
@@ -232,7 +213,6 @@ export default function WebRTC() {
       }
     }
   };
-
   const onPeerLeave = (): void => {
     //room을에 혼자 남아 있을 경우, 남아 있는 사람이 room을의 주인이 됨
     hostRef.current = true;
@@ -240,7 +220,6 @@ export default function WebRTC() {
       // peer의 모든 track 수신을 중지
       peerVideoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     }
-
     // leave 한 peer와 연결을 종료
     if (webRTCConnRef.current) {
       webRTCConnRef.current.ontrack = null;
@@ -260,7 +239,6 @@ export default function WebRTC() {
     if (peerVideoRef.current && peerVideoRef.current.srcObject) {
       peerVideoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     }
-
     //connect이 있는지 확인하고 피어와 기존 연결을 종료
     if (webRTCConnRef.current) {
       webRTCConnRef.current.ontrack = null;
@@ -270,7 +248,6 @@ export default function WebRTC() {
     }
     setCheckLeave(true);
   };
-
   const makeConnection = (): RTCPeerConnection => {
     // RTC Peer Connection 생성
     const connection = new RTCPeerConnection(ICE_SERVERS);
@@ -280,24 +257,20 @@ export default function WebRTC() {
     // TODO: handleTrackEvent 예외처리 고려
     return connection;
   };
-
   const handleICECandidateEvent = (event: RTCPeerConnectionIceEvent): void => {
     if (event.candidate) {
       console.log("[emit ice-candidate]");
       socketConnect.emit("ice-candidate", event.candidate, roomName);
     }
   };
-
   const handleTrackEvent = (event: RTCTrackEvent): void => {
     peerVideoRef.current.srcObject = event.streams[0];
   };
-
   const handleReceivedOffer = async (offer: any[]): Promise<void> => {
     if (!hostRef.current) {
       webRTCConnRef.current = makeConnection();
       webRTCConnRef.current.addEventListener("datachannel", (event: any) => {
         console.log("[offer]", event);
-
         nickNameChannel.current = event.channel;
         // on guest side, guest -> host
         switch (event.channel.label) {
@@ -306,7 +279,6 @@ export default function WebRTC() {
             nickNameChannel.current!.addEventListener("message", (event: any) => {
               setPeerNickName(event.data);
             });
-
             break;
           case "data":
             setDataChannel(event.channel);
@@ -317,9 +289,7 @@ export default function WebRTC() {
         userStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
       }
       webRTCConnRef.current.setRemoteDescription(offer);
-
       const answer = await webRTCConnRef.current.createAnswer();
-
       try {
         webRTCConnRef.current.setLocalDescription(answer);
         socketConnect.emit("answer", answer, roomName);
@@ -329,17 +299,14 @@ export default function WebRTC() {
       }
     }
   };
-
   const handleAnswer = (answer: any): void => {
     webRTCConnRef.current.setRemoteDescription(answer).catch((err: Error) => console.log(err));
   };
-
   // 들어오는 "candidate"를 RTCIceCandidate로 casting
   const handlerNewIceCandidateMsg = (incoming: RTCIceCandidate): void => {
     const candidate = new RTCIceCandidate(incoming);
     webRTCConnRef.current.addIceCandidate(candidate).catch((e: Event) => console.log(e));
   };
-
   //마이크 셋팅 변경 버튼 클릭 시
   const changeMicSetting = (): void => {
     toggleMediaStream("audio", micSetting);
@@ -350,7 +317,6 @@ export default function WebRTC() {
     toggleMediaStream("video", cameraSetting);
     setCameraSetting((prevSetting) => !prevSetting);
   };
-
   //미디어스트리미 옵션 값 변경
   const toggleMediaStream = (type: string, state: boolean): void => {
     if (typeof userStreamRef.current !== "undefined") {
@@ -361,76 +327,28 @@ export default function WebRTC() {
       });
     }
   };
+  const [dataChannelExist, setDataChannelExist] = useRecoilState(dataChannelState);
+  useEffect(() => {
+    if (dataChannel) setDataChannelExist(true);
+  }, [dataChannel]);
 
   return (
     <>
-      <button onClick={leaveRoom} type="button" className="bg-black hidden text-9xl box-border height width-4 text-white">
+      {/* <button onClick={leaveRoom} type="button" className="bg-black hidden text-9xl box-border height width-4 text-white">
         Leave
-      </button>
-      <div id="cremony_my" className="hidden">
-        <Ceremony />
-      </div>
-      <div id="cremony_peer" className="hidden">
-        <Ceremony />
-      </div>
-      <video className="w-full hidden" id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
-      <video className="w-full hidden " id="myface" autoPlay playsInline ref={userVideoRef}></video>
-
-      {!dataChannel && <Waiting />}
-      <div className="flex flex-row" id="fullscreen">
-        <div className="flex flex-col w-1/2 h-screen">
-          {dataChannel && (
-            <div className="flex justify-center h-[160px]">
-              <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
-            </div>
-          )}
-          <div className="h-[480px] w-[640px] self-center" id={styles.gamepan}>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-            </div>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-            </div>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-            </div>
-          </div>
-          {/* <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="hidden box-border height width mb-5-4 text-white">
-            {cameraSetting ? "화면 끄기" : "화면 켜기"}
-          </button>
-          <select className="hidden" onChange={handleSelect} ref={selectRef}></select> */}
-        </div>
-        <div className="flex flex-col w-1/2 h-screen">
-          {dataChannel && (
-            <div className="flex justify-center h-[160px]">
-              <PeerPuzzle auth={false} videoId={"myface"} dataChannel={dataChannel} />
-            </div>
-          )}
-          <div className="h-[480px] w-[640px] self-center" id={styles.gamepan}>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-            </div>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-            </div>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-            </div>
-          </div>
+      </button> */}
+      <div className="hidden h-screen" id="face">
+          <Ceremony />
+        <div className={`flex justify-center`}>
+          <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
+          <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
         </div>
       </div>
+      {!dataChannel &&
+        <div className="h-screen">
+          <Waiting />
+        </div>}
+      {dataChannel && <CheckReady dataChannel={dataChannel} />}
     </>
   );
 }

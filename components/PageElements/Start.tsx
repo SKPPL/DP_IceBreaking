@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { useSpring, animated } from '@react-spring/web'
-import { useDrag } from 'react-use-gesture'
+import { useDrag, useGesture } from "@use-gesture/react";
 import styles from './styles.module.css'
 import { useRouter } from "next/router";
 
@@ -19,21 +19,21 @@ const Slider = ({ children }: { children: ReactNode }) => {
     scale: 1,
     ...left,
   }))
-    const router = useRouter();
-    
-    const bind = useDrag(({ active, movement: [x] }) => {
-        api.start({
-            x: active ? x : 50,
-            scale: active ? 1.1 : 1,
-            ...(x < 0 ? left : right),
-            immediate: name => active && name === 'x',
-        })
-        if (x > 300 || x < -300) {
-            router.push({
-                pathname: '/ready',
-            })
-        };
-    }
+  const router = useRouter();
+
+  const bind = useDrag(({ active, movement: [x] }) => {
+    api.start({
+      x: active ? x : 50,
+      scale: active ? 1.1 : 1,
+      ...(x < 0 ? left : right),
+      immediate: name => active && name === 'x',
+    })
+    if (x > 300 || x < -300) {
+      router.push({
+        pathname: '/ready',
+      })
+    };
+  }
   )
 
   const avSize = x.to({

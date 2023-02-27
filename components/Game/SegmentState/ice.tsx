@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, memo } from "react";
+import React, { useRef, useEffect, useState, memo, useCallback } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import styles from "../styles.module.css";
@@ -6,7 +6,7 @@ import useSound from "use-sound"
 import { useSetRecoilState } from "recoil";
 import { myWaitState, peerWaitState } from "../atom";
 import IcedVideo from "../IcedVideo";
-import { useDrag, useGesture } from "react-use-gesture";
+import { useDrag, useGesture } from "@use-gesture/react";
 import CloneVideo from "../CloneVideo";
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
@@ -24,7 +24,7 @@ interface Props {
 
 function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
 
-
+    //TODO ice 버그 수정하기
 
     const iceCrackSoundUrl = '/sounds/can.wav'
 
@@ -88,7 +88,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     }, []);
 
 
-    const domTarget = useRef<HTMLDivElement>(null);
+    const target = useRef<HTMLDivElement>(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => {
         return {
             rotateX: 0,
@@ -109,53 +109,52 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
         }
     }, [peerxy]);
 
-
+    const positionDataSend = useCallback(() => {
+        if (dataChannel?.readyState === "open") {
+            dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
+        }
+    }, [dataChannel]);
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
+    let dataTransferCount = 0; // 좌표 데이터 10번 중 한 번 보내기 위한 변수
 
-    const bindBoardPos = useDrag(
+    useDrag(
         (params) => {
             if (isRightPlace) return;
             if (!auth) return;
             if (iceCount !== 0) return;
-            // 저장된 좌표에 마우스의 움직임을 더해줌
-            if (params.hovering) return;
             if (isSameOutline(x.get(), y.get(), width, height)) return;
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
             // !params.down : 마우스를 떼는 순간
-
-
-            //알맞은 위치에 놓았을 때
-            if (!params.down && !isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
-                domTarget.current!.setAttribute("style", "z-index: 0");
-                api.start({ x: width, y: height });
-                setIsRightPlace(true);
-                puzzleSoundPlay();
-                if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
-                dispatch({ type: "puzzleComplete/plus_mine" });
-                setZindex(0);
-                dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
-                if (dataChannel?.readyState === "open") {
-                    dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
-                    return;
-                }
-            }
             if (!params.down) {
-                // 마우스를 떼는 순간에 좌표+offset한 값을 저장
-                //TODO 저장 잘 되게 해야함
+                //알맞은 위치에 놓았을 때
+                if (!isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
+                    target.current!.setAttribute("style", "z-index: 0");
+                    api.start({ x: width, y: height });
+                    setIsRightPlace(true);
+                    puzzleSoundPlay();
+                    if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
+                    dispatch({ type: "puzzleComplete/plus_mine" });
+                    setZindex(0);
+                    dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
+                    if (dataChannel?.readyState === "open") {
+                        dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
+                        return;
+                    }
+                }
+                positionDataSend();
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;
+            } else if (dataTransferCount % 4 === 0) {
+                // 알맞은 위치에 놓지 않더라도, 아무튼 좌표 보냄
+                positionDataSend();
             }
-
-            // 알맞은 위치에 놓지 않더라도 아무튼 좌표 보냄
-            if (dataChannel?.readyState === "open") {
-                dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: x.get(), peery: y.get() }));
-
-            }
+            dataTransferCount++;
         },
         {
+            target,
             bounds: { top: 0 - storedPosition[i][1], bottom: heightOx * 4 - storedPosition[i][1], left: -widthOx * 2 - storedPosition[i][0], right: widthOx * 1 - storedPosition[i][0] },
             rubberband: 0.8,
         }
@@ -180,7 +179,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
             onHover: ({ hovering }) => !hovering && api.start({ rotateX: 0, rotateY: 0, scale: 1 }),
 
         },
-        { domTarget, eventOptions: { passive: false } }
+        { target, eventOptions: { passive: false } }
     );
 
 
@@ -203,9 +202,8 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
             <div className="">
                 <div className={styles.container} onClick={breakTheIce}>
                     <animated.div
-                        ref={domTarget}
+                        ref={target}
                         className={isRightPlace ? `${styles.rightCard}` : `${styles.card}`}
-                        {...bindBoardPos()}
                         style={{
                             transform: "perspective(600px)",
                             x,

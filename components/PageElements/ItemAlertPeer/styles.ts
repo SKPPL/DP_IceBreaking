@@ -38,6 +38,17 @@ export const Message = styled(animated.div)`
   @media (max-width: 680px) {
     width: 100%;
   }
+  background: #445159;
+  outline: none;
+  color: #fff;
+  z-index: 0;
+  border: 0.1rem solid #fff;
+  box-shadow: 0 0 .05rem #fff,
+              0 0 .5rem #fff,
+              0 0 0.5rem #e2aff6,
+              0 0 0.2rem #e2aff6,
+              0 0 0.7rem #e2aff6,
+              inset 0 0 0.15rem #e2aff6;
 `
 // 아이템 사용 모달 알람 메시지 스타일
 export const Content = styled.div`

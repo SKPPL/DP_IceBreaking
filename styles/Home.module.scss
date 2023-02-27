@@ -292,6 +292,11 @@ $value-color: #fc0349;
 $value-size: 28px;
 
 .neonbar {
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  pointer-events: none;
   position: absolute;
   box-sizing: border-box;
   font-family: 'Odibee Sans', cursive;

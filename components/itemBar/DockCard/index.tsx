@@ -9,6 +9,8 @@ import { useWindowResize } from '../hooks/useWindowResize'
 import { useDock } from '../Dock/DockContext'
 
 import styles from './styles.module.scss'
+import { useRecoilValue } from 'recoil'
+import { dataChannelState, peerWaitState } from "../../Game/atom";
 
 interface DockCardProps {
   children: React.ReactNode
@@ -83,8 +85,12 @@ export const DockCard = ({ children, item }: DockCardProps) => {
   const timeoutRef = React.useRef<number>()
   const wasUsed = React.useRef(false)
 
-  const handleClick = () => {
+  const peerWait = useRecoilValue(peerWaitState)
+  const dataChannel = useRecoilValue(dataChannelState);
 
+  const handleClick = () => {
+    // peer에 쓴 아이템이 진행중일 때는 눌러도 아무일도 일어나지 않음
+    if (peerWait === true || dataChannel === false) return;
     dispatch({ type: `item/${itemList[item]}` });
     if (!wasUsed.current) {
       wasUsed.current = true

@@ -1,34 +1,15 @@
 import React, { useState, useEffect } from "react";
 import styles from "./styles.module.css";
-import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
 
-//부모로부터 ref 전달받아 사용
-const Ceremony = React.forwardRef(() => {
-  const variants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  };
-
+export default function Ceremony() {
+  
   return (
     <>
-      <div className="w-screen h-screen flex flex-col items-center bg-transparent absolute" id="ceremony_content">
-        <motion.div
-          initial="visible"
-          animate="hidden"
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-          }}
-          variants={variants}
-        >
-          <p className="text-black text-7xl">
-            <br />
-            🕺승리자의 세레모니 타임💃
-          </p>
-        </motion.div>
+      <div className="w-full flex justify-center" id="ceremony_content">
+        <div className={`${styles.ceremony} flex justify-center items-center m-10 w-1/2 h-1/6 rounded-full`}>
+          <h2 className={styles.ceremonyText}>승리자의 세레모니</h2>
+        </div>
       </div>
     </>
   );
-});
-
-export default Ceremony;
+}

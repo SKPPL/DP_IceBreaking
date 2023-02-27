@@ -27,6 +27,8 @@ interface Props {
 }
 
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
+const shuffleSoundUrl = '/sounds/shuffle.mp3';
+let isStart = true;
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     // segmentState for item use
@@ -38,6 +40,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
     const router = useRouter();
     const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
+    const [shuffleSoundPlay] = useSound(shuffleSoundUrl);
+
+    if (isStart) {
+        shuffleSoundPlay()
+        setTimeout(() => isStart = false, 1000)   
+    }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
@@ -49,15 +57,16 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 if (event.data) {
                     var dataJSON = JSON.parse(event.data);
                     switch (dataJSON.type) {
-                        case "item": // 상대방이 아이템을 사용했을 때, 그 아이템을 받아와서 내 퍼즐에 동기화 시킨다. 5초 후 원상복귀 시킨다. 
+                        case "item":
                             setMySegmentState(dataJSON);
                             if (dataJSON.segementState === "rocket" || dataJSON.segementState === "magnet") {
                                 dispatch({ type: "puzzleComplete/init_mine" })
                             }
-                            //TODO : 5초 후 원상복귀 시키는 코드, 좌표도 원상복귀 시켜야함 -> 좌표 store에 저장시켜놓고
-                            setTimeout(() => {
-                                makeMyDefaultSegment()
-                            }, 8000);
+                            switch (dataJSON.segementState) {
+                                case "rocket": setTimeout(() => { makeMyDefaultSegment() }, 9000); break;
+                                case "ice": setTimeout(() => { makeMyDefaultSegment() }, 15000); break;
+                                case "magnet": setTimeout(() => { makeMyDefaultSegment() }, 7000); break;
+                            }
                     }
                 }
             })
@@ -69,7 +78,8 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             const myface = document.getElementById("myface");
             myface!.style.display = "block";
             document.getElementById("fullscreen")!.style.display = "none";
-            document.getElementById("cremony_my")!.style.display = "block";
+            document.getElementById("itembar")!.style.display = "none";
+            document.getElementById("face")!.style.display = "block";
             fanFareSoundPlay();
             setTimeout(() => {
                 router
