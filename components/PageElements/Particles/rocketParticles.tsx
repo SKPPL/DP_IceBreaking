@@ -2,7 +2,7 @@ import Particles from "react-tsparticles";
 import React, { useCallback, useEffect } from "react";
 import { loadFull } from "tsparticles";
 
-export default function IceFlakeParticles() {
+export default function RocketParticles() {
     const particlesInit = useCallback(async engine => {
         console.log(engine);
         // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
@@ -58,7 +58,7 @@ export default function IceFlakeParticles() {
                                     nb_sides: 3
                                 },
                                 image: {
-                                    src: "/images/iceicon.png",
+                                    src: "/images/rocket.png",
                                     width: 100,
                                     height: 100
                                 }
