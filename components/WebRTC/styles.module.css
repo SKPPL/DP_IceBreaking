@@ -369,6 +369,7 @@
     width: 20rem;
     height: 5rem;
     font-size: 3rem;
+    text-align: center;
     animation: pulsate 1.5s infinite alternate;  
     border: 0.2rem solid #fff;
     box-shadow: 0 0 .2rem #fff,

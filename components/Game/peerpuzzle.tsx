@@ -12,6 +12,8 @@ import Bar from "@/components/PageElements/ProgressBar/Bar";
 import { useRecoilState } from "recoil";
 import { peerWaitState } from "./atom";
 import useSound from 'use-sound'
+import IceFlakeParticles from "../PageElements/Particles/iceFlakeParticles";
+import BlackhallParticles from "../PageElements/Particles/blackhallParticles";
 
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
@@ -159,8 +161,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
       {/* 아이템 쓸 때 나오는 효과 */}
       <div className="absolute grid w-[640px] h-[480px] mt-[160px]" style={{ pointerEvents: "none" }}>
-        {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'ice' &&  ( <div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles/> <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
       </div>
       <Bar score={puzzleCompleteCounter.peer} />
       <ModalPeer segmentState={peerSegmentState.segementState} />

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styles from "./styles.module.css";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
-import PeerReady from "../PageElements/PeerReady";
 
 interface Props {
     dataChannel: RTCDataChannel | undefined;
@@ -52,9 +51,9 @@ export default function CheckReady({ dataChannel }: Props) {
         <div className="flex flex-col w-1/2 h-screen">
         {!gameReadyState &&
             <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
-                <button className={styles.ready} id="myReadyButton" onClick={changeMyReadyState}>
-                    {!myReadyState ? "Ready" : "Cancel" } 
-                </button>
+                <div className={`${styles.ready} ${!myReadyState ? peerReadyState ? "" : ""  : "bg-red-900"}`} id="myReadyButton" onClick={changeMyReadyState}>
+                    {!myReadyState ? peerReadyState ? "Start" : "Ready"  : "Cancel" } 
+                </div>
             </div>
         }          
           {gameReadyState && dataChannel && (
@@ -85,10 +84,12 @@ export default function CheckReady({ dataChannel }: Props) {
           <select className="hidden" onChange={handleSelect} ref={selectRef}></select> */}
         </div>
         <div className="flex flex-col w-1/2 h-screen">
-            {peerReadyState && !myReadyState &&
-                <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
-                    <PeerReady />
-                </div>
+            {(!myReadyState || !peerReadyState)&&
+            <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
+              <div className={`${styles.ready} ${!peerReadyState ? "" : "bg-red-900"}`}>
+                {!peerReadyState ? "Not Ready" : "Peer Ready"}
+              </div>
+            </div>
             }
             {gameReadyState && dataChannel && (
             <div className="flex justify-center">
