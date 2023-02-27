@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 
 export const myWaitState = atom({
     key: 'myWaitState',
@@ -11,5 +11,16 @@ export const peerWaitState = atom({
 
 export const dataChannelState = atom({
     key: 'dataChannelState',
+    default: false,
+});
+
+
+export const myFaceLandMarkState = atom({
+    key: 'myFaceLandMarkState',
+    default: false,
+});
+
+export const peerFaceLandMarkState = atom({
+    key: 'peerFaceLandMarkState',
     default: false,
 });

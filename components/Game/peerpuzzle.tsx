@@ -9,11 +9,10 @@ import Rocket from "./SegmentState/rocket";
 import { useRouter } from "next/router";
 import ModalPeer from "../PageElements/ItemAlertPeer/ModalPeer";
 import Bar from "@/components/PageElements/ProgressBar/Bar";
-import { useRecoilState } from "recoil";
-import { peerWaitState } from "./atom";
 import useSound from 'use-sound'
 import IceFlakeParticles from "../PageElements/Particles/iceFlakeParticles";
 import BlackhallParticles from "../PageElements/Particles/blackhallParticles";
+import FaceLandMark from "../FaceDetection/FaceLandMark";
 
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
@@ -23,6 +22,8 @@ const PuzzleSegment = dynamic(import("@/components/Game/Segment"), {
   loading: () => <div></div>,
   ssr: false,
 });
+
+
 interface Props {
   videoId: string;
   auth: boolean;
@@ -103,6 +104,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   const keys = Object.keys(itemList);
 
   // 상대의 퍼즐 변경은 useEffect로 처리하면서 데이터채널로 뭐 변했는지 보내자
+
+
   useEffect(() => {
     for (var cnt = 0; cnt < keys.length; cnt++) {
       if (itemListBefore[keys[cnt]] !== itemList[keys[cnt]]) {
@@ -116,19 +119,12 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
           case "rocket": setTimeout(() => { makePeerDefaultSegment() }, 9000); break;
           case "ice": setTimeout(() => { makePeerDefaultSegment() }, 15000); break;
           case "magnet": setTimeout(() => { makePeerDefaultSegment() }, 7000); break;
+          case "lip": setTimeout(() => { makePeerDefaultSegment() }, 10000); break;
+
         }
       }
-      // peerface쪽 segmentState를 변경
-      // 무엇의 상태가 변했는지 알려줘야함
-      //TODO 아이템 사용 도중일 땐 눌러도 소용 없게하는 로직 추가해야함
     }
   }, [itemList]);
-
-  const [peerWait, setPeerWait] = useRecoilState(peerWaitState)
-  switch (peerSegmentState.segementState) {
-    case "rocket": setPeerWait(true); break;
-    case "magnet": setPeerWait(true); break;
-  }
 
 
 
@@ -140,7 +136,6 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
             <div className={styles.c1}>
               {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
               {(peerPosition.i !== i) &&
-
                 <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />
               }
             </div>
@@ -160,10 +155,13 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       </div>
 
       {/* 아이템 쓸 때 나오는 효과 */}
-      <div className="absolute grid w-[640px] h-[480px] mt-[160px]" style={{ pointerEvents: "none" }}>
-        {peerSegmentState.segementState === 'ice' &&  ( <div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles/> <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+      <div className="absolute grid w-[640px] h-[480px] mt-[160px] flex items-center" style={{ pointerEvents: "none" }}>
+        {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles /> <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lippeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
       </div>
+      {peerSegmentState.segementState === 'lip' && <FaceLandMark auth={auth} id={videoId} />}
+
       <Bar score={puzzleCompleteCounter.peer} />
       <ModalPeer segmentState={peerSegmentState.segementState} />
     </>

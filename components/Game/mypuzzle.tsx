@@ -10,10 +10,11 @@ import { useRouter } from 'next/router'
 import Modal from '../PageElements/ItemAlert/Modal'
 import MyBar from '../PageElements/ProgressBar/MyBar'
 import { myWaitState } from "./atom";
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import useSound from 'use-sound'
 import IceFlakeParticles from '../PageElements/Particles/iceFlakeParticles'
 import BlackhallParticles from '../PageElements/Particles/blackhallParticles'
+import FaceLandMark from '../FaceDetection/FaceLandMark'
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
@@ -22,6 +23,8 @@ const PuzzleSegment = dynamic(
     ssr: false,
 },
 );
+
+
 interface Props {
     videoId: string
     auth: boolean
@@ -46,12 +49,13 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     if (isStart) {
         shuffleSoundPlay()
-        setTimeout(() => isStart = false, 1000)   
+        setTimeout(() => isStart = false, 1000)
     }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
 
+    const [myWait, setMyWait] = useRecoilState(myWaitState)
 
     useEffect(() => {
         if (dataChannel) {
@@ -68,6 +72,8 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 case "rocket": setTimeout(() => { makeMyDefaultSegment() }, 9000); break;
                                 case "ice": setTimeout(() => { makeMyDefaultSegment() }, 15000); break;
                                 case "magnet": setTimeout(() => { makeMyDefaultSegment() }, 7000); break;
+                                case "lip": setTimeout(() => { makeMyDefaultSegment() }, 10000); break;
+
                             }
                     }
                 }
@@ -93,12 +99,8 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         }
     }, [puzzleCompleteCounter.mine])
 
-    const [myWait, setMyWait] = useRecoilState(myWaitState)
-    switch (mySegmentState.segementState) {
-        case "rocket": setMyWait(true); break;
-        case "magnet": setMyWait(true); break;
 
-    }
+
 
     return (
         <>
@@ -118,8 +120,10 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             <div className="absolute grid w-[640px] h-[480px] mt-[160px]" style={{ pointerEvents: "none" }}>
                 {mySegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles /> <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
                 {mySegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lipmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
 
             </div>
+            {mySegmentState.segementState === 'lip' && <FaceLandMark auth={auth} id={videoId} />}
             <MyBar score={puzzleCompleteCounter.mine} />
             <Modal segmentState={mySegmentState.segementState} />
 

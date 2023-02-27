@@ -15,12 +15,7 @@ import {
 } from 'recoil';
 import styles from '../rooms/styles.module.css'
 
-const MakeFaceLandMark = dynamic(
-    import('@/components/FaceDetection/FaceLandMark'), {
-    // loading: () => (<div></div>),
-    ssr: false,
-  },
-  );
+
 
 export default function Play() {
 
@@ -30,16 +25,14 @@ export default function Play() {
                 <title>Jigsaw Puzzle</title>
             </Head>
             <div className={`h-full ${styles.gameBackGround}`}>
-            <RecoilRoot>
-                <Provider store={store}>
-                    <WebRTC />
-                    {/* <MakeFaceLandMark i={'host'} /> */}
-                    {/* <MakeFaceLandMark i={'peer'} /> */}
-                    <div id = "itembar" className="hidden">
-                        <ItemBar />
-                    </div>
-                </Provider>
-            </RecoilRoot>
+                <RecoilRoot>
+                    <Provider store={store}>
+                        <WebRTC />
+                        <div id="itembar" className="hidden">
+                            <ItemBar />
+                        </div>
+                    </Provider>
+                </RecoilRoot>
             </div>
         </>
     );

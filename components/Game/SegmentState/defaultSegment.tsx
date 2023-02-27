@@ -2,14 +2,12 @@ import React, { useRef, useEffect, useState, memo, useCallback } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
 import { useDrag, useGesture } from "@use-gesture/react";
 import { Provider, useSelector, useDispatch } from "react-redux";
-import itemStore from "@/components/Game/store";
-import { useRouter } from "next/router";
 import styles from "../styles.module.css";
 import CloneVideo from "../CloneVideo";
-import { useIsMounted } from "usehooks-ts";
 import useSound from 'use-sound'
-import { useSetRecoilState } from "recoil";
-import { myWaitState, peerWaitState } from "../atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { myFaceLandMarkState, myWaitState, peerFaceLandMarkState, peerWaitState } from "../atom";
+import LipVideo from "../../FaceDetection/LipVideo";
 
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
@@ -177,6 +175,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     }, []);
 
 
+
+    const faceLandMarkReady = useRecoilValue(auth ? myFaceLandMarkState : peerFaceLandMarkState)
     return (
         <>
             <div className="">
@@ -200,7 +200,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                         }}
                     >
                         <animated.div>
-                            <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                            {segmentState === "default" && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                            {segmentState === "lip" && faceLandMarkReady && <LipVideo auth={auth} />}
                         </animated.div>
                     </animated.div>
                 </div>
