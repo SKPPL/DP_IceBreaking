@@ -3,19 +3,12 @@ import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
-import dynamic from "next/dynamic";
-import { Provider, useSelector, useDispatch } from "react-redux";
-import itemStore from "@/components/Game/store";
-import rocket from "../Game/SegmentState/rocket";
-import { useTimeout } from "usehooks-ts";
-import Rocket from "../Game/SegmentState/rocket";
-import MyPuzzle from "../Game/mypuzzle";
-import PeerPuzzle from "../Game/peerpuzzle";
 import Waiting from "../PageElements/Waiting";
-import styles from './styles.module.css'
+import styles from "./styles.module.css";
 import Ceremony from "../Game/Ceremony";
 import { useRecoilState } from "recoil";
 import { dataChannelState } from "../Game/atom";
+import CheckReady from "./CheckReady";
 
 const ICE_SERVERS = {
   iceServers: [
@@ -49,7 +42,6 @@ interface MyConstraints {
 }
 
 export default function WebRTC() {
-
   // const dispatch = useDispatch();
   // dispatch({ type: `myPuzzle/init` });
   // dispatch({ type: `peerPuzzle/init` });
@@ -365,9 +357,8 @@ export default function WebRTC() {
   };
   const [dataChannelExist, setDataChannelExist] = useRecoilState(dataChannelState);
   useEffect(() => {
-    if (dataChannel)
-      setDataChannelExist(true)
-  }, [dataChannel])
+    if (dataChannel) setDataChannelExist(true);
+  }, [dataChannel]);
 
   return (
     <>
@@ -387,60 +378,7 @@ export default function WebRTC() {
         </div>
       </div>
       {!dataChannel && <Waiting />}
-      <div className="flex flex-row" id="fullscreen">
-        <div className="flex flex-col w-1/2 h-screen">
-          {dataChannel && (
-            <div className="flex justify-center h-[160px]">
-              <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
-            </div>
-          )}
-          <div className="h-[480px] w-[640px] self-center" id={styles.gamepan}>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-            </div>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-            </div>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-            </div>
-          </div>
-          {/* <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="hidden box-border height width mb-5-4 text-white">
-            {cameraSetting ? "화면 끄기" : "화면 켜기"}
-          </button>
-          <select className="hidden" onChange={handleSelect} ref={selectRef}></select> */}
-        </div>
-        <div className="flex flex-col w-1/2 h-screen">
-          {dataChannel && (
-            <div className="flex justify-center h-[160px]">
-              <PeerPuzzle auth={false} videoId={"myface"} dataChannel={dataChannel} />
-            </div>
-          )}
-          <div className="h-[480px] w-[640px] self-center" id={styles.gamepan}>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-            </div>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-            </div>
-            <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-              <div className={`w-1/3 ${styles.eachpan}`} ></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {dataChannel && <CheckReady dataChannel={dataChannel} />}
     </>
   );
 }
