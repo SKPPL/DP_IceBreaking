@@ -6,7 +6,7 @@
     "dev": "next dev",
     "dev:custom": "node server.js",
     "build": "next build",
-    "start": "npm start",
+    "start": "next start -p 3000",
     "lint": "next lint"
   },
   "dependencies": {
