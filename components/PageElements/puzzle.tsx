@@ -10,8 +10,6 @@ const puzzleImageUrl = '/images/currentSmallPiece.png'
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
 
-const auth = true;
-const id = 4;
 
 
 interface MyConstraints {
@@ -23,63 +21,35 @@ interface MyConstraints {
 export default function PuzzleScreen() {
     
     const router = useRouter();
-    const userVideoRef = useRef<any>();
+    // const userVideoRef = useRef<any>();
     const userStreamRef = useRef<MediaStream>();
     var cloneRef = useRef<HTMLCanvasElement>(null);
     var ctx: CanvasRenderingContext2D | null = null;
     const puzzleImage = new Image();
     puzzleImage.src = puzzleImageUrl;
-    
-    async function getCameras(): Promise<void> {
-        try  {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            const cameras = devices.filter((device) => device.kind === "videoinput");
-            if (typeof userStreamRef.current !== "undefined") {
-                const currentCamera = userStreamRef.current.getVideoTracks()[0];
-            }
-        } catch (e) {
-            console.log(e);
-        }
+    const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+    const [innerHeight, setInnerHeight] = useState(window.innerHeight);
+    const movingRef = useRef<HTMLDivElement>(null);
+    const [divX, setDivX] = useState(0); //퍼즐의 절대위치 X
+    const [divY, setDivY] = useState(0); //퍼즐의 절대위치 y
+    const [puzzleHoleX,setHoleX] = useState(1); //퍼즐 구멍의 화면 절대위치 X
+    const [puzzleHoleY,setHoleY] = useState(1); //퍼즐 구멍의 화면 절대위치 Y
+    const puzzleWidth = 300/1440*innerWidth;
+    const puzzleHeight = 350/781*innerHeight;
+
+
+    function findPosition() {
+        if (!movingRef.current) return;
+        setDivX(movingRef.current!.getBoundingClientRect().x);
+        setDivY(movingRef.current!.getBoundingClientRect().y);
+        setHoleX(innerWidth*(1250/1440));
+        setHoleY(innerHeight*(640/780));
     }
 
-    async function getMedia(deviceId?: string): Promise<void> {
-        const initialConstraints: MyConstraints = {
-          audio: false,
-          // video: { facingMode: "user" },
-          video: { width: 640, height: 480 },
-        };
-        const cameraConstraints: MyConstraints = {
-          audio: false,
-          video: { deviceId: { exact: deviceId } },
-        };
-    
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia(deviceId ? cameraConstraints : initialConstraints);
-          userStreamRef.current = stream;
-          userVideoRef.current.srcObject = stream;
-          userVideoRef.current.onloadedmetadata = () => {
-            userVideoRef.current.play();
-          };
-          if (!deviceId) {
-            console.log("[get Cameras]");
-            await getCameras();
-          }
-        } catch (e) {
-          console.log(e);
-        }
-    }
 
-    const handleRoomCreated = async (): Promise<void> => {
-        try {
-          console.log("[Homepage joined]");
-          await getMedia();
-        } catch (e) {
-          console.log(e);
-        }
-      };
 
     function draw(){
-        ctx!.drawImage(puzzleImage,0,0,230, 255);
+        ctx!.drawImage(puzzleImage,0,0,230/300*puzzleWidth, 255/350*puzzleHeight);
         setTimeout(() => {
             draw()
         }, 40);
@@ -87,23 +57,22 @@ export default function PuzzleScreen() {
 
     useEffect(() => {
         if (!cloneRef) return;
-        
+
         ctx = cloneRef.current!.getContext('2d');
         
         const preventDefault = (e: Event) => e.preventDefault();
         document.addEventListener('gesturestart', preventDefault);
         document.addEventListener('gesturechange', preventDefault);
-        // console.log(cloneRef);
+
         draw()
-        
-        // 원래 얼굴 영상 가져오기 실행하던 함수
-        // handleRoomCreated();
+        findPosition();
+
     
         return () => {
           document.removeEventListener('gesturestart', preventDefault);
           document.removeEventListener('gesturechange', preventDefault);
         }
-      }, [cloneRef])
+      }, [cloneRef, puzzleHoleX])
 
     const domTarget = useRef(null);
     const [{ x, y,rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
@@ -126,10 +95,11 @@ export default function PuzzleScreen() {
                 if(!params.down) {
                     console.log(x.get(), y.get());
                 }
-                if(!params.down && isPuzzleMatched(x.get(), y.get())) {
+                if(!params.down && isPuzzleMatched(x.get(), y.get(), puzzleHoleX, puzzleHoleY, divX, divY)) {
                     router.push({
                         pathname: '/ready',
                     })
+                    console.log('성공')
                 }
             }
         );
@@ -155,36 +125,33 @@ export default function PuzzleScreen() {
 
     return (
         <>
-            <video className="w-full hidden" id="myface" autoPlay playsInline ref={userVideoRef}></video>
-            <div className="flex flex-row place-items-center">
-                <div className={styles.container}>
-                    <animated.div
-                    ref={domTarget}
-                    className={styles.card}
-                    {...bind()}
-                    style={{
-                        transform: 'perspective(600px)',
-                        x,
-                        y,
-                        scale: to([scale, zoom], (s, z) => s + z),
-                        rotateX,
-                        rotateY,
-                        rotateZ,
-                    }}>
-                    <animated.div>
-                        <canvas id="puzzlePiece" width={300} height={350} ref={cloneRef}></canvas>
-                    </animated.div>
-                    </animated.div>
-                </div>
+            <div className={styles.container} id="movingPiece" ref={movingRef}>
+                <animated.div
+                ref={domTarget}
+                className={styles.card}
+                {...bind()}
+                style={{
+                    transform: 'perspective(600px)',
+                    x,
+                    y,
+                    scale: to([scale, zoom], (s, z) => s + z),
+                    rotateX,
+                    rotateY,
+                    rotateZ,
+                }}>
+                <animated.div>
+                    <canvas id="puzzlePiece" width={puzzleWidth} height={puzzleHeight} ref={cloneRef}></canvas>
+                </animated.div>
+                </animated.div>
             </div>
         </>
     )
 }
 
 
-export function isPuzzleMatched(x: number, y: number) {
-    const diff = 45;
-    if( x > 777 - diff && x < 777 + diff && y > 75 - diff && y < 75 + diff ) {
+export function isPuzzleMatched(x: number, y: number, holeX: number, holeY: number, divX:number, divY: number) {
+    const diff = 90;
+    if( x+ divX > holeX - diff && x + divX < holeX + diff && y + divY > holeY - diff && y + divY < holeY + diff ) {
         return true;
     } else return false;
 }
