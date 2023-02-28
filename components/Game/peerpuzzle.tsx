@@ -14,6 +14,7 @@ import IceFlakeParticles from "../PageElements/Particles/iceFlakeParticles";
 import BlackhallParticles from "../PageElements/Particles/blackhallParticles";
 import FaceLandMarkMy, { startItem, stopItem } from "../FaceDetection/FaceLandMarkMy";
 import LipParticles from "../PageElements/Particles/lipParticles";
+import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
 
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
@@ -167,10 +168,11 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         {peerSegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > </div>)}
 
       </div>
-      {/* {peerSegmentState.segementState === 'lip' && <FaceLandMarkMy itemStart={true} />} */}
 
       <Bar score={puzzleCompleteCounter.peer} />
       <ModalPeer segmentState={peerSegmentState.segementState} />
+      {peerSegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
+
     </>
   );
 }

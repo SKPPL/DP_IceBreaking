@@ -8,7 +8,6 @@ import useSound from 'use-sound'
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { myFaceLandMarkState, myTwirlState, myWaitState, peerFaceLandMarkState, peerTwirlState, peerWaitState } from "../atom";
 import LipVideo from "../../FaceDetection/LipVideo";
-import Twirl from "@/components/videoManipulation/twirl";
 import TwirlVideo from "@/components/FaceDetection/TwirlVideo";
 
 

@@ -16,6 +16,7 @@ import IceFlakeParticles from '../PageElements/Particles/iceFlakeParticles'
 import BlackhallParticles from '../PageElements/Particles/blackhallParticles'
 import { getGuestLip, startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
 import LipParticles from '../PageElements/Particles/lipParticles'
+import MakeVideoTwirl from '../FaceDetection/MakeVideoTwirl'
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
@@ -129,9 +130,9 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 {mySegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} >  </div>)}
 
             </div>
-            {/* {mySegmentState.segementState === 'lip' && <FaceLandMarkPeer itemStart={true} />} */}
             <MyBar score={puzzleCompleteCounter.mine} />
             <Modal segmentState={mySegmentState.segementState} />
+            {mySegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
 
         </>
     )

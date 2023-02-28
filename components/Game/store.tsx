@@ -2,7 +2,7 @@ import { createSlice, configureStore, PayloadAction } from "@reduxjs/toolkit";
 
 const itemSlice = createSlice({
     name: "item",
-    initialState: { rocket: 1, ice: 1, lip: 1, nose: 1, rotate: 1, magnet: 1 },
+    initialState: { rocket: 1, ice: 1, lip: 1, twirl: 1, magnet: 1 },
     reducers: {
         rocket: (state) => {
             if (state.rocket > 0) {
@@ -17,20 +17,16 @@ const itemSlice = createSlice({
             if (state.lip > 0)
                 state.lip -= 1;
         },
-        nose: (state) => {
-            if (state.nose > 0)
-                state.nose -= 1;
-        },
-        rotate: (state) => {
-            if (state.rotate > 0)
-                state.rotate -= 1;
+        twirl: (state) => {
+            if (state.twirl > 0)
+                state.twirl -= 1;
         },
         magnet: (state) => {
             if (state.magnet > 0)
                 state.magnet -= 1;
         },
         init: (state) => {
-            state = { rocket: 1, ice: 1, lip: 1, nose: 1, rotate: 1, magnet: 1 };
+            state = { rocket: 1, ice: 1, lip: 1, twirl: 1, magnet: 1 };
         }
     }
 });

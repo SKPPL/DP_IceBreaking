@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
+// import { getHostFace } from "./FaceLandMarkMy";
+// import { getGuestFace } from "./FaceLandMarkPeer";
 interface segmentData {
     auth: boolean;
 }
@@ -16,18 +18,19 @@ export default function TwirlVideo({ auth }: segmentData) {
             unmountCheck = true;
         }
     }, [cloneRef])
-    const lip = useRef([320, 240, 50])
-    const video = document.getElementById(videoId) as HTMLVideoElement;
+    const xyr = useRef([320, 240, 100])
+    const video = document.getElementById(videoId) as HTMLCanvasElement; // twirl된 것은 canvas에 그린거라 CanvasElement로 
+
     const draw = useCallback(() => {
+
         if (!unmountCheck) {
-            // var tempLip = auth ? getGuestLip() : getHostLip();
-            // if (tempLip) {
-            //     lip.current = tempLip;
+            // var tempXYR = auth ? getGuestFace() : getHostFace();
+            // if (tempXYR) {
+            //     xyr.current = tempXYR;
             // }
-            //장축과 단축
-            var lr = Math.floor(lip.current[2] * 1.5);
-            var sr = Math.floor(lip.current[2]);
-            ctx!.drawImage(video, lip.current[0] - lr, lip.current[1] - sr, 2 * lr, 2 * sr, 0, 0, 640, 480);
+            var lr = Math.round(xyr.current[2] * 2.25);
+            var sr = Math.round(xyr.current[2] * 1.5);
+            ctx!.drawImage(video, xyr.current[0] - lr, xyr.current[1] - sr, 2 * lr, 2 * sr, 0, 0, 640, 480);
             requestAnimationFrame(draw);
         } else {
             cancelAnimationFrame(requestID.current);
