@@ -24,7 +24,7 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
 
     const draw = useCallback(() => {
         if (!unmountCheck) {
-            ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 640, 480);
+            ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 213, 160);
             requestAnimationFrame(draw);
         } else {
             cancelAnimationFrame(requestID.current);
@@ -41,7 +41,7 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
 
     return (
         <>
-            <canvas id={`${auth ? 'my' : 'peer'}_${id}`} width="640" height="480" ref={cloneRef} ></canvas>
+            <canvas id={`${auth ? 'my' : 'peer'}_${id}`} width="213" height="160" ref={cloneRef} ></canvas>
         </>
     )
 

@@ -25,6 +25,15 @@ export const peerFaceLandMarkState = atom({
     default: false,
 });
 
+export const myLipState = atom({
+    key: 'myLip',
+    default: false,
+})
+export const peerLipState = atom({
+    key: 'peerLip',
+    default: false,
+})
+
 export const myTwirlState = atom({
     key: 'myTwirl',
     default: false,
