@@ -30,14 +30,14 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="bg-[url('/images/ccccuuurrentEmptySpace.png')] bg-cover bg-center h-screen">
-        {isFiveMinutes? ""  : <MainParticles />}
+        {/* {isFiveMinutes? ""  : <MainParticles />} */}
         <div className={styles.indexbox}>
           <div className={styles.indexText}>
             DYNAMIC <br />
             PUZZLE
           </div>
         </div>
-        <div className="absolute ml-[30rem] mt-[20rem]">
+        <div className="absolute justify-end items-end flex w-1/4 h-4/5">
           <BagicHome />
         </div>
       </div>

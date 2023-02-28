@@ -148,7 +148,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
           </>
         );
       })}
-      <div key={`peerIsRight${i}`} className="absolute grid grid-cols-3 w-[640px] h-[480px] mt-[160px]">
+      <div className="absolute grid grid-cols-3 w-[640px] h-[480px] mt-[160px]">
         <div className={isRightPlace[0] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
         <div className={isRightPlace[1] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
         <div className={isRightPlace[2] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
