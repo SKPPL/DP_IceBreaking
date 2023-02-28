@@ -17,6 +17,7 @@ import LipParticles from "../PageElements/Particles/lipParticles";
 import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
 import TwirlParticles from "../PageElements/Particles/twirlParticles";
 import RocketParticles from "../PageElements/Particles/rocketParticles";
+import MakeVideoLip from "../FaceDetection/MakeVideoLip";
 
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
@@ -173,6 +174,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
       <Bar score={puzzleCompleteCounter.peer} />
       <ModalPeer segmentState={peerSegmentState.segementState} />
+      {peerSegmentState.segementState === 'lip' && <MakeVideoLip auth={auth} />}
       {peerSegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
 
     </>

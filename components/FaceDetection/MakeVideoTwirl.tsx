@@ -9,8 +9,7 @@ interface Props {
 
 export default function MakeVideoTwirl({ videoId, auth }: Props) {
     // auth가 true면 내 비디오를 변환해서 상대 퍼즐에 표시함, false면 상대 비디오를 변환해서 내 퍼즐에 표시함
-    const myTwirlSet = useSetRecoilState(myTwirlState)
-    const peerTwirlSet = useSetRecoilState(peerTwirlState)
+
     var cloneRef = useRef<HTMLCanvasElement>(null);
     var cnt = useRef<number>(0);
     var requestID = useRef<number>(0);
@@ -104,7 +103,8 @@ export default function MakeVideoTwirl({ videoId, auth }: Props) {
         }
     }, [])
 
-
+    const myTwirlSet = useSetRecoilState(myTwirlState)
+    const peerTwirlSet = useSetRecoilState(peerTwirlState)
     useEffect(() => {
         if (!video) return;
         if (!ctx) return;

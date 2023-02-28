@@ -13,7 +13,7 @@ export default function TwirlVideo({ auth }: segmentData) {
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return
-        ctx = cloneRef.current.getContext('2d');
+        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
         return () => {
             unmountCheck = true;
         }

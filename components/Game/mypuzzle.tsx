@@ -19,6 +19,7 @@ import LipParticles from '../PageElements/Particles/lipParticles'
 import MakeVideoTwirl from '../FaceDetection/MakeVideoTwirl'
 import TwirlParticles from '../PageElements/Particles/twirlParticles'
 import RocketParticles from '../PageElements/Particles/rocketParticles'
+import MakeVideoLip from '../FaceDetection/MakeVideoLip'
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
@@ -130,11 +131,13 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 {mySegmentState.segementState === 'magnet' && (<div id="mymagnet" className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
                 {mySegmentState.segementState === 'lip' && (<div id="mylip" className={`flex fill`} style={{ pointerEvents: "none" }} > <LipParticles /> <img src="../images/lipmine.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
                 {mySegmentState.segementState === 'twirl' && (<div id="mytwirl" className={`flex fill`} style={{ pointerEvents: "none" }} > <TwirlParticles />  </div>)}
-                {mySegmentState.segementState === 'rocket' && (<div id="myrocket" className={`flex fill`} style={{ pointerEvents: "none" }} > <RocketParticles />  </div>)}  
+                {mySegmentState.segementState === 'rocket' && (<div id="myrocket" className={`flex fill`} style={{ pointerEvents: "none" }} > <RocketParticles />  </div>)}
             </div>
             <MyBar score={puzzleCompleteCounter.mine} />
             <Modal segmentState={mySegmentState.segementState} />
+            {mySegmentState.segementState === 'lip' && <MakeVideoLip auth={auth} />}
             {mySegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
+
 
         </>
     )
