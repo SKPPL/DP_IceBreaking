@@ -6,12 +6,12 @@
   border: 0.2rem solid #fff;
   box-shadow: 0 0 .2rem #fff,
             0 0 .2rem #fff,
-            0 0 2rem rgb(17, 143, 189),
-            0 0 0.8rem rgb(17, 143, 189),
-            0 0 2.8rem rgb(17, 143, 189),
-            inset 0 0 1.3rem rgb(17, 143, 189); 
-  width : 30rem;
-  height: 20rem;
+            0 0 2rem rgb(4, 174, 235),
+            0 0 0.8rem rgb(4, 174, 235),
+            0 0 2.8rem rgb(4, 174, 235),
+            inset 0 0 1.3rem rgb(4, 174, 235);
+  width : 40%;
+  height: 40%;
   margin-left: 10rem;
   margin-top: 6rem;
   border-radius: 3rem;
@@ -20,8 +20,8 @@
   
   
 .indexText {
-  font-size: 6rem;
-  margin-left: 1.5rem;
+  font-size: calc(5vw + 5vh);
+  margin-left: calc(3vw);
   animation: flicker 1.5s infinite;
   animation-fill-mode : forwards;
   color: #fff;
@@ -36,11 +36,11 @@
       0 0 4px #fff,
       0 0 11px #fff,
       0 0 19px #fff,
-      0 0 40px rgb(17, 143, 189),
-      0 0 80px rgb(17, 143, 189),
-      0 0 90px rgb(17, 143, 189),
-      0 0 100px rgb(17, 143, 189),
-      0 0 150px rgb(17, 143, 189);
+      0 0 40px rgb(4, 174, 235),
+      0 0 80px rgb(4, 174, 235),
+      0 0 90px rgb(4, 174, 235),
+      0 0 100px rgb(4, 174, 235),
+      0 0 150px rgb(4, 174, 235);
   
   }
   
