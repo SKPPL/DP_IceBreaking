@@ -3,10 +3,8 @@ import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
-import MyPuzzle from "../Game/mypuzzle";
-import PeerPuzzle from "../Game/peerpuzzle";
 import Waiting from "../PageElements/Waiting";
-import styles from './styles.module.css'
+import styles from "./styles.module.css";
 import Ceremony from "../Game/Ceremony";
 import { useRecoilState } from "recoil";
 import { dataChannelState } from "../Game/atom";
@@ -45,11 +43,6 @@ interface MyConstraints {
 }
 
 export default function WebRTC() {
-
-  // const dispatch = useDispatch();
-  // dispatch({ type: `myPuzzle/init` });
-  // dispatch({ type: `peerPuzzle/init` });
-  // dispatch({ type: `item/init` });
   useSocket();
   const router = useRouter();
   //useRef은 특정컴포넌트에 접근할 수 있는 객체, 초기값 null
@@ -60,7 +53,6 @@ export default function WebRTC() {
   const selectRef = useRef<any>();
   const hostRef = useRef(false);
   const userStreamRef = useRef<MediaStream>();
-  const nickNameChannel = useRef<RTCDataChannel>();
   // call setDataChannel when dataChannel created
   var [dataChannel, setDataChannel] = useState<RTCDataChannel>();
   //State
@@ -107,7 +99,6 @@ export default function WebRTC() {
   useEffect(() => {
     let mounted = true;
     if (mounted && checkLeave) {
-      // socketConnect.disconnect();
       router
         .replace({
           pathname: "/ready",
@@ -121,49 +112,21 @@ export default function WebRTC() {
   const handleBackButton = () => {
     leaveRoom();
   };
-  //닉네임 설정
-  const handleNickName = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setNickName(e.currentTarget.value);
-    // console.log(nickNameChannel);
-    if (typeof nickNameChannel.current !== "undefined" && nickNameChannel.current.label == "nickname") {
-      nickNameChannel.current.send(e.currentTarget.value);
-    } else {
-      console.log("[No data Channel]");
-    }
-  };
-  async function getCameras(): Promise<void> {
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const cameras = devices.filter((device) => device.kind === "videoinput");
-      if (typeof userStreamRef.current !== "undefined") {
-        //TODO: 예외처리
-        const currentCamera = userStreamRef.current.getVideoTracks()[0];
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-  async function getMedia(deviceId?: string): Promise<void> {
+
+  async function getMedia(): Promise<void> {
     const initialConstraints: MyConstraints = {
       audio: false,
       // video: { facingMode: "user" },
       video: { width: 640, height: 480 },
     };
-    const cameraConstraints: MyConstraints = {
-      audio: false,
-      video: { deviceId: { exact: deviceId } },
-    };
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia(deviceId ? cameraConstraints : initialConstraints);
+      const stream = await navigator.mediaDevices.getUserMedia(initialConstraints);
       userStreamRef.current = stream;
       userVideoRef.current.srcObject = stream;
       userVideoRef.current.onloadedmetadata = () => {
         userVideoRef.current.play();
       };
-      if (!deviceId) {
-        console.log("[get Cameras]");
-        await getCameras();
-      }
     } catch (e) {
       console.log(e);
     }
@@ -191,21 +154,15 @@ export default function WebRTC() {
     console.log("[initiateCall]");
     if (hostRef.current && typeof webRTCConnRef !== "undefined") {
       webRTCConnRef.current = makeConnection();
+
       if (typeof userStreamRef.current !== "undefined") {
         userStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
       }
       try {
         console.log("[emit offer]");
         //DataChannel
-        nickNameChannel.current = webRTCConnRef.current.createDataChannel("nickname");
         dataChannel = webRTCConnRef.current.createDataChannel("data");
-        if (typeof nickNameChannel.current !== "undefined") {
-          //Client A에서 동작하는 코드 데이터 채널에 이벤트 리스너를 달아서 이벤트가 들어오면
-          //들어오는 데이터로 상대방 닉네임을 설정
-          nickNameChannel.current.addEventListener("message", (event: MessageEvent<any>): void => {
-            setPeerNickName(event.data);
-          });
-        }
+
         const offer = await webRTCConnRef.current.createOffer();
         webRTCConnRef.current.setLocalDescription(offer);
         socketConnect.emit("offer", offer, roomName);
@@ -253,6 +210,7 @@ export default function WebRTC() {
   const makeConnection = (): RTCPeerConnection => {
     // RTC Peer Connection 생성
     const connection = new RTCPeerConnection(ICE_SERVERS);
+
     //icecandidate, track listener 추가
     connection.onicecandidate = handleICECandidateEvent;
     connection.ontrack = handleTrackEvent;
@@ -273,15 +231,8 @@ export default function WebRTC() {
       webRTCConnRef.current = makeConnection();
       webRTCConnRef.current.addEventListener("datachannel", (event: any) => {
         console.log("[offer]", event);
-        nickNameChannel.current = event.channel;
         // on guest side, guest -> host
         switch (event.channel.label) {
-          case "nickname":
-            nickNameChannel.current = event.channel;
-            nickNameChannel.current!.addEventListener("message", (event: any) => {
-              setPeerNickName(event.data);
-            });
-            break;
           case "data":
             setDataChannel(event.channel);
             break;
@@ -309,26 +260,7 @@ export default function WebRTC() {
     const candidate = new RTCIceCandidate(incoming);
     webRTCConnRef.current.addIceCandidate(candidate).catch((e: Event) => console.log(e));
   };
-  //마이크 셋팅 변경 버튼 클릭 시
-  const changeMicSetting = (): void => {
-    toggleMediaStream("audio", micSetting);
-    setMicSetting((prevSetting) => !prevSetting);
-  };
-  //카메라 셋팅 변경 버튼 클릭 시
-  const changeCameraSetting = (): void => {
-    toggleMediaStream("video", cameraSetting);
-    setCameraSetting((prevSetting) => !prevSetting);
-  };
-  //미디어스트리미 옵션 값 변경
-  const toggleMediaStream = (type: string, state: boolean): void => {
-    if (typeof userStreamRef.current !== "undefined") {
-      userStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => {
-        if (track.kind === type) {
-          track.enabled = !state;
-        }
-      });
-    }
-  };
+
   const [dataChannelExist, setDataChannelExist] = useRecoilState(dataChannelState);
   useEffect(() => {
     if (dataChannel) setDataChannelExist(true);
@@ -340,19 +272,20 @@ export default function WebRTC() {
         Leave
       </button> */}
       <div className="hidden h-screen" id="face">
-          <Ceremony />
+        <Ceremony />
         <div className={`flex justify-center`}>
           <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
           <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
         </div>
       </div>
-      {!dataChannel &&
+      {!dataChannel && (
         <div className="h-screen">
           <Waiting />
-        </div>}
+        </div>
+      )}
       {dataChannel && <CheckReady dataChannel={dataChannel} />}
-      {dataChannel && <FaceLandMarkMy/>}
-      {dataChannel && <FaceLandMarkPeer/>}
+      {dataChannel && <FaceLandMarkMy />}
+      {dataChannel && <FaceLandMarkPeer />}
     </>
   );
 }

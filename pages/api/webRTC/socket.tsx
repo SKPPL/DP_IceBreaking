@@ -33,7 +33,7 @@ const SocketHandler = (_: any, res: NextApiResponseServerIO): any => {
     } = io;
     const publicRooms: roomsInfo[] = [];
     rooms.forEach((_, key) => {
-      if (sids.get(key) === undefined) {
+      if (sids.get(key) === undefined && typeof key === "string") {
         publicRooms.push({ roomName: key, roomSize: countRoomUser(key) });
       }
     });
