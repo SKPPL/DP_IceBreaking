@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { getHostLip } from "./FaceLandMarkMy";
-import { getGuestLip } from "./FaceLandMarkPeer";
+
 interface segmentData {
     auth: boolean;
 }
+
+
 export default function LipVideo({ auth }: segmentData) {
     var videoId = auth ? 'peer_lip' : 'my_lip';
     var cloneRef = useRef<HTMLCanvasElement>(null);

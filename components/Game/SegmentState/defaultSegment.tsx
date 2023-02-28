@@ -203,7 +203,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                         }}
                     >
                         <animated.div>
-                            {segmentState === "default" && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                            {(segmentState === "default" || (!faceLandMarkReady || !lipReady) && !twirlReady) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
                             {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
                             {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
                         </animated.div>

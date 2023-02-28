@@ -53,7 +53,7 @@ export default function MakeVideoTwirl({ videoId, auth }: Props) {
             const frame = ctx2!.getImageData(0, 0, 320, 240);
             const frame2: ImageData = new ImageData(320, 240)
             for (let y = 0; y < 240; y++) {
-                for (let x = 40; x < 280; x++) {
+                for (let x = 40; x < 280; x++) { // 정사각형 모양으로 잘라서 필요한 부분만 계산
                     const index = (y * 320 + x) * 4;
                     // Calculate the distance from the center point..
                     const dx = x - centerX;
@@ -65,6 +65,7 @@ export default function MakeVideoTwirl({ videoId, auth }: Props) {
                     const newY = Math.round(centerY + distance * Math.sin(an));
                     // Set the new position and color values for the pixel!
                     const newIndex = (newY * 320 + newX) * 4;
+                    if (newIndex >= 307200 || newIndex < 0) continue; //307200 = 320*240*4
                     frame2.data[newIndex] = frame.data[index]; //r
                     frame2.data[newIndex + 1] = frame.data[index + 1];//g
                     frame2.data[newIndex + 2] = frame.data[index + 2];; //b
@@ -84,15 +85,22 @@ export default function MakeVideoTwirl({ videoId, auth }: Props) {
                             tempIndex1 -= 4
                             cnt1 += 1
                         }
-                        while ((frame2.data[tempIndex2] == 0 || frame2.data[tempIndex2 + 1] == 0 || frame2.data[tempIndex2 + 2] == 0 || frame2.data[tempIndex2 + 3] == 0) && tempIndex2 < 1228800) {// 1228800 = 640*480*4
+                        while ((frame2.data[tempIndex2] == 0 || frame2.data[tempIndex2 + 1] == 0 || frame2.data[tempIndex2 + 2] == 0 || frame2.data[tempIndex2 + 3] == 0) && tempIndex2 < 307200) {// 307200 = 320*240*4
                             tempIndex2 += 4
                             cnt2 += 1
                         }
-                        //내분점으로 보간법 적용해봄
-                        frame2.data[index] = Math.floor(frame2.data[tempIndex1] * cnt2 + cnt1 * frame2.data[tempIndex2]) / (cnt1 + cnt2);
-                        frame2.data[index + 1] = Math.floor(frame2.data[tempIndex1 + 1] * cnt2 + cnt1 * frame2.data[tempIndex2 + 1]) / (cnt1 + cnt2);
-                        frame2.data[index + 2] = Math.floor(frame2.data[tempIndex1 + 2] * cnt2 + cnt1 * frame2.data[tempIndex2 + 2]) / (cnt1 + cnt2);
-                        frame2.data[index + 3] = Math.floor(frame2.data[tempIndex1 + 3] * cnt2 + cnt1 * frame2.data[tempIndex2 + 3]) / (cnt1 + cnt2);
+                        //내분점으로 보간법 적용해봄, cnt가 0이면 0으로 나누는 에러가 발생하므로 예외처리
+                        if (cnt1 == 0 && cnt2 == 0) {
+                            frame2.data[index] = frame.data[index];
+                            frame2.data[index + 1] = frame.data[index + 1];
+                            frame2.data[index + 2] = frame.data[index + 2];
+                            frame2.data[index + 3] = frame.data[index + 3];
+                        } else {
+                            frame2.data[index] = Math.floor(frame2.data[tempIndex1] * cnt2 + cnt1 * frame2.data[tempIndex2]) / (cnt1 + cnt2);
+                            frame2.data[index + 1] = Math.floor(frame2.data[tempIndex1 + 1] * cnt2 + cnt1 * frame2.data[tempIndex2 + 1]) / (cnt1 + cnt2);
+                            frame2.data[index + 2] = Math.floor(frame2.data[tempIndex1 + 2] * cnt2 + cnt1 * frame2.data[tempIndex2 + 2]) / (cnt1 + cnt2);
+                            frame2.data[index + 3] = Math.floor(frame2.data[tempIndex1 + 3] * cnt2 + cnt1 * frame2.data[tempIndex2 + 3]) / (cnt1 + cnt2);
+                        }
                     }
                 }
             }
