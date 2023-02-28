@@ -56,11 +56,12 @@
   touch-action: none;
   animation-duration: 1s;
   animation-name: rightcard;
+  z-index: 0;
 }
 
 @keyframes rightcard {
   0% {
-    outline: 1rem solid;
+    outline: 2rem solid;
   }
 
   10% {
@@ -180,7 +181,8 @@
   }
 
   50% {
-    margin-left: -60px;
+    margin-left: -50px;
+    scale: 1;
   }
 
   100% {
@@ -202,7 +204,7 @@
 
 @keyframes rightcard2 {
   0% {
-    outline: 1rem solid;
+    outline: 2rem solid;
   }
 
   10% {
@@ -272,6 +274,12 @@
 }
 
 .gif {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   -ms-user-select: none;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -293,6 +301,7 @@
 
 
 .ceremonyText {
+  font-size: 3rem;
   animation: flicker 1.5s infinite alternate;
   color: #fff;
 }

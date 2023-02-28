@@ -21,7 +21,7 @@ export default function IcedVideo({ iceCount, id, auth, videoId, segmentState }:
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return
-        ctx = cloneRef.current.getContext('2d');
+        ctx = cloneRef.current.getContext('2d', { alpha: false });
 
         return () => {
             unmountCheck = true;
@@ -31,11 +31,11 @@ export default function IcedVideo({ iceCount, id, auth, videoId, segmentState }:
     const video = document.getElementById(videoId) as HTMLVideoElement;
     const draw = () => {
         if (!unmountCheck) {
-            ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 640, 480);
+            ctx!.drawImage(video, 213 * (id % 3), 160 * ((id - id % 3) / 3), 213, 160, 0, 0, 640, 480);
             if (segmentState === 'ice' && iceCount > 0) {
                 ctx!.drawImage(img, 0, 0)
             }
-            setTimeout(draw, 16.666);
+            setTimeout(draw, 16);
         }
     }
 
