@@ -5,6 +5,7 @@ import { MainR, ContainerR, MessageR, ButtonR, ContentR, LifeR } from './rocketS
 import { MainM, ContainerM, MessageM, ButtonM, ContentM, LifeM } from './magnetStyles'
 import { MainI, ContainerI, MessageI, ButtonI, ContentI, LifeI } from './iceStyles'
 import { MainL, ContainerL, MessageL, ButtonL, ContentL, LifeL } from './lipStyles'
+import { MainT, ContainerT, MessageT, ButtonT, ContentT, LifeT } from './twirlStyles'
 
 let id = 0
 
@@ -32,7 +33,7 @@ function MessageHub({
 }: MessageHubProps) {
   const refMap = useMemo(() => new WeakMap(), [])
   const cancelMap = useMemo(() => new WeakMap(), [])
-  const [items, setItems] = useState<Item[]>([])
+  let [items, setItems] = useState<Item[]>([])
 
   let timeout;
 
@@ -41,6 +42,8 @@ function MessageHub({
     case 'magnet': timeout = 6500;  break;
     case 'ice': timeout = 14500;  break;
     case 'lip' : timeout = 9500; break;
+    case 'twirl' : timeout = 9500; break;
+    case 'default' : items = [];
   }
 
   const transitions = useTransition(items, {
@@ -121,6 +124,19 @@ function MessageHub({
           ))}
         </ContainerL>
       )
+    case 'twirl':
+      return (
+        <ContainerT>
+          {transitions(({ life, ...style }, item) => (
+            <MessageT style={style}>
+              <ContentT ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                <LifeT style={{ right: life }} />
+                <p>{item.msg}</p>
+              </ContentT>
+            </MessageT>
+          ))}
+        </ContainerT>
+        )
   }
   return(<></>)
 }
@@ -138,6 +154,7 @@ export default function ModalPeer({ segmentState }:Props) {
       case 'magnet': ref.current?.(`블랙홀로 조각이 빨려들어갑니다!`);  break;
       case 'ice': ref.current?.(`적의 조각이 얼어붙었습니다!`);  break;
       case 'lip': ref.current?.(`Chu ~ ❤️ `); break;
+      case 'twirl': ref.current?.(`내 얼굴이 빨려들어갑니다!`); break;
     }
   }, [segmentState]);
 
