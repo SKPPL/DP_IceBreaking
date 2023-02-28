@@ -28,7 +28,7 @@ export default function Play() {
                 <RecoilRoot>
                     <Provider store={store}>
                         <WebRTC />
-                        <div id="itembar" className="hidden">
+                        <div id="itembar" className="invisible">
                             <ItemBar />
                         </div>
                     </Provider>
