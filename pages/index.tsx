@@ -37,7 +37,7 @@ export default function Home() {
             PUZZLE
           </div>
         </div>
-        <div className="absolute ml-[30rem] mt-[30rem]">
+        <div className="absolute justify-end items-end flex w-1/4 h-4/5">
           <BagicHome />
         </div>
       </div>
