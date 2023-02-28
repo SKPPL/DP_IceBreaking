@@ -4,17 +4,8 @@ import { useSpring, animated, to } from '@react-spring/web'
 import { useDrag, useGesture } from 'react-use-gesture'
 import styles from "./styles.module.css";
 import { useRouter } from "next/router";
-import CloneVideo from "../Game/CloneVideo";
-import dynamic from "next/dynamic";
 
-// const PuzzleSegment = dynamic(
-//     import('@/components/Game/CloneVideo'), {
-//     loading: () => (<div></div>),
-//     ssr: false
-//     },
-// );
-
-const puzzleImageUrl = '/images/puzzleKeyFixed.png'
+const puzzleImageUrl = '/images/currentSmallPiece.png'
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
@@ -87,22 +78,28 @@ export default function PuzzleScreen() {
         }
       };
 
+    function draw(){
+        ctx.drawImage(puzzleImage,0,0,230, 255);
+        setTimeout(() => {
+            draw()
+        }, 40);
+    }
 
     useEffect(() => {
         ctx = cloneRef.current.getContext('2d');
-        ctx.drawImage(puzzleImage,0,0,230, 255);
         
-        const preventDefault = (e: Event) => e.preventDefault()
-        document.addEventListener('gesturestart', preventDefault)
-        document.addEventListener('gesturechange', preventDefault)
-        
+        const preventDefault = (e: Event) => e.preventDefault();
+        document.addEventListener('gesturestart', preventDefault);
+        document.addEventListener('gesturechange', preventDefault);
+        // console.log(cloneRef);
+        draw()
         
         // 원래 얼굴 영상 가져오기 실행하던 함수
         // handleRoomCreated();
     
         return () => {
-          document.removeEventListener('gesturestart', preventDefault)
-          document.removeEventListener('gesturechange', preventDefault)
+          document.removeEventListener('gesturestart', preventDefault);
+          document.removeEventListener('gesturechange', preventDefault);
         }
       }, [cloneRef])
 
@@ -173,7 +170,6 @@ export default function PuzzleScreen() {
                         rotateZ,
                     }}>
                     <animated.div>
-                        {/* <PuzzleSegment auth={auth} id={id} videoId="myface" segmentState="" /> */}
                         <canvas id="puzzlePiece" width={300} height={350} ref={cloneRef}></canvas>
                     </animated.div>
                     </animated.div>
@@ -186,7 +182,7 @@ export default function PuzzleScreen() {
 
 export function isPuzzleMatched(x: number, y: number) {
     const diff = 45;
-    if( x > 497 - diff && x < 495 + diff && y > 70 - diff && y < 70 + diff ) {
+    if( x > 777 - diff && x < 777 + diff && y > 75 - diff && y < 75 + diff ) {
         return true;
     } else return false;
 }

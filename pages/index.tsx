@@ -15,14 +15,12 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>
-        <div className="container-2xl" >
-          <main className="flex flex-col bg-center bg-cover bg-[url('../public/images/puzzleFilledBackground.jpg')] justify-center items-center h-screen" >
+      <div className={styles.indexBackGround}>
+        <div className="flex flex-col bg-center bg-cover justify-center items-center h-screen">
             <div className={styles.indexbox}>
               {/* <MainPage /> */}
               <BagicHome />
             </div>
-          </main>
         </div>
       </div>
     </>
