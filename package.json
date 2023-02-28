@@ -34,7 +34,6 @@
     "child_process": "^1.0.2",
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
-    "ffmpeg-static": "^5.1.0",
     "framer-motion": "^9.0.7",
     "fs": "^0.0.1-security",
     "install": "^0.13.0",
