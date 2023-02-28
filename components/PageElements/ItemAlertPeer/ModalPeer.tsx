@@ -4,6 +4,7 @@ import { useTransition } from '@react-spring/web'
 import { MainR, ContainerR, MessageR, ButtonR, ContentR, LifeR } from './rocketStyles'
 import { MainM, ContainerM, MessageM, ButtonM, ContentM, LifeM } from './magnetStyles'
 import { MainI, ContainerI, MessageI, ButtonI, ContentI, LifeI } from './iceStyles'
+import { MainL, ContainerL, MessageL, ButtonL, ContentL, LifeL } from './lipStyles'
 
 let id = 0
 
@@ -39,6 +40,7 @@ function MessageHub({
     case 'rocket': timeout = 8500;  break;
     case 'magnet': timeout = 6500;  break;
     case 'ice': timeout = 14500;  break;
+    case 'lip' : timeout = 9500; break;
   }
 
   const transitions = useTransition(items, {
@@ -106,6 +108,19 @@ function MessageHub({
           ))}
         </ContainerI>
       )
+    case 'lip':
+      return (
+        <ContainerL>
+          {transitions(({ life, ...style }, item) => (
+            <MessageL style={style}>
+              <ContentL ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                <LifeL style={{ right: life }} />
+                <p>{item.msg}</p>
+              </ContentL>
+            </MessageL>
+          ))}
+        </ContainerL>
+      )
   }
   return(<></>)
 }
@@ -122,6 +137,7 @@ export default function ModalPeer({ segmentState }:Props) {
       case 'rocket': ref.current?.(`적의 로켓을 움직이세요!`);  break;
       case 'magnet': ref.current?.(`블랙홀로 조각이 빨려들어갑니다!`);  break;
       case 'ice': ref.current?.(`적의 조각이 얼어붙었습니다!`);  break;
+      case 'lip': ref.current?.(`Chu ~ ❤️ `); break;
     }
   }, [segmentState]);
 

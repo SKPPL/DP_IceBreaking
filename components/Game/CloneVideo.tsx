@@ -7,6 +7,7 @@ interface segmentData {
 }
 export default function CloneVideo({ id, auth, videoId, segmentState }: segmentData) {
     var cloneRef = useRef<HTMLCanvasElement>(null);
+    var requestID = useRef<number>(0);
     var ctx: CanvasRenderingContext2D | null = null;
     var unmountCheck = false;
     useEffect(() => {
@@ -22,7 +23,9 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
     const draw = useCallback(() => {
         if (!unmountCheck) {
             ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 640, 480);
-            setTimeout(draw, 16.666);
+            requestAnimationFrame(draw);
+        } else {
+            cancelAnimationFrame(requestID.current);
         }
 
     }, [video]);
@@ -30,7 +33,7 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
     useEffect(() => {
         if (!video) return;
         if (!ctx) return;
-        draw();
+        requestID.current = requestAnimationFrame(draw);
     }, [video])
 
 

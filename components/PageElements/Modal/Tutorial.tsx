@@ -10,19 +10,25 @@ const SKILLS = [
   {
     name: "히히 로켓발싸!",
     image: "/images/rocket.png",
-    description: "상대방 카드를 로켓으로 만들어 맞추지 못하도록 멀리 날려보내세요.",
+    description: "9초동안 상대방 퍼즐이 귀여운 강아지가 탄 로켓으로 변합니다. 상대방이 퍼즐을 맞추지 못하도록 우주 멀리 날려보내세요.",
     videoUrl: "https://www.youtube.com/embed/60RaggLgggE",
   },
   {
     name: "확 다 얼려부려ㅎ",
     image: "/images/iceIcon.png",
-    description: "상대방의 모든 카드를 움직이지 못하도록 얼려버립니다. 잠깐! 얼음은 부술 수 있으니 열심히 클릭해보세요.",
+    description: "15초동안 상대방 퍼즐이 움직이지 못하도록 얼려버립니다. 잠깐! 얼어붙은 카드는 상대방이 열심히 클릭하여 녹일 수 있습니다.",
     videoUrl: "https://www.youtube.com/embed/VkCRg_p9-_A",
   },
   {
-    name: "ㅋㅋ자석이요~",
+    name: "ㅋㅋ블랙홀이요~",
     image: "/images/magnet.png",
-    description: "자석스~ 마우스포인터가 자석으로 변하여 상대방 모든 카드를 당깁니다..",
+    description: "응 자석쓰~ 7초동안 상대방 마우스 포인터가 블랙홀로 변합니다. 상대방이 기껏 정성스레 맞춰놓은 퍼즐까지 모두 다 빨아드립니다..",
+    videoUrl: "https://www.youtube.com/embed/8GERsPyC4_A",
+  },
+  {
+    name: "입술 쪽",
+    image: "/images/lip.png",
+    description: "10초동안 상대방 퍼즐이 내 입술로 변합니다. 매혹적인 입술로 상대방을 당황시키세요~ >3<",
     videoUrl: "https://www.youtube.com/embed/8GERsPyC4_A",
   },
 ];
@@ -52,7 +58,7 @@ export default function Tutorial() {
       <button onClick={openModal} className={styles.mulum}>
         ?
       </button>
-      <Modal size="lg" aria-labelledby="contained-modal-title-vcente" centered show={isOpen} onHide={closeModal}>
+      <Modal size="xl" aria-labelledby="contained-modal-title-vcente" centered show={isOpen} onHide={closeModal}>
         <Modal.Header closeButton className="bg-black">
           <Modal.Title>
             <h1 className="text-white">스킬</h1>
@@ -66,6 +72,7 @@ export default function Tutorial() {
                     borderRadius: 10,
                     backgroundColor: "#FFF",
                   }}
+                  key={`item_${index}`}
                 >
                   <Image
                     className="{`flex justify-context mx-2 px-2 ${styles.readypan}`}"
