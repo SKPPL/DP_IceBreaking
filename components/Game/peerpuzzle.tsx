@@ -12,7 +12,7 @@ import Bar from "@/components/PageElements/ProgressBar/Bar";
 import useSound from 'use-sound'
 import IceFlakeParticles from "../PageElements/Particles/iceFlakeParticles";
 import BlackhallParticles from "../PageElements/Particles/blackhallParticles";
-import FaceLandMark from "../FaceDetection/FaceLandMark";
+import FaceLandMarkMy, { startItem, stopItem } from "../FaceDetection/FaceLandMarkMy";
 
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
@@ -126,7 +126,10 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     }
   }, [itemList]);
 
-
+  if(peerSegmentState.segementState === 'lip'){
+    startItem();
+    setTimeout(() => {stopItem()}, 10000);
+  }
 
   return (
     <>
@@ -160,7 +163,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lippeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
       </div>
-      {peerSegmentState.segementState === 'lip' && <FaceLandMark auth={auth} id={videoId} />}
+      {/* {peerSegmentState.segementState === 'lip' && <FaceLandMarkMy itemStart={true} />} */}
 
       <Bar score={puzzleCompleteCounter.peer} />
       <ModalPeer segmentState={peerSegmentState.segementState} />

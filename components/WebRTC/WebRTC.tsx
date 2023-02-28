@@ -11,6 +11,8 @@ import Ceremony from "../Game/Ceremony";
 import { useRecoilState } from "recoil";
 import { dataChannelState } from "../Game/atom";
 import CheckReady from "./CheckReady";
+import FaceLandMarkMy from "../FaceDetection/FaceLandMarkMy";
+import FaceLandMarkPeer from "../FaceDetection/FaceLandMarkPeer";
 
 const ICE_SERVERS = {
   iceServers: [
@@ -349,6 +351,8 @@ export default function WebRTC() {
           <Waiting />
         </div>}
       {dataChannel && <CheckReady dataChannel={dataChannel} />}
+      {dataChannel && <FaceLandMarkMy/>}
+      {dataChannel && <FaceLandMarkPeer/>}
     </>
   );
 }
