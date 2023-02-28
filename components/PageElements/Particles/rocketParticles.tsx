@@ -28,7 +28,7 @@ export default function RocketParticles() {
             <div className="flex absolute justify-center w-full z-20 pointer-events-none">
             <div className="fiexd w-[640px] h-[480px] flex justify-center pointer-events-none">
                 <Particles
-                    id="tsparticles"
+                    id={`${Math.random()}rocketparticle`}
                     init={particlesInit}
                     loaded={particlesLoaded}
                         options={{

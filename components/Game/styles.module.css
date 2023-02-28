@@ -288,6 +288,21 @@
   pointer-events: none;
 }
 
+.gif2 {
+  cursor: pointer;
+  width: 100%;
+  height: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
 .ceremony {
   animation: pulsate 1.5s infinite alternate;  
   border: 0.2rem solid #fff;

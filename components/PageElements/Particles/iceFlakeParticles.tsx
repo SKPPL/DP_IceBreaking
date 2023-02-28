@@ -15,12 +15,12 @@ export default function IceFlakeParticles() {
         await console.log(container);
     }, []);
 
-    var particleCanvas = document.querySelector("#tsparticles > canvas");
+    var particleCanvas = document.querySelector("#myice > div > div > div > canvas");
     useEffect(() => {
         setTimeout(() => {if (particleCanvas !== null){
             //@ts-ignore
             particleCanvas.style.pointerEvents = "none";
-        }}, 100)
+        }}, 200)
     }, [particleCanvas])
 
     return (
@@ -28,7 +28,7 @@ export default function IceFlakeParticles() {
             <div className="flex absolute justify-center w-full z-20 pointer-events-none">
             <div className="fiexd w-[640px] h-[480px] flex justify-center pointer-events-none">
                 <Particles
-                    id="tsparticles"
+                    id={`$iceparticles${Math.random()}`}
                     init={particlesInit}
                     loaded={particlesLoaded}
                         options={{
