@@ -120,15 +120,16 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
           case "ice": setTimeout(() => { makePeerDefaultSegment() }, 15000); break;
           case "magnet": setTimeout(() => { makePeerDefaultSegment() }, 7000); break;
           case "lip": setTimeout(() => { makePeerDefaultSegment() }, 10000); break;
+          case "twirl": setTimeout(() => { makePeerDefaultSegment() }, 10000); break;
 
         }
       }
     }
   }, [itemList]);
 
-  if(peerSegmentState.segementState === 'lip'){
+  if (peerSegmentState.segementState === 'lip' || peerSegmentState.segementState === 'twirl') {
     startItem();
-    setTimeout(() => {stopItem()}, 10000);
+    setTimeout(() => { stopItem() }, 10000);
   }
 
   return (
@@ -136,7 +137,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       {[...Array(9)].map((_, i) => {
         return (
           <>
-            <div className={styles.c1}>
+            <div className={styles.c1} key={`peerpuzzle_${i}`}>
               {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
               {(peerPosition.i !== i) &&
                 <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />
@@ -162,6 +163,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles /> <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lippeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > </div>)}
+
       </div>
       {/* {peerSegmentState.segementState === 'lip' && <FaceLandMarkMy itemStart={true} />} */}
 

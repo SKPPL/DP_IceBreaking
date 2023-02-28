@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 interface segmentData {
     auth: boolean;
-    id: number;
-    videoId: string;
-    segmentState: string | undefined;
 }
-export default function CloneVideo({ id, auth, videoId, segmentState }: segmentData) {
+export default function TwirlVideo({ auth }: segmentData) {
+    var videoId = auth ? 'peerface_twirl' : 'myface_twirl';
     var cloneRef = useRef<HTMLCanvasElement>(null);
     var requestID = useRef<number>(0);
     var ctx: CanvasRenderingContext2D | null = null;
@@ -13,18 +11,23 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return
-        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
+        ctx = cloneRef.current.getContext('2d');
         return () => {
             unmountCheck = true;
         }
     }, [cloneRef])
-
+    const lip = useRef([320, 240, 50])
     const video = document.getElementById(videoId) as HTMLVideoElement;
-
-
     const draw = useCallback(() => {
         if (!unmountCheck) {
-            ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 640, 480);
+            // var tempLip = auth ? getGuestLip() : getHostLip();
+            // if (tempLip) {
+            //     lip.current = tempLip;
+            // }
+            //장축과 단축
+            var lr = Math.floor(lip.current[2] * 1.5);
+            var sr = Math.floor(lip.current[2]);
+            ctx!.drawImage(video, lip.current[0] - lr, lip.current[1] - sr, 2 * lr, 2 * sr, 0, 0, 640, 480);
             requestAnimationFrame(draw);
         } else {
             cancelAnimationFrame(requestID.current);
@@ -41,7 +44,7 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
 
     return (
         <>
-            <canvas id={`${auth ? 'my' : 'peer'}_${id}`} width="640" height="480" ref={cloneRef} ></canvas>
+            <canvas id={`${auth ? 'my_twirl' : 'peer_twirl'}`} width="640" height="480" ref={cloneRef} ></canvas>
         </>
     )
 

@@ -24,3 +24,12 @@ export const peerFaceLandMarkState = atom({
     key: 'peerFaceLandMarkState',
     default: false,
 });
+
+export const myTwirlState = atom({
+    key: 'myTwirlState',
+    default: false,
+})
+export const peerTwirlState = atom({
+    key: 'peerTwirlState',
+    default: false,
+})
