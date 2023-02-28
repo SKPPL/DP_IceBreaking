@@ -100,7 +100,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         }
     }, [puzzleCompleteCounter.mine])
 
-    if(mySegmentState.segementState === 'lip'){
+    if(mySegmentState.segementState === 'lip' || mySegmentState.segementState === 'twirl'){
         startItem();
         setTimeout(() => {stopItem()}, 10000);
     }
