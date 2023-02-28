@@ -52,6 +52,11 @@ export const annotateFeatures = (predictions: AnnotatedPrediction[], scale: Scal
     let avgSumY = (lipsUpperInnerSumY + lipsLowerInnerSumY) / 22;
     let radiusX = (annotations.lipsUpperOuter.map(scale)[10][0] - annotations.lipsLowerOuter.map(scale)[0][0]) / 2;
 
-    return [avgSumX, avgSumY, radiusX];
+    let centerX = annotations.noseBottom[0][0];
+    let centerY = annotations.noseBottom[0][1];
+    let leftEyeX = annotations.leftEyebrowUpper[0][0];
+    let leftEyeY = annotations.leftEyebrowUpper[0][1];
+
+    return [avgSumX, avgSumY, radiusX, centerX, centerY, leftEyeX, leftEyeY];
   }
 };

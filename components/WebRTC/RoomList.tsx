@@ -102,8 +102,8 @@ const RoomList = () => {
                     <RoomMake onClickCreateRoom={onClickCreateRoom} />
                     </div>
                             <table className={styles.readyTable}>
-                                <thead className=" bg-gray-50">
-                                    <tr className={styles.readyTable}>
+                                <thead>
+                                    <tr>
                                         <th scope="col" className="text-center text-xl px-10 py-3">
                                             방 제목
                                         </th>
