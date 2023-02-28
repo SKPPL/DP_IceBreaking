@@ -18,19 +18,15 @@ export default function TwirlVideo({ auth }: segmentData) {
             unmountCheck = true;
         }
     }, [cloneRef])
-    const xyr = useRef([320, 240, 100])
+    const xyr = useRef([160, 120, 50])
     const video = document.getElementById(videoId) as HTMLCanvasElement; // twirl된 것은 canvas에 그린거라 CanvasElement로 
 
     const draw = useCallback(() => {
 
         if (!unmountCheck) {
-            // var tempXYR = auth ? getGuestFace() : getHostFace();
-            // if (tempXYR) {
-            //     xyr.current = tempXYR;
-            // }
             var lr = Math.round(xyr.current[2] * 2.25);
             var sr = Math.round(xyr.current[2] * 1.5);
-            ctx!.drawImage(video, xyr.current[0] - lr, xyr.current[1] - sr, 2 * lr, 2 * sr, 0, 0, 640, 480);
+            ctx!.drawImage(video, xyr.current[0] - lr, xyr.current[1] - sr, 2 * lr, 2 * sr, 0, 0, 320, 240);
             requestAnimationFrame(draw);
         } else {
             cancelAnimationFrame(requestID.current);
@@ -47,7 +43,7 @@ export default function TwirlVideo({ auth }: segmentData) {
 
     return (
         <>
-            <canvas id={`${auth ? 'my_twirl' : 'peer_twirl'}`} width="640" height="480" ref={cloneRef} ></canvas>
+            <canvas id={`${auth ? 'my_twirl' : 'peer_twirl'}`} width="320" height="240" ref={cloneRef} ></canvas>
         </>
     )
 
