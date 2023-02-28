@@ -14,7 +14,7 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import useSound from 'use-sound'
 import IceFlakeParticles from '../PageElements/Particles/iceFlakeParticles'
 import BlackhallParticles from '../PageElements/Particles/blackhallParticles'
-import FaceLandMark from '../FaceDetection/FaceLandMark'
+import { getGuestLip, startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
@@ -99,7 +99,10 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         }
     }, [puzzleCompleteCounter.mine])
 
-
+    if(mySegmentState.segementState === 'lip'){
+        startItem();
+        setTimeout(() => {stopItem()}, 10000);
+    }
 
 
     return (
@@ -123,7 +126,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 {mySegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lipmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
 
             </div>
-            {mySegmentState.segementState === 'lip' && <FaceLandMark auth={auth} id={videoId} />}
+            {/* {mySegmentState.segementState === 'lip' && <FaceLandMarkPeer itemStart={true} />} */}
             <MyBar score={puzzleCompleteCounter.mine} />
             <Modal segmentState={mySegmentState.segementState} />
 

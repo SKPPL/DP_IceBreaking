@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { getHostLip, getGuestLip } from "../FaceDetection/FaceLandMark";
+import { getHostLip } from "../FaceDetection/FaceLandMarkMy";
+import { getGuestLip } from "../FaceDetection/FaceLandMarkPeer";
 interface segmentData {
     auth: boolean;
 }
