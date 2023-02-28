@@ -47,14 +47,14 @@ export default function MakeVideoLip({ auth }: segmentData) {
     useEffect(() => {
         if (!video) return;
         if (!ctx) return;
-        auth ? myLipSet(true) : peerLipSet(true)
         requestID.current = requestAnimationFrame(draw);
+        auth ? myLipSet(true) : peerLipSet(true)
     }, [video])
 
 
     return (
         <>
-            <canvas id={`${auth ? 'peer_lip' : 'my_lip'}`} width="213" height="160" ref={cloneRef}  ></canvas>
+            <canvas id={`${auth ? 'peer_lip' : 'my_lip'}`} width="213" height="160" ref={cloneRef} style={{ display: "none" }} ></canvas>
         </>
     )
 
