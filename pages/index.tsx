@@ -1,12 +1,26 @@
 import Head from 'next/head'
-import { Inter } from '@next/font/google'
-const inter = Inter({ subsets: ['latin'] })
 import BagicHome from '@/components/PageElements/BagicHome'
-import Rocket from '@/components/Game/SegmentState/rocket'
-import MainPage from '@/components/PageElements/MainPage'
-import styles from '../components/PageElements/styles.module.css'
+import styles from './styles.module.css'
+import useSound from 'use-sound';
+import { useEffect, useState } from 'react';
+import MainParticles from '@/components/PageElements/Particles/mainParticles';
 
 export default function Home() {
+  const [isBgMusicOn, setIsBgMusicOn] = useState(true);
+  const [isFiveMinutes, setIsFiveMinutes] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [playBgMusic, { stop }] = useSound('/sounds/bgm.mp3', {
+    loop: true,
+    onload: () => setIsLoaded(true)
+  });
+
+  useEffect(() => {
+    if (isLoaded) {
+      playBgMusic();
+      setTimeout(() => setIsFiveMinutes(true), 8000);
+    }
+  }, [isLoaded]);
+  
   return (
     <>
       <Head>
@@ -15,12 +29,16 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={styles.indexBackGround}>
-        <div className="flex flex-col bg-center bg-cover justify-center items-center h-screen">
-            <div className={styles.indexbox}>
-              {/* <MainPage /> */}
-              <BagicHome />
-            </div>
+      <div className="bg-[url('/images/ccccuuurrentEmptySpace.png')] bg-cover bg-center h-screen">
+        {isFiveMinutes? ""  : <MainParticles />}
+        <div className={styles.indexbox}>
+          <div className={styles.indexText}>
+            DYNAMIC <br />
+            PUZZLE
+          </div>
+        </div>
+        <div className="absolute ml-[30rem] mt-[20rem]">
+          <BagicHome />
         </div>
       </div>
     </>
