@@ -7,6 +7,7 @@ interface segmentData {
 export default function LipVideo({ auth }: segmentData) {
     var videoId = auth ? 'peerface' : 'myface';
     var cloneRef = useRef<HTMLCanvasElement>(null);
+    var requestID = useRef<number>(0);
     var ctx: CanvasRenderingContext2D | null = null;
     var unmountCheck = false;
     useEffect(() => {
@@ -29,7 +30,9 @@ export default function LipVideo({ auth }: segmentData) {
             var lr = Math.floor(lip.current[2] * 1.5);
             var sr = Math.floor(lip.current[2]);
             ctx!.drawImage(video, lip.current[0] - lr, lip.current[1] - sr, 2 * lr, 2 * sr, 0, 0, 640, 480);
-            setTimeout(draw, 32);
+            requestAnimationFrame(draw);
+        } else {
+            cancelAnimationFrame(requestID.current);
         }
 
     }, [video]);
@@ -37,7 +40,7 @@ export default function LipVideo({ auth }: segmentData) {
     useEffect(() => {
         if (!video) return;
         if (!ctx) return;
-        draw();
+        requestID.current = requestAnimationFrame(draw);
     }, [video])
 
 

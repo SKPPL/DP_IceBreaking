@@ -17,6 +17,7 @@ export default function IcedVideo({ iceCount, id, auth, videoId, segmentState }:
 
     var cloneRef = useRef<HTMLCanvasElement>(null);
     var ctx: CanvasRenderingContext2D | null = null;
+    var requestID = useRef<number>(0);
     var unmountCheck = false;
     useEffect(() => {
         unmountCheck = false;
@@ -35,14 +36,16 @@ export default function IcedVideo({ iceCount, id, auth, videoId, segmentState }:
             if (segmentState === 'ice' && iceCount > 0) {
                 ctx!.drawImage(img, 0, 0)
             }
-            setTimeout(draw, 16);
+            requestAnimationFrame(draw);
+        } else {
+            cancelAnimationFrame(requestID.current);
         }
     }
 
     useEffect(() => {
         if (!video) return;
         if (!ctx) return;
-        draw();
+        requestID.current = requestAnimationFrame(draw);
     }, [video])
 
     return (
