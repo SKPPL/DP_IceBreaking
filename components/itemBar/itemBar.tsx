@@ -12,8 +12,7 @@ const GRADIENTS = [
     '/images/rocket.png',
     '/images/iceIcon.png',
     '/images/lip.png',
-    '/images/nose.png',
-    '/images/rotation.png',
+    '/images/twirl.png',
     '/images/magnet.png',
 ]
 

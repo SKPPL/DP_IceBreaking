@@ -18,17 +18,16 @@ export function getGuestLip() {
   return guestLip;
 }
 
-export function getGuestFace() {
-  guestFace![2] = ((total![5] - total![3])**2 + (total![6] - total![4])**2)**(1/2);
-  return guestFace;
-}
+// export function getGuestFace() {
+//   return guestFace;
+// }
 
-export function startItem(){
+export function startItem() {
   doRun = true;
   predict(predictModel);
 }
 
-export function stopItem(){
+export function stopItem() {
   doRun = false;
 }
 
@@ -36,7 +35,7 @@ let predictModel: MediaPipeFaceMesh;
 
 let rafId: number;
 
-let doRun:boolean = false;
+let doRun: boolean = false;
 
 const predict = async (model: MediaPipeFaceMesh) => {
   const videoElement = document.getElementById('peerface') as HTMLVideoElement;
@@ -52,11 +51,11 @@ const predict = async (model: MediaPipeFaceMesh) => {
       if (predictions.length > 0) {
         total = annotateFeatures(predictions, scaler([WIDTH / video.videoWidth, WIDTH / video.videoWidth, 1]));
         guestLip = [total![0], total![1], total![2]];
-        guestFace = [total![3], total![4]];
+        // guestFace = [total![3], total![4], ((total![5] - total![3]) ** 2 + (total![6] - total![4]) ** 2) ** (1 / 2)];
       }
     }
     cancelAnimationFrame(rafId);
-    if (doRun){
+    if (doRun) {
       rafId = requestAnimationFrame(run);
     }
   };
@@ -70,8 +69,7 @@ export default function FaceLandMark() {
 
     setupModel().then((model) => {
       predictModel = model;
-      console.log('peermodel is ready', predictModel);
-      // predict(model);
+
     });
 
     return () => {

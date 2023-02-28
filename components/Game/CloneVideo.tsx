@@ -13,13 +13,15 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return
-        ctx = cloneRef.current.getContext('2d');
+        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
         return () => {
             unmountCheck = true;
         }
     }, [cloneRef])
 
     const video = document.getElementById(videoId) as HTMLVideoElement;
+
+
     const draw = useCallback(() => {
         if (!unmountCheck) {
             ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 640, 480);

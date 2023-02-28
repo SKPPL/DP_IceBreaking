@@ -16,6 +16,7 @@ import IceFlakeParticles from '../PageElements/Particles/iceFlakeParticles'
 import BlackhallParticles from '../PageElements/Particles/blackhallParticles'
 import { getGuestLip, startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
 import LipParticles from '../PageElements/Particles/lipParticles'
+import MakeVideoTwirl from '../FaceDetection/MakeVideoTwirl'
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
@@ -74,6 +75,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 case "ice": setTimeout(() => { makeMyDefaultSegment() }, 15000); break;
                                 case "magnet": setTimeout(() => { makeMyDefaultSegment() }, 7000); break;
                                 case "lip": setTimeout(() => { makeMyDefaultSegment() }, 10000); break;
+                                case "twirl": setTimeout(() => { makeMyDefaultSegment() }, 10000); break;
 
                             }
                     }
@@ -100,9 +102,9 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         }
     }, [puzzleCompleteCounter.mine])
 
-    if(mySegmentState.segementState === 'lip' || mySegmentState.segementState === 'twirl'){
+    if (mySegmentState.segementState === 'lip' || mySegmentState.segementState === 'twirl') {
         startItem();
-        setTimeout(() => {stopItem()}, 10000);
+        setTimeout(() => { stopItem() }, 10000);
     }
 
 
@@ -112,7 +114,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 [...Array(9)].map((_, i) => {
                     return (
                         <>
-                            <div className={styles.c1}>
+                            <div className={styles.c1} key={`mypuzzle_${i}`}>
                                 <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} />
                             </div>
                         </>
@@ -125,11 +127,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 {mySegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles /> <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
                 {mySegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
                 {mySegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <LipParticles /> <img src="../images/lipmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} >  </div>)}
 
             </div>
-            {/* {mySegmentState.segementState === 'lip' && <FaceLandMarkPeer itemStart={true} />} */}
             <MyBar score={puzzleCompleteCounter.mine} />
             <Modal segmentState={mySegmentState.segementState} />
+            {mySegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
 
         </>
     )

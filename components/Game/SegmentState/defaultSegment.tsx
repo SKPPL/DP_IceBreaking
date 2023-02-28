@@ -6,8 +6,9 @@ import styles from "../styles.module.css";
 import CloneVideo from "../CloneVideo";
 import useSound from 'use-sound'
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { myFaceLandMarkState, myWaitState, peerFaceLandMarkState, peerWaitState } from "../atom";
+import { myFaceLandMarkState, myTwirlState, myWaitState, peerFaceLandMarkState, peerTwirlState, peerWaitState } from "../atom";
 import LipVideo from "../../FaceDetection/LipVideo";
+import TwirlVideo from "@/components/FaceDetection/TwirlVideo";
 
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
@@ -33,7 +34,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
     const [isRightPlace, setIsRightPlace] = useState(false);
     //아래 조건문 위로 올리면 안됨
 
-    const [zindex, setZindex] = useState(i+1);
+    const [zindex, setZindex] = useState(i + 1);
 
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
@@ -177,6 +178,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
 
 
     const faceLandMarkReady = useRecoilValue(auth ? myFaceLandMarkState : peerFaceLandMarkState)
+    const twirlReady = useRecoilValue(auth ? myTwirlState : peerTwirlState)
     return (
         <>
             <div className="">
@@ -202,6 +204,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                         <animated.div>
                             {segmentState === "default" && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
                             {segmentState === "lip" && faceLandMarkReady && <LipVideo auth={auth} />}
+                            {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
                         </animated.div>
                     </animated.div>
                 </div>
