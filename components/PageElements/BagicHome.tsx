@@ -9,11 +9,12 @@ import PuzzleScreen from "@/components/PageElements/puzzle";
 
 export default function BagicHome() {
 
-  const [appear, setappear] = useState<boolean>(false)
+  const [appear, setAppear] = useState<boolean>(false)
   
 
   useEffect(() => {
-    setTimeout(() => setappear(true), 1700)    
+    setAppear(true)
+    // setTimeout(() => setAppear(true), 1700)    
   }, [])
 
   return (
