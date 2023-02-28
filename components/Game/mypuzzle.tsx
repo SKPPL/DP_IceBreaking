@@ -15,6 +15,7 @@ import useSound from 'use-sound'
 import IceFlakeParticles from '../PageElements/Particles/iceFlakeParticles'
 import BlackhallParticles from '../PageElements/Particles/blackhallParticles'
 import { getGuestLip, startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
+import LipParticles from '../PageElements/Particles/lipParticles'
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
@@ -123,7 +124,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             <div className="absolute grid w-[640px] h-[480px] mt-[160px]" style={{ pointerEvents: "none" }}>
                 {mySegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles /> <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
                 {mySegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-                {mySegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lipmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <LipParticles /> <img src="../images/lipmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
 
             </div>
             {/* {mySegmentState.segementState === 'lip' && <FaceLandMarkPeer itemStart={true} />} */}
