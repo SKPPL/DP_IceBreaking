@@ -15,6 +15,8 @@ import BlackhallParticles from "../PageElements/Particles/blackhallParticles";
 import FaceLandMarkMy, { startItem, stopItem } from "../FaceDetection/FaceLandMarkMy";
 import LipParticles from "../PageElements/Particles/lipParticles";
 import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
+import TwirlParticles from "../PageElements/Particles/twirlParticles";
+import RocketParticles from "../PageElements/Particles/rocketParticles";
 
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
@@ -161,12 +163,12 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       </div>
 
       {/* 아이템 쓸 때 나오는 효과 */}
-      <div className="absolute grid w-[640px] h-[480px] mt-[160px] items-center" style={{ pointerEvents: "none" }}>
+      <div className="absolute grid w-[640px] h-[480px] mt-[160px]" style={{ pointerEvents: "none" }}>
         {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles /> <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <LipParticles /> <img src="../images/lippeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > </div>)}
-
+        {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <LipParticles /> <img src="../images/lippeer.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <TwirlParticles /> </div>)}
+        {peerSegmentState.segementState === 'rocket' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <RocketParticles /> </div>)}
       </div>
 
       <Bar score={puzzleCompleteCounter.peer} />

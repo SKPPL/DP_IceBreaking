@@ -2,7 +2,7 @@ import Particles from "react-tsparticles";
 import React, { useCallback, useEffect } from "react";
 import { loadFull } from "tsparticles";
 
-export default function LipParticles() {
+export default function TwirlParticles() {
     const particlesInit = useCallback(async engine => {
         console.log(engine);
         // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
@@ -15,12 +15,12 @@ export default function LipParticles() {
         await console.log(container);
     }, []);
 
-    var particleCanvas = document.querySelector("#mylip > div > div > div > canvas");
+    var particleCanvas = document.querySelector("#twirltsparticles > canvas");
     useEffect(() => {
         setTimeout(() => {if (particleCanvas !== null){
             //@ts-ignore
             particleCanvas.style.pointerEvents = "none";
-        }}, 200)
+        }}, 500)
     }, [particleCanvas])
 
     return (
@@ -28,7 +28,7 @@ export default function LipParticles() {
             <div className="flex absolute justify-center w-full z-0 pointer-events-none">
             <div className="fiexd w-[640px] h-[480px] flex justify-center pointer-events-none">
                 <Particles
-                    id={`${Math.random()}lipparticle`}
+                    id={`${Math.random()}twirlparticle`}
                     init={particlesInit}
                     loaded={particlesLoaded}
                         options={{
@@ -58,7 +58,7 @@ export default function LipParticles() {
                                     nb_sides: 3
                                 },
                                 image: {
-                                    src: "/images/lip.png",
+                                    src: "/images/twirl.png",
                                     width: 100,
                                     height: 100
                                 }
