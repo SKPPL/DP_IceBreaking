@@ -79,14 +79,16 @@ export default function PuzzleScreen() {
       };
 
     function draw(){
-        ctx.drawImage(puzzleImage,0,0,230, 255);
+        ctx!.drawImage(puzzleImage,0,0,230, 255);
         setTimeout(() => {
             draw()
         }, 40);
     }
 
     useEffect(() => {
-        ctx = cloneRef.current.getContext('2d');
+        if (!cloneRef) return;
+        
+        ctx = cloneRef.current!.getContext('2d');
         
         const preventDefault = (e: Event) => e.preventDefault();
         document.addEventListener('gesturestart', preventDefault);
