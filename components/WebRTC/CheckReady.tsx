@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./styles.module.css";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
+import useSound from "use-sound"
 
 interface Props {
     dataChannel: RTCDataChannel | undefined;
@@ -12,11 +13,18 @@ export default function CheckReady({ dataChannel }: Props) {
     const [peerReadyState, setPeerReadyState] = useState(false);
     const [gameReadyState, setGameReadyState] = useState(false);
     
+    const readySoundUrl = '/sounds/ready.mp3'
+    const [readySoundPlay] = useSound(readySoundUrl)
+  
     //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
-    useEffect(() => {
-        setGameReadyState(myReadyState && peerReadyState);
-        if (myReadyState && peerReadyState)
-        document.getElementById("itembar")!.style.display = "block";
+  useEffect(() => {
+    readySoundPlay();
+    setGameReadyState(myReadyState && peerReadyState);
+    if (myReadyState && peerReadyState) {
+      document.getElementById("itembar")!.classList.remove("invisible")
+      document.getElementById("itembar")!.classList.add("visible")
+
+    }
     }, [myReadyState, peerReadyState]);
     
     //ready 버튼 누를 시 myReady 상태 변경 및 상대방 전송
@@ -24,7 +32,8 @@ export default function CheckReady({ dataChannel }: Props) {
         if (dataChannel && dataChannel?.readyState === "open") {
         dataChannel.send(JSON.stringify({ type: "ready", peerReady: !myReadyState }));
         }
-        setMyReadyState((prevSetting) => !prevSetting);
+      setMyReadyState((prevSetting) => !prevSetting);
+      
     };
     
     useEffect(() => {
