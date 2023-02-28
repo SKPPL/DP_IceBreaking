@@ -10,10 +10,17 @@ import { annotateFeatures, scaler, setupModel } from "./predictionPeer";
 const WIDTH = 640;
 const HEIGHT = 480;
 
+let total: number[] | undefined;
 let guestLip: number[] | undefined;
+let guestFace: number[] | undefined;
 
 export function getGuestLip() {
   return guestLip;
+}
+
+export function getGuestFace() {
+  guestFace![2] = ((total![5] - total![3])**2 + (total![6] - total![4])**2)**(1/2);
+  return guestFace;
 }
 
 export function startItem(){
@@ -36,7 +43,6 @@ const predict = async (model: MediaPipeFaceMesh) => {
   const run = async () => {
     const video = videoElement;
     if (video && !video.paused && !video.ended) {
-      console.log('peerface predicting');
       const predictions = await model.estimateFaces({
         input: video,
         returnTensors: false,
@@ -44,7 +50,9 @@ const predict = async (model: MediaPipeFaceMesh) => {
         predictIrises: false,
       });
       if (predictions.length > 0) {
-        guestLip = annotateFeatures(predictions, scaler([WIDTH / video.videoWidth, WIDTH / video.videoWidth, 1]));
+        total = annotateFeatures(predictions, scaler([WIDTH / video.videoWidth, WIDTH / video.videoWidth, 1]));
+        guestLip = [total![0], total![1], total![2]];
+        guestFace = [total![3], total![4]];
       }
     }
     cancelAnimationFrame(rafId);

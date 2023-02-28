@@ -126,6 +126,7 @@
 }
 
 .readypan{
+    overflow: auto;
     position: relative;
     top: 10%;
     bottom:10%;
