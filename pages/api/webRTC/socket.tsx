@@ -133,8 +133,10 @@ const SocketHandler = (_: any, res: NextApiResponseServerIO): any => {
     socket.on("disconnecting", () => {
       console.log("[emit disconnecting]");
       const joinedRooms = [];
+      //@ts-ignore
       for (const room of socket.rooms) {
         if (room !== socket.id) {
+          //@ts-ignore
           joinedRooms.push(room);
         }
       }
