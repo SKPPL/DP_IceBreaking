@@ -38,8 +38,8 @@ export default function MyRocketParticles() {
                         },
                         particles: {
                             number: {
-                                value: 200,
-                                limit: 300,
+                                value: 50,
+                                limit: 70,
                                 density: {
                                     enable: true,
                                     value_area: 800
@@ -58,7 +58,7 @@ export default function MyRocketParticles() {
                                     nb_sides: 3
                                 },
                                 image: {
-                                    src: "/images/rocket.png",
+                                    src: "/images/musk.png",
                                     width: 100,
                                     height: 100
                                 }
@@ -74,7 +74,7 @@ export default function MyRocketParticles() {
                                 }
                             },
                             size: {
-                                value: 20,
+                                value: 100,
                                 random: true,
                                 anim: {
                                     enable: true,

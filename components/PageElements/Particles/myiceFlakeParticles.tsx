@@ -38,8 +38,8 @@ export default function MyIceFlakeParticles() {
                         },
                         particles: {
                             number: {
-                                value: 200,
-                                limit: 300,
+                                value: 50,
+                                limit: 100,
                                 density: {
                                     enable: true,
                                     value_area: 800
