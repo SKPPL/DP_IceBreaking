@@ -1,35 +1,44 @@
 import { atom, selector } from "recoil";
 
 export const myWaitState = atom({
-    key: 'myWaitState',
+    key: 'myWait',
     default: false,
 });
 export const peerWaitState = atom({
-    key: 'peerWaitState',
+    key: 'peerWait',
     default: false,
 });
 
 export const dataChannelState = atom({
-    key: 'dataChannelState',
+    key: 'dataChannel',
     default: false,
 });
 
 
 export const myFaceLandMarkState = atom({
-    key: 'myFaceLandMarkState',
+    key: 'myFaceLandMark',
     default: false,
 });
 
 export const peerFaceLandMarkState = atom({
-    key: 'peerFaceLandMarkState',
+    key: 'peerFaceLandMark',
     default: false,
 });
 
+export const myLipState = atom({
+    key: 'myLip',
+    default: false,
+})
+export const peerLipState = atom({
+    key: 'peerLip',
+    default: false,
+})
+
 export const myTwirlState = atom({
-    key: 'myTwirlState',
+    key: 'myTwirl',
     default: false,
 })
 export const peerTwirlState = atom({
-    key: 'peerTwirlState',
+    key: 'peerTwirl',
     default: false,
 })

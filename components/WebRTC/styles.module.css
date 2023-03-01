@@ -380,3 +380,7 @@
                 0 0 2.8rem #bc13fe,
                 inset 0 0 1.3rem #bc13fe; 
 }
+
+.ready:hover {
+    cursor:pointer;
+}

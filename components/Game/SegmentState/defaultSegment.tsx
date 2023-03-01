@@ -6,7 +6,7 @@ import styles from "../styles.module.css";
 import CloneVideo from "../CloneVideo";
 import useSound from 'use-sound'
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { myFaceLandMarkState, myTwirlState, myWaitState, peerFaceLandMarkState, peerTwirlState, peerWaitState } from "../atom";
+import { myFaceLandMarkState, myLipState, myTwirlState, myWaitState, peerFaceLandMarkState, peerLipState, peerTwirlState, peerWaitState } from "../atom";
 import LipVideo from "../../FaceDetection/LipVideo";
 import TwirlVideo from "@/components/FaceDetection/TwirlVideo";
 
@@ -178,6 +178,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
 
 
     const faceLandMarkReady = useRecoilValue(auth ? myFaceLandMarkState : peerFaceLandMarkState)
+    const lipReady = useRecoilValue(auth ? myLipState : peerLipState)
     const twirlReady = useRecoilValue(auth ? myTwirlState : peerTwirlState)
     return (
         <>
@@ -202,8 +203,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
                         }}
                     >
                         <animated.div>
-                            {segmentState === "default" && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
-                            {segmentState === "lip" && faceLandMarkReady && <LipVideo auth={auth} />}
+                            {(segmentState === "default" || (!faceLandMarkReady || !lipReady) && !twirlReady) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                            {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
                             {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
                         </animated.div>
                     </animated.div>

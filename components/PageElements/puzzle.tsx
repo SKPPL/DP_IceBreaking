@@ -19,7 +19,7 @@ interface MyConstraints {
 
 
 export default function PuzzleScreen() {
-    
+
     const router = useRouter();
     // const userVideoRef = useRef<any>();
     const userStreamRef = useRef<MediaStream>();
@@ -61,7 +61,7 @@ export default function PuzzleScreen() {
         if (!cloneRef) return;
 
         ctx = cloneRef.current!.getContext('2d');
-        
+
         const preventDefault = (e: Event) => e.preventDefault();
         document.addEventListener('gesturestart', preventDefault);
         document.addEventListener('gesturechange', preventDefault);
@@ -69,15 +69,15 @@ export default function PuzzleScreen() {
         draw()
         findPosition();
 
-    
+
         return () => {
-          document.removeEventListener('gesturestart', preventDefault);
-          document.removeEventListener('gesturechange', preventDefault);
+            document.removeEventListener('gesturestart', preventDefault);
+            document.removeEventListener('gesturechange', preventDefault);
         }
-      }, [cloneRef, puzzleHoleX])
+    }, [cloneRef, puzzleHoleX])
 
     const domTarget = useRef(null);
-    const [{ x, y,rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
+    const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
         () => ({
             rotateX: 0,
             rotateY: 0,
@@ -98,9 +98,9 @@ export default function PuzzleScreen() {
                     console.log(x.get(), y.get());
                 }
                 if(!params.down && isPuzzleMatched(x.get(), y.get(), puzzleHoleX, puzzleHoleY, divX, divY)) {
-                    // router.push({
-                    //     pathname: '/ready',
-                    // })
+                    router.push({
+                        pathname: '/ready',
+                    })
                     console.log('성공')
                 }
             }
@@ -108,15 +108,15 @@ export default function PuzzleScreen() {
 
     useGesture(
         {
-            onDrag: ({active, offset: [x,y]}) =>
+            onDrag: ({ active, offset: [x, y] }) =>
                 api.start({ x, y, rotateX: 0, rotateY: 0, scale: active ? 1 : 1.1 }),
             onPinch: ({ offset: [d, a] }) => api({ zoom: d / 200, rotateZ: a }),
             onMove: ({ xy: [px, py], dragging }) =>
                 !dragging &&
                 api({
-                rotateX: calcX(py, y.get()),
-                rotateY: calcY(px, x.get()),
-                scale: 1.1,
+                    rotateX: calcX(py, y.get()),
+                    rotateY: calcY(px, x.get()),
+                    scale: 1.1,
                 }),
             onHover: ({ hovering }) =>
                 !hovering && api({ rotateX: 0, rotateY: 0, scale: 1 }),
@@ -129,21 +129,21 @@ export default function PuzzleScreen() {
         <>
             <div className={styles.container} id="movingPiece" ref={movingRef}>
                 <animated.div
-                ref={domTarget}
-                className={styles.card}
-                {...bind()}
-                style={{
-                    transform: 'perspective(600px)',
-                    x,
-                    y,
-                    scale: to([scale, zoom], (s, z) => s + z),
-                    rotateX,
-                    rotateY,
-                    rotateZ,
-                }}>
-                <animated.div>
-                    <canvas id="puzzlePiece" width={puzzleWidth} height={puzzleHeight} ref={cloneRef}></canvas>
-                </animated.div>
+                    ref={domTarget}
+                    className={styles.card}
+                    {...bind()}
+                    style={{
+                        transform: 'perspective(600px)',
+                        x,
+                        y,
+                        scale: to([scale, zoom], (s, z) => s + z),
+                        rotateX,
+                        rotateY,
+                        rotateZ,
+                    }}>
+                    <animated.div>
+                        <canvas id="puzzlePiece" width={puzzleWidth} height={puzzleHeight} ref={cloneRef}></canvas>
+                    </animated.div>
                 </animated.div>
             </div>
         </>
@@ -151,9 +151,9 @@ export default function PuzzleScreen() {
 }
 
 
-export function isPuzzleMatched(x: number, y: number, holeX: number, holeY: number, divX:number, divY: number) {
+export function isPuzzleMatched(x: number, y: number, holeX: number, holeY: number, divX: number, divY: number) {
     const diff = 90;
-    if( x+ divX > holeX - diff && x + divX < holeX + diff && y + divY > holeY - diff && y + divY < holeY + diff ) {
+    if (x + divX > holeX - diff && x + divX < holeX + diff && y + divY > holeY - diff && y + divY < holeY + diff) {
         return true;
     } else return false;
 }

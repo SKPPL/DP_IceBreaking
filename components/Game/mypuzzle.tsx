@@ -12,11 +12,14 @@ import MyBar from '../PageElements/ProgressBar/MyBar'
 import { myWaitState } from "./atom";
 import { useRecoilState, useRecoilValue } from 'recoil'
 import useSound from 'use-sound'
-import IceFlakeParticles from '../PageElements/Particles/iceFlakeParticles'
-import BlackhallParticles from '../PageElements/Particles/blackhallParticles'
+import MyIceFlakeParticles from '../PageElements/Particles/myiceFlakeParticles'
+import MyBlackhallParticles from '../PageElements/Particles/myblackhallParticles'
 import { getGuestLip, startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
-import LipParticles from '../PageElements/Particles/lipParticles'
+import MyLipParticles from '../PageElements/Particles/mylipParticles'
 import MakeVideoTwirl from '../FaceDetection/MakeVideoTwirl'
+import MyTwirlParticles from '../PageElements/Particles/mytwirlParticles'
+import MyRocketParticles from '../PageElements/Particles/myrocketParticles'
+import MakeVideoLip from '../FaceDetection/MakeVideoLip'
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
@@ -124,15 +127,17 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             }
             {/* 아이템 쓸 때 나오는 효과 */}
             <div className="absolute grid w-[640px] h-[480px] mt-[160px]" style={{ pointerEvents: "none" }}>
-                {mySegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <IceFlakeParticles /> <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-                {mySegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <BlackhallParticles /> <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-                {mySegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <LipParticles /> <img src="../images/lipmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-                {mySegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} >  </div>)}
-
+                {mySegmentState.segementState === 'ice' && (<div id="myice" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyIceFlakeParticles /> <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segementState === 'magnet' && (<div id="mymagnet" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyBlackhallParticles /> <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segementState === 'lip' && (<div id="mylip" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyLipParticles /> <img src="../images/lipmine.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segementState === 'twirl' && (<div id="mytwirl" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyTwirlParticles />  </div>)}
+                {mySegmentState.segementState === 'rocket' && (<div id="myrocket" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyRocketParticles />  </div>)}
             </div>
             <MyBar score={puzzleCompleteCounter.mine} />
             <Modal segmentState={mySegmentState.segementState} />
+            {mySegmentState.segementState === 'lip' && <MakeVideoLip auth={auth} />}
             {mySegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
+
 
         </>
     )
