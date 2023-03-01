@@ -20,11 +20,10 @@ export default function BagicHome() {
   return (
     <>
       <div className="flex rounded-3xl absolute mt-[400px] mr-[10px]">
-      <div className= "flex flex-col">
-          {/* { appear && <Start /> } */}
-          { appear && <PuzzleScreen/> }
-      </div>
-      
+        <div className= "flex flex-col">
+            {/* { appear && <Start /> } */}
+            { appear && <PuzzleScreen/> }
+        </div>
       </div>
       
     </>

@@ -4,22 +4,23 @@ import styles from './styles.module.css'
 import useSound from 'use-sound';
 import { useEffect, useState } from 'react';
 import MainParticles from '@/components/PageElements/Particles/mainParticles';
+// import { Provider, useDispatch, useSelector } from 'react-redux'
+import dynamic from 'next/dynamic';
+import Playbgm from './bgMusic';
+
+const Bgm = dynamic(
+  import('@/pages/bgMusic'), {
+    loading: () => (<div></div>),
+    ssr: false,
+  },
+)
 
 export default function Home() {
-  const [isBgMusicOn, setIsBgMusicOn] = useState(true);
-  const [isFiveMinutes, setIsFiveMinutes] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [playBgMusic, { stop }] = useSound('/sounds/bgm.mp3', {
-    loop: true,
-    onload: () => setIsLoaded(true)
-  });
+  const [isBgMusicOn, setIsBgMusicOn] = useState(false);
 
   useEffect(() => {
-    if (isLoaded) {
-      playBgMusic();
-      setTimeout(() => setIsFiveMinutes(true), 8000);
-    }
-  }, [isLoaded]);
+    setTimeout(() => setIsBgMusicOn(true), 3000)
+  }, []);
   
   return (
     <>
@@ -38,7 +39,11 @@ export default function Home() {
           </div>
         </div>
         <div className="absolute justify-end items-end flex w-1/4 h-4/5">
-          <BagicHome />
+          {/* <Provider store={store}> */}
+            <BagicHome />
+          {/* </Provider> */}
+          <Bgm musicPlay={isBgMusicOn}/>
+          {/* <Playbgm musicPlay={isBgMusicOn}/> */}
         </div>
       </div>
     </>

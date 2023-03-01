@@ -3,6 +3,14 @@ import styles from "./styles.module.css";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import useSound from "use-sound"
+import dynamic from "next/dynamic";
+
+const Bgm = dynamic(
+  import('@/pages/bgMusic'), {
+    loading: () => (<div></div>),
+    ssr: false,
+  },
+)
 
 interface Props {
     dataChannel: RTCDataChannel | undefined;
@@ -12,7 +20,8 @@ export default function CheckReady({ dataChannel }: Props) {
     const [myReadyState, setMyReadyState] = useState(false);
     const [peerReadyState, setPeerReadyState] = useState(false);
     const [gameReadyState, setGameReadyState] = useState(false);
-    
+    const [isBgMusicOn, setIsBgMusicOn] = useState(true);
+
     const readySoundUrl = '/sounds/ready.mp3'
     const [readySoundPlay] = useSound(readySoundUrl)
   
@@ -23,6 +32,7 @@ export default function CheckReady({ dataChannel }: Props) {
     if (myReadyState && peerReadyState) {
       document.getElementById("itembar")!.classList.remove("invisible")
       document.getElementById("itembar")!.classList.add("visible")
+      setIsBgMusicOn(false);
 
     }
     }, [myReadyState, peerReadyState]);
@@ -124,6 +134,8 @@ export default function CheckReady({ dataChannel }: Props) {
           </div>
         </div>
       </div>
+      <Bgm musicPlay={isBgMusicOn}/>
+
     </>
   );
 }
