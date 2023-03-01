@@ -35,7 +35,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     //아래 조건문 위로 올리면 안됨
 
     const arr = useSelector((state: any) => state.puzzleOrder);
-    const [zindex, setZindex] = useState(arr[i]);
+    const [zindex, setZindex] = useState(i);
     
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
