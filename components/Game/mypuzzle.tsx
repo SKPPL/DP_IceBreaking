@@ -37,8 +37,6 @@ interface Props {
 }
 
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
-const shuffleSoundUrl = '/sounds/shuffle.mp3';
-let isStart = true;
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     // segmentState for item use
@@ -50,12 +48,6 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
     const router = useRouter();
     const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
-    const [shuffleSoundPlay] = useSound(shuffleSoundUrl);
-
-    if (isStart) {
-        shuffleSoundPlay()
-        setTimeout(() => isStart = false, 1000)
-    }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
@@ -79,7 +71,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 case "magnet": setTimeout(() => { makeMyDefaultSegment() }, 7000); break;
                                 case "lip": setTimeout(() => { makeMyDefaultSegment() }, 10000); break;
                                 case "twirl": setTimeout(() => { makeMyDefaultSegment() }, 10000); break;
-
+                            
                             }
                     }
                 }
@@ -117,7 +109,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 [...Array(9)].map((_, i) => {
                     return (
                         <>
-                            <div className={styles.c1} key={`mypuzzle_${i}`}>
+                            <div className={`${styles[`c${i}`]}`} key={`mypuzzle_${i}`}>
                                 <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} isRightCard={false} />
                             </div>
                         </>

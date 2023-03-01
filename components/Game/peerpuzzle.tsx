@@ -81,6 +81,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     }
   }, []);
 
+  
+
   //useSelector는 state가 변경되었다면 functional component가 render한 이후에 실행됩니다.
   useEffect(() => {
     if (puzzleCompleteCounter.peer === 9) {
@@ -119,6 +121,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         setPeerSegmentState({ type: "item", segementState: keys[cnt] });
         if (keys[cnt] === "rocket" || keys[cnt] === "magnet") {
           dispatch({ type: `puzzleComplete/init_peer` });
+          isRightPlace = [false, false, false, false, false, false, false, false, false];
         }
         switch (keys[cnt]) {
           case "rocket": setTimeout(() => { makePeerDefaultSegment() }, 9000); break;
@@ -142,12 +145,12 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       {[...Array(9)].map((_, i) => {
         return (
           <>
-            <div className={styles.c1} key={`peerpuzzle_${i}`}>
+            <div className={`${styles[`c${i}`]}`} key={`peerpuzzle_${i}`}>
               {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />}
               {(peerPosition.i !== i) &&
                 <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />
               }
-            </div>
+              </div>
           </>
         );
       })}

@@ -10,7 +10,6 @@ import { myFaceLandMarkState, myLipState, myTwirlState, myWaitState, peerFaceLan
 import LipVideo from "../../FaceDetection/LipVideo";
 import TwirlVideo from "@/components/FaceDetection/TwirlVideo";
 
-
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
 const puzzleSoundUrl = '/sounds/puzzleHit.mp3'
@@ -35,8 +34,9 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     const [isRightPlace, setIsRightPlace] = useState(false);
     //아래 조건문 위로 올리면 안됨
 
-    const [zindex, setZindex] = useState(i + 1);
-
+    const arr = useSelector((state: any) => state.puzzleOrder);
+    const [zindex, setZindex] = useState(arr[i]);
+    
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
     const d = 1;
@@ -180,7 +180,6 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
         if (isRightCard) 
             setZindex(0);
     }, [isRightCard])
-
 
 
     const faceLandMarkReady = useRecoilValue(auth ? myFaceLandMarkState : peerFaceLandMarkState)

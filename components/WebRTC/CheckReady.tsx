@@ -23,8 +23,7 @@ export default function CheckReady({ dataChannel }: Props) {
     if (myReadyState && peerReadyState) {
       document.getElementById("itembar")!.classList.remove("invisible")
       document.getElementById("itembar")!.classList.add("visible")
-
-    }
+      }
     }, [myReadyState, peerReadyState]);
     
     //ready 버튼 누를 시 myReady 상태 변경 및 상대방 전송
@@ -60,7 +59,7 @@ export default function CheckReady({ dataChannel }: Props) {
         <div className="flex flex-col w-1/2 h-screen">
         {!gameReadyState &&
             <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
-                <div className={`${styles.ready} ${!myReadyState ? peerReadyState ? "" : ""  : "bg-red-900"}`} id="myReadyButton" onClick={changeMyReadyState}>
+                <div className={`${styles.ready} ${!myReadyState ? peerReadyState ? "bg-green-500" : ""  : "bg-red-900"}`} id="myReadyButton" onClick={changeMyReadyState}>
                     {!myReadyState ? peerReadyState ? "Start" : "Ready"  : "Cancel" } 
                 </div>
             </div>
