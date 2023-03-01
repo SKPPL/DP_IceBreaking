@@ -30,7 +30,32 @@ const itemSlice = createSlice({
         }
     }
 });
-const initialState = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+const arr = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+const order = createSlice({
+    name: "puzzleOrder",
+    initialState: arr,
+    reducers: {
+        init: (state) => {
+            state = initialState;
+        },
+        value: (state) => {
+            return state;
+        }
+    }
+})
+
+
+const initialState = [[arr[0]*50-370, 0], [arr[1]*50-370, 0], [arr[2]*50-370, 0], [arr[3]*50-370, 0], [arr[4]*50-370, 0], [arr[5]*50-370, 0], [arr[6]*50-370, 0], [arr[7]*50-370, 0], [arr[8]*50-370, 0]]
 //내 퍼즐의 상태를 저장
 const myPuzzleSlice = createSlice({
     name: "myPuzzle",
@@ -40,7 +65,10 @@ const myPuzzleSlice = createSlice({
             state[action.payload.index] = action.payload.position //index번째 퍼즐의 좌표를 position으로 변경
         },
         init: (state) => {
-            state = initialState;
+            state = initialState
+        },
+        start : (state) => {
+            state = initialState
         }
     }
 });
@@ -53,6 +81,9 @@ const peerPuzzleSlice = createSlice({
             state[action.payload.index] = action.payload.position //index번째 퍼즐의 좌표를 position으로 변경
         },
         init: (state) => {
+            state = initialState;
+        },
+        start: (state) => {
             state = initialState;
         }
     }
@@ -99,6 +130,7 @@ const store = configureStore({
         peerPuzzle: peerPuzzleSlice.reducer,
         puzzleComplete: puzzleCompleteSlice.reducer,
         isBgMusicOn: isBgMusicOnSlice.reducer,
+        puzzleOrder: order.reducer,
     }
 })
 

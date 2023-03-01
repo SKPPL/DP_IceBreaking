@@ -32,10 +32,8 @@ interface Props {
     auth: boolean;
     dataChannel: RTCDataChannel | undefined;
 }
+const fanFareSoundUrl = '/sounds/Fanfare.mp3';
 
-const fanFareSoundUrl = "/sounds/Fanfare.mp3";
-const shuffleSoundUrl = "/sounds/shuffle.mp3";
-let isStart = true;
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     // segmentState for item use
@@ -49,12 +47,6 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
     const router = useRouter();
     const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
-    const [shuffleSoundPlay] = useSound(shuffleSoundUrl);
-
-    if (isStart) {
-        shuffleSoundPlay();
-        setTimeout(() => (isStart = false), 1000);
-    }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
@@ -72,6 +64,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 dispatch({ type: "puzzleComplete/init_mine" });
                             }
                             switch (dataJSON.segementState) {
+
                                 case "rocket":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
@@ -135,7 +128,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 [...Array(9)].map((_, i) => {
                     return (
                         <>
-                            <div className={styles.c1} key={`mypuzzle_${i}`}>
+                            <div className={`${styles[`c${i}`]}`} key={`mypuzzle_${i}`}>
                                 <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} isRightCard={false} />
                             </div>
                         </>
