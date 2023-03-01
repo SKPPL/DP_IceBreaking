@@ -14,7 +14,7 @@ interface Props {
   i: number;
   videoId: string;
   auth: boolean;
-  peerxy: { peerx: number; peery: number } | undefined;
+  peerxy: { peerx: number; peery: number; } | undefined;
   dataChannel: RTCDataChannel | undefined;
   segmentState: string;
   isRightCard: boolean;

@@ -50,7 +50,6 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
-    const [myWait, setMyWait] = useRecoilState(myWaitState);
 
     useEffect(() => {
         if (dataChannel) {
