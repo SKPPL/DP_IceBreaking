@@ -34,8 +34,8 @@ export default function PuzzleScreen() {
     const [divY, setDivY] = useState(0); //퍼즐의 절대위치 y
     const [puzzleHoleX,setHoleX] = useState(1); //퍼즐 구멍의 화면 절대위치 X
     const [puzzleHoleY,setHoleY] = useState(1); //퍼즐 구멍의 화면 절대위치 Y
-    const puzzleWidth = 300/1440*innerWidth;
-    const puzzleHeight = 350/781*innerHeight;
+    const puzzleWidth = 230/1440*innerWidth;
+    const puzzleHeight = 255/781*innerHeight;
 
 
     function findPosition() {
@@ -44,12 +44,14 @@ export default function PuzzleScreen() {
         setDivY(movingRef.current!.getBoundingClientRect().y);
         setHoleX(innerWidth*(1250/1440));
         setHoleY(innerHeight*(640/780));
+        console.log("innerWidth", innerWidth, "innerHeight", innerHeight);
+        console.log("puzzleW", puzzleWidth, "puzzleH", puzzleHeight);
     }
 
 
 
     function draw(){
-        ctx!.drawImage(puzzleImage,0,0,230/300*puzzleWidth, 255/350*puzzleHeight);
+        ctx!.drawImage(puzzleImage,0,0, puzzleWidth, puzzleHeight);
         setTimeout(() => {
             draw()
         }, 40);
@@ -96,9 +98,9 @@ export default function PuzzleScreen() {
                     console.log(x.get(), y.get());
                 }
                 if(!params.down && isPuzzleMatched(x.get(), y.get(), puzzleHoleX, puzzleHoleY, divX, divY)) {
-                    router.push({
-                        pathname: '/ready',
-                    })
+                    // router.push({
+                    //     pathname: '/ready',
+                    // })
                     console.log('성공')
                 }
             }
