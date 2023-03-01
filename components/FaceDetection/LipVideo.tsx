@@ -14,7 +14,7 @@ export default function LipVideo({ auth }: segmentData) {
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return
-        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
+        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
         return () => {
             unmountCheck = true;
         }

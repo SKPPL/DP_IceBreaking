@@ -18,7 +18,7 @@ export default function MakeVideoTwirl({ videoId, auth }: Props) {
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return
-        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
+        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
         return () => {
             unmountCheck = true;
             auth ? myTwirlSet(false) : peerTwirlSet(false)
@@ -29,7 +29,7 @@ export default function MakeVideoTwirl({ videoId, auth }: Props) {
     const canvas2 = document.createElement('canvas');
     canvas2.width = 320;
     canvas2.height = 240;
-    const ctx2 = canvas2.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
+    const ctx2 = canvas2.getContext('2d', { alpha: false, willReadFrequently: true });
     const d = 0.7
 
     // angle from -2 rad to 2 rad, function is made to pass the origin quickly!
