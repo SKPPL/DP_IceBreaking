@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
+
 import Waiting from "../PageElements/Waiting";
 import styles from "./styles.module.css";
 import Ceremony from "../Game/Ceremony";
@@ -50,23 +51,25 @@ export default function WebRTC() {
   const userVideoRef = useRef<any>();
   const peerVideoRef = useRef<any>();
   const webRTCConnRef = useRef<any>();
-  const selectRef = useRef<any>();
   const hostRef = useRef(false);
   const userStreamRef = useRef<MediaStream>();
   // call setDataChannel when dataChannel created
   var [dataChannel, setDataChannel] = useState<RTCDataChannel>();
   //State
-  const [micSetting, setMicSetting] = useState(true);
-  const [cameraSetting, setCameraSetting] = useState(true);
   const [roomName, setRoomName] = useState<string | string[] | undefined>("");
-  const [nickName, setNickName] = useState("");
-  const [peerNickName, setPeerNickName] = useState("");
   const [socketConnect, setSocketConnect] = useState<any>();
   const [checkLeave, setCheckLeave] = useState<boolean>(false);
+
   //segementState is for item using, owner is my or peer
   useEffect(() => {
     if (typeof socketConnect !== "undefined") {
       console.log("[roomName] : ", roomName);
+
+      if (roomName == undefined) {
+        alert("비정상적으로 방을 생성하였습니다. 방을 종료합니다.");
+        leaveRoom();
+      }
+
       socketConnect.on("created", handleRoomCreated);
       socketConnect.emit("join", roomName);
       socketConnect.on("joined", handleRoomJoined);
@@ -78,13 +81,15 @@ export default function WebRTC() {
       socketConnect.on("offer", handleReceivedOffer);
       socketConnect.on("answer", handleAnswer);
       socketConnect.on("ice-candidate", handlerNewIceCandidateMsg);
-      socketConnect.on("reload", () => {
-        leaveRoom();
+      socketConnect.on("disconnecting", () => {
+        socketConnect.emit("disconnecting");
       });
-      window.addEventListener("popstate", handleBackButton);
+
+      window.addEventListener("popstate", handleBackSpace);
+
       // unmmount시 소켓을 끊는다
       return () => {
-        socketConnect.emit("peerleave", roomName);
+        window.removeEventListener("popstate", handleBackSpace);
         socketConnect.disconnect();
       };
     }
@@ -96,6 +101,7 @@ export default function WebRTC() {
     // 초기 room이름 설정
     setRoomName(router.query.roomName);
   }, []);
+
   useEffect(() => {
     let mounted = true;
     if (mounted && checkLeave) {
@@ -109,7 +115,10 @@ export default function WebRTC() {
       mounted = false;
     };
   }, [checkLeave]);
-  const handleBackButton = () => {
+
+  //뒤로가기는 Cancelable 하지 않아 e.preventDefault()메소드로 동작을 막을 수 없음.
+  const handleBackSpace = (event) => {
+    alert("뒤로가기를 눌러 방을 떠납니다. 현재 방은 종료됩니다");
     leaveRoom();
   };
 
@@ -128,6 +137,8 @@ export default function WebRTC() {
         userVideoRef.current.play();
       };
     } catch (e) {
+      alert("정상적으로 카메라를 가져오지 못하였습니다. 대기실로 이동합니다.");
+      leaveRoom();
       console.log(e);
     }
   }
@@ -137,6 +148,8 @@ export default function WebRTC() {
       hostRef.current = true;
       await getMedia();
     } catch (e) {
+      alert("정상적으로 카메라를 가져오지 못하였습니다. 대기실로 이동합니다.");
+      leaveRoom();
       console.log(e);
     }
   };
@@ -146,6 +159,8 @@ export default function WebRTC() {
       socketConnect.emit("ready", roomName);
       console.log("[emit ready]");
     } catch (e) {
+      alert("정상적으로 카메라를 가져오지 못하였습니다. 대기실로 이동합니다.");
+      leaveRoom();
       console.log(e);
     }
   };
@@ -168,11 +183,14 @@ export default function WebRTC() {
         socketConnect.emit("offer", offer, roomName);
         setDataChannel(dataChannel);
       } catch (e) {
+        alert("정상적으로 상대방과 연결하지 못했습니다. 대기실로 이동합니다.");
+        leaveRoom();
         console.log(e);
       }
     }
   };
   const onPeerLeave = (): void => {
+    alert("상대방이 떠났습니다. 새로운 게임을 즐기기 위해 방을 다시 만들어주세요.");
     //room을에 혼자 남아 있을 경우, 남아 있는 사람이 room을의 주인이 됨
     hostRef.current = true;
     if (peerVideoRef.current.srcObject) {
@@ -186,11 +204,10 @@ export default function WebRTC() {
       webRTCConnRef.current.close();
       webRTCConnRef.current = null;
     }
+    leaveRoom();
   };
   //room을 떠날 때
   const leaveRoom = (): void => {
-    socketConnect.emit("leave", roomName);
-    console.log("[emit leave]");
     //유저와 peer 모든 media 수신을 중지
     if (userVideoRef.current && userVideoRef.current.srcObject) {
       userVideoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
@@ -205,6 +222,7 @@ export default function WebRTC() {
       webRTCConnRef.current.close();
       webRTCConnRef.current = null;
     }
+    // console.log("leavRoom 아래 ");
     setCheckLeave(true);
   };
   const makeConnection = (): RTCPeerConnection => {
