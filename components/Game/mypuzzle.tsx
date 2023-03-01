@@ -1,25 +1,25 @@
-import React, { useRef, useEffect, useState, memo } from 'react'
-import { useSpring, animated, to, Spring } from '@react-spring/web'
-import { useGesture } from 'react-use-gesture'
-import { Provider, useSelector, useDispatch } from 'react-redux'
-import itemStore from '@/components/Game/store'
-import styles from './styles.module.css'
-import dynamic from 'next/dynamic'
-import Rocket from './SegmentState/rocket'
-import { useRouter } from 'next/router'
-import Modal from '../PageElements/ItemAlert/Modal'
-import MyBar from '../PageElements/ProgressBar/MyBar'
+import React, { useRef, useEffect, useState, memo } from 'react';
+import { useSpring, animated, to, Spring } from '@react-spring/web';
+import { useGesture } from 'react-use-gesture';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+import itemStore from '@/components/Game/store';
+import styles from './styles.module.css';
+import dynamic from 'next/dynamic';
+import Rocket from './SegmentState/rocket';
+import { useRouter } from 'next/router';
+import Modal from '../PageElements/ItemAlert/Modal';
+import MyBar from '../PageElements/ProgressBar/MyBar';
 import { myWaitState } from "./atom";
-import { useRecoilState, useRecoilValue } from 'recoil'
-import useSound from 'use-sound'
-import MyIceFlakeParticles from '../PageElements/Particles/myiceFlakeParticles'
-import MyBlackhallParticles from '../PageElements/Particles/myblackhallParticles'
+import { useRecoilState, useRecoilValue } from 'recoil';
+import useSound from 'use-sound';
+import MyIceFlakeParticles from '../PageElements/Particles/myiceFlakeParticles';
+import MyBlackhallParticles from '../PageElements/Particles/myblackhallParticles';
 import { getGuestLip, startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
-import MyLipParticles from '../PageElements/Particles/mylipParticles'
-import MakeVideoTwirl from '../FaceDetection/MakeVideoTwirl'
-import MyTwirlParticles from '../PageElements/Particles/mytwirlParticles'
-import MyRocketParticles from '../PageElements/Particles/myrocketParticles'
-import MakeVideoLip from '../FaceDetection/MakeVideoLip'
+import MyLipParticles from '../PageElements/Particles/mylipParticles';
+import MakeVideoTwirl from '../FaceDetection/MakeVideoTwirl';
+import MyTwirlParticles from '../PageElements/Particles/mytwirlParticles';
+import MyRocketParticles from '../PageElements/Particles/myrocketParticles';
+import MakeVideoLip from '../FaceDetection/MakeVideoLip';
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(
@@ -31,9 +31,9 @@ const PuzzleSegment = dynamic(
 
 
 interface Props {
-    videoId: string
-    auth: boolean
-    dataChannel: RTCDataChannel | undefined
+    videoId: string;
+    auth: boolean;
+    dataChannel: RTCDataChannel | undefined;
 }
 
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
@@ -44,7 +44,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     // segmentState for item use
     const [mySegmentState, setMySegmentState] = useState({ type: "item", segementState: "default" });
     // using after store value changed, for restoring purpose
-    const makeMyDefaultSegment = () => { setMySegmentState({ type: "item", segementState: "default" }) }
+    const makeMyDefaultSegment = () => { setMySegmentState({ type: "item", segementState: "default" }); };
     const dispatch = useDispatch();
 
     const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
@@ -53,14 +53,14 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const [shuffleSoundPlay] = useSound(shuffleSoundUrl);
 
     if (isStart) {
-        shuffleSoundPlay()
-        setTimeout(() => isStart = false, 1000)
+        shuffleSoundPlay();
+        setTimeout(() => isStart = false, 1000);
     }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
 
-    const [myWait, setMyWait] = useRecoilState(myWaitState)
+    const [myWait, setMyWait] = useRecoilState(myWaitState);
 
     useEffect(() => {
         if (dataChannel) {
@@ -71,19 +71,19 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                         case "item":
                             setMySegmentState(dataJSON);
                             if (dataJSON.segementState === "rocket" || dataJSON.segementState === "magnet") {
-                                dispatch({ type: "puzzleComplete/init_mine" })
+                                dispatch({ type: "puzzleComplete/init_mine" });
                             }
                             switch (dataJSON.segementState) {
-                                case "rocket": setTimeout(() => { makeMyDefaultSegment() }, 9000); break;
-                                case "ice": setTimeout(() => { makeMyDefaultSegment() }, 15000); break;
-                                case "magnet": setTimeout(() => { makeMyDefaultSegment() }, 7000); break;
-                                case "lip": setTimeout(() => { makeMyDefaultSegment() }, 10000); break;
-                                case "twirl": setTimeout(() => { makeMyDefaultSegment() }, 10000); break;
+                                case "rocket": setTimeout(() => { makeMyDefaultSegment(); }, 9000); break;
+                                case "ice": setTimeout(() => { makeMyDefaultSegment(); }, 15000); break;
+                                case "magnet": setTimeout(() => { makeMyDefaultSegment(); }, 7000); break;
+                                case "lip": setTimeout(() => { makeMyDefaultSegment(); }, 10000); break;
+                                case "twirl": setTimeout(() => { makeMyDefaultSegment(); }, 10000); break;
 
                             }
                     }
                 }
-            })
+            });
         }
     }, []);
 
@@ -103,13 +103,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                     .then(() => router.reload());
             }, 15000);
         }
-    }, [puzzleCompleteCounter.mine])
+    }, [puzzleCompleteCounter.mine]);
 
     if (mySegmentState.segementState === 'lip' || mySegmentState.segementState === 'twirl') {
         startItem();
-        setTimeout(() => { stopItem() }, 10000);
+        setTimeout(() => { stopItem(); }, 10000);
     }
-
 
     return (
         <>
@@ -121,7 +120,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} isRightCard={false} />
                             </div>
                         </>
-                    )
+                    );
                 }
                 )
             }
@@ -140,7 +139,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
 
         </>
-    )
+    );
 }
 
 

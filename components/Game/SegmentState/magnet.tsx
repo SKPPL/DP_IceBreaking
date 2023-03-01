@@ -15,14 +15,14 @@ interface Props {
     i: number;
     videoId: string;
     auth: boolean;
-    peerxy: { peerx: number; peery: number } | undefined;
+    peerxy: { peerx: number; peery: number; } | undefined;
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
 }
 let mpx: number;
 let mpy: number;
 let dataTransferCount = 0;
-const [widthOx, heightOx] = [640 / 3, 480 / 3];
+const [widthOx, heightOx] = [213, 160];
 export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     //퍼즐 데이터 스토어와 연결 react-redux
     const dispatch = useDispatch();
@@ -42,8 +42,8 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
     const { width, height } = useWindowSize();
     //현재 마우스 포인터 위치 계산
     const mousePosition = useMousePosition();
-    const setMyWait = useSetRecoilState(myWaitState)
-    const setPeerWait = useSetRecoilState(peerWaitState)
+    const setMyWait = useSetRecoilState(myWaitState);
+    const setPeerWait = useSetRecoilState(peerWaitState);
     useEffect(() => {
         if (!auth) return;
         dataTransferCount += 1;
@@ -99,8 +99,8 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
     useEffect(() => {
         return () => {
             auth ? setMyWait(false) : setPeerWait(false);
-        }
-    }, [])
+        };
+    }, []);
     return (
         <div>
             <div className={styles.container}>

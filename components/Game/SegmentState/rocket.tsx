@@ -1,42 +1,42 @@
-import React, { useRef, useEffect, useState } from 'react'
-import { useSpring, animated, to, config } from '@react-spring/web'
-import { useDrag } from 'react-use-gesture'
+import React, { useRef, useEffect, useState } from 'react';
+import { useSpring, animated, to, config } from '@react-spring/web';
+import { useDrag } from 'react-use-gesture';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { scale, dist } from 'vec-la'
-import { Provider, useSelector, useDispatch } from 'react-redux'
-import styles from '../styles.module.css'
-import { useWindowSize } from 'usehooks-ts'
-import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil'
-import { myWaitState, peerWaitState } from '../atom'
+import { scale, dist } from 'vec-la';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+import styles from '../styles.module.css';
+import { useWindowSize } from 'usehooks-ts';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
+import { myWaitState, peerWaitState } from '../atom';
 interface Props {
-    i: number
-    peerxy: { peerx: number, peery: number } | undefined
-    dataChannel: RTCDataChannel | undefined
-    auth: boolean
+    i: number;
+    peerxy: { peerx: number, peery: number; } | undefined;
+    dataChannel: RTCDataChannel | undefined;
+    auth: boolean;
 }
 export default function rocket({ i, auth, dataChannel }: Props) {
 
-    const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle });
+    const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle; });
     const dispatch = useDispatch();
-    const [{ pos }, api] = useSpring(() => ({ pos: [25, 25] }))
+    const [{ pos }, api] = useSpring(() => ({ pos: [25, 25] }));
     const [{ angle }, angleApi] = useSpring(() => ({
         angle: 0,
         config: config.slow,
-    }))
-    const [flipped, setFlip] = useState(false)
+    }));
+    const [flipped, setFlip] = useState(false);
     const { transform } = useSpring({
         transform: `rotateY(${flipped ? 180 : 0}deg)`,
-    })
+    });
     // direction calculates pointer direction
     // memo is like a cache, it contains the values that you return inside "set"
     // this way we can inject the springs current coordinates on the initial event and
     // add movement to it for convenience
-    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] })
+    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
     const d = 1;
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
-    const [widthOx, heightOx] = [(640 / 3) * d, (480 / 3) * d];
-    const [width, height] = [(640 / 3) * (i % 3) - widthOx * 1.5, (480 / 3) * ((i - (i % 3)) / 3) + heightOx];
+    const [widthOx, heightOx] = [213 * d, 160 * d];
+    const [width, height] = [213 * (i % 3) - widthOx * 1.5, 160 * ((i - (i % 3)) / 3) + heightOx];
 
     const bind = useDrag(
         ({ xy, previous, down, movement: pos, velocity, direction }) => {
@@ -47,12 +47,12 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                 pos: [Math.min(Math.max(pos[0], -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]), Math.min(Math.max(pos[1], 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1])],
                 immediate: down,
                 config: { velocity: scale(direction, velocity), decay: true },
-            })
+            });
 
-            if (direction[0] < 0 && flipped === false) { setFlip(true) }
-            if (direction[0] > 0 && flipped === true) { setFlip(false) }
+            if (direction[0] < 0 && flipped === false) { setFlip(true); }
+            if (direction[0] > 0 && flipped === true) { setFlip(false); }
             if (dist(xy, previous) > 10 || !down)
-                angleApi.start({ angle: flipped ? (Math.atan2(direction[0], 1) + 0.5) : (Math.atan2(direction[0], 1) - 0.5) })
+                angleApi.start({ angle: flipped ? (Math.atan2(direction[0], 1) + 0.5) : (Math.atan2(direction[0], 1) - 0.5) });
             if (dataChannel) {
                 dataChannel.send(JSON.stringify({ type: 'rocket', i: i, auth: auth, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction, flipped: flipped }));
             }
@@ -61,7 +61,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
             initial: () => pos.get(),
             rubberband: 1,
         }
-    )
+    );
     // 상대가 발생시킨 이벤트를 받아서 그대로 원래 useDrag에서 실행하던 것처럼 실행
     useEffect(() => {
         if (dataChannel) {
@@ -71,15 +71,15 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                     switch (dataJSON.type) {
                         case "rocket":
                             if (i === dataJSON.i && auth === !dataJSON.auth) {
-                                if (dataJSON.direction[0] < 0 && dataJSON.flipped === false) { setFlip(true) }
-                                else if (dataJSON.direction[0] > 0 && dataJSON.flipped === true) { setFlip(false) }
+                                if (dataJSON.direction[0] < 0 && dataJSON.flipped === false) { setFlip(true); }
+                                else if (dataJSON.direction[0] > 0 && dataJSON.flipped === true) { setFlip(false); }
                                 api.start({
                                     pos: [Math.min(Math.max(dataJSON.pos[0], -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]), Math.min(Math.max(dataJSON.pos[1], 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1])],
                                     immediate: dataJSON.down,
                                     config: { velocity: scale(dataJSON.direction, dataJSON.velocity), decay: true },
-                                })
+                                });
                                 if (dist(dataJSON.xy, dataJSON.previous) > 10 || !dataJSON.down)
-                                    angleApi.start({ angle: dataJSON.flipped ? (Math.atan2(dataJSON.direction[0], 1) + 0.5) : (Math.atan2(dataJSON.direction[0], 1) - 0.5) })
+                                    angleApi.start({ angle: dataJSON.flipped ? (Math.atan2(dataJSON.direction[0], 1) + 0.5) : (Math.atan2(dataJSON.direction[0], 1) - 0.5) });
                                 break;
                             }
                     }
@@ -87,14 +87,14 @@ export default function rocket({ i, auth, dataChannel }: Props) {
             });
         }
     }, []);
-    const setMyWait = useSetRecoilState(myWaitState)
-    const setPeerWait = useSetRecoilState(peerWaitState)
+    const setMyWait = useSetRecoilState(myWaitState);
+    const setPeerWait = useSetRecoilState(peerWaitState);
     useEffect(() => {
         return () => {
             dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
             auth ? setMyWait(false) : setPeerWait(false);
-        }
-    }, [])
+        };
+    }, []);
     return (
         <animated.div
             className={styles.rocket}
@@ -111,10 +111,10 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                         y = Math.min(Math.max(y, 0 - storedPosition[i][1]), heightOx * 4 - storedPosition[i][1]);
                         memo.current.x = storedPosition[i][0] + x;
                         memo.current.y = storedPosition[i][1] + y;
-                        return `translate3d(${x}px,${y}px,0) rotate(${a}rad) rotateY(${flipped ? 180 : 0}deg)`
+                        return `translate3d(${x}px,${y}px,0) rotate(${a}rad) rotateY(${flipped ? 180 : 0}deg)`;
                     },
                 ),
             }}
         />
-    )
+    );
 }

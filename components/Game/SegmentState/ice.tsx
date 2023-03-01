@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, memo, useCallback } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import styles from "../styles.module.css";
-import useSound from "use-sound"
+import useSound from "use-sound";
 import { useSetRecoilState } from "recoil";
 import { myWaitState, peerWaitState } from "../atom";
 import IcedVideo from "../IcedVideo";
@@ -10,13 +10,13 @@ import { useDrag, useGesture } from "@use-gesture/react";
 import CloneVideo from "../CloneVideo";
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
-const puzzleSoundUrl = '/sounds/puzzleHit.mp3'
+const puzzleSoundUrl = '/sounds/puzzleHit.mp3';
 
 interface Props {
     i: number;
     videoId: string;
     auth: boolean;
-    peerxy: { peerx: number; peery: number } | undefined;
+    peerxy: { peerx: number; peery: number; } | undefined;
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
 }
@@ -26,12 +26,12 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
 
     //TODO ice 버그 수정하기
 
-    const iceCrackSoundUrl = '/sounds/can.wav'
+    const iceCrackSoundUrl = '/sounds/can.wav';
 
 
 
     const [iceCount, setIceCount] = useState(2);
-    const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, { playbackRate: 1 })
+    const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, { playbackRate: 1 });
 
     function breakTheIce() {
         if (!auth) return;
@@ -71,8 +71,8 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
     const d = 1;
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
-    const [widthOx, heightOx] = [(640 / 3) * d, (480 / 3) * d];
-    const [width, height] = [(640 / 3) * (i % 3) - widthOx * 1.5, (480 / 3) * ((i - (i % 3)) / 3) + heightOx];
+    const [widthOx, heightOx] = [213 * d, 160 * d];
+    const [width, height] = [213 * (i % 3) - widthOx * 1.5, 160 * ((i - (i % 3)) / 3) + heightOx];
     const [puzzleSoundPlay] = useSound(puzzleSoundUrl);
 
     // TODO : 옆으로 init 시 api.start 이동
@@ -183,9 +183,9 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     );
 
 
-    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] })
-    const setMyWait = useSetRecoilState(myWaitState)
-    const setPeerWait = useSetRecoilState(peerWaitState)
+    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
+    const setMyWait = useSetRecoilState(myWaitState);
+    const setPeerWait = useSetRecoilState(peerWaitState);
     useEffect(() => {
         return () => {
             if (isRightPlace) {
@@ -196,7 +196,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
             }
             auth ? setMyWait(false) : setPeerWait(false);
         };
-    }, [])
+    }, []);
     return (
         <>
             <div className="">
@@ -211,7 +211,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                             scale: to([scale, zoom], (s, z) => {
                                 memo.current.x = x.get();
                                 memo.current.y = y.get();
-                                return s + z
+                                return s + z;
                             }),
                             rotateX,
                             rotateY,
