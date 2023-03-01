@@ -2,25 +2,37 @@ import React, { useState, useEffect } from "react";
 import styles from "./styles.module.css";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
-import useSound from "use-sound";
+import useSound from "use-sound"
+import dynamic from "next/dynamic";
+
+const Bgm = dynamic(
+  import('@/pages/bgMusic'), {
+    loading: () => (<div></div>),
+    ssr: false,
+  },
+)
 
 interface Props {
   dataChannel: RTCDataChannel | undefined;
 }
 
 export default function CheckReady({ dataChannel }: Props) {
-  const [myReadyState, setMyReadyState] = useState(false);
-  const [peerReadyState, setPeerReadyState] = useState(false);
-  const [gameReadyState, setGameReadyState] = useState(false);
+    const [myReadyState, setMyReadyState] = useState(false);
+    const [peerReadyState, setPeerReadyState] = useState(false);
+    const [gameReadyState, setGameReadyState] = useState(false);
+    const [isBgMusicOn, setIsBgMusicOn] = useState(true);
 
-  const readySoundUrl = "/sounds/ready.mp3";
-  const [readySoundPlay] = useSound(readySoundUrl);
-
-  //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
+    const readySoundUrl = '/sounds/ready.mp3'
+    const [readySoundPlay] = useSound(readySoundUrl)
+  
+    //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
   useEffect(() => {
     readySoundPlay();
     setGameReadyState(myReadyState && peerReadyState);
     if (myReadyState && peerReadyState) {
+      document.getElementById("itembar")!.classList.remove("invisible")
+      document.getElementById("itembar")!.classList.add("visible")
+      setIsBgMusicOn(false);
 
       document.getElementById("itembar")!.classList.remove("invisible");
       document.getElementById("itembar")!.classList.add("visible");
@@ -122,6 +134,8 @@ export default function CheckReady({ dataChannel }: Props) {
           </div>
         </div>
       </div>
+      <Bgm musicPlay={isBgMusicOn}/>
+
     </>
   );
 }

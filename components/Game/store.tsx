@@ -108,18 +108,6 @@ const puzzleCompleteSlice = createSlice({
     }
 });
 
-const isBgMusicOnSlice = createSlice({
-    name: "isBgMusicOn",
-    initialState: { isBgMusicOn: true },
-    reducers: {
-        bgm_start: (state) => {
-            state.isBgMusicOn = true;
-        },
-        bgm_stop: (state) => {
-            state.isBgMusicOn = false;
-        }
-    }
-});
 
 
 
@@ -129,7 +117,6 @@ const store = configureStore({
         myPuzzle: myPuzzleSlice.reducer,
         peerPuzzle: peerPuzzleSlice.reducer,
         puzzleComplete: puzzleCompleteSlice.reducer,
-        isBgMusicOn: isBgMusicOnSlice.reducer,
         puzzleOrder: order.reducer,
     }
 })
