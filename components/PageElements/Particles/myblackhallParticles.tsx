@@ -2,7 +2,7 @@ import Particles from "react-tsparticles";
 import React, { useCallback, useEffect } from "react";
 import { loadFull } from "tsparticles";
 
-export default function MainParticles() {
+export default function MyBlackhallParticles() {
     const particlesInit = useCallback(async engine => {
         console.log(engine);
         // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
@@ -13,42 +13,43 @@ export default function MainParticles() {
 
     const particlesLoaded = useCallback(async container => {
         await console.log(container);
-        var particleCanvas = document.querySelector("#myice > div > div > div > canvas");
-        //@ts-ignore
-        if (particleCanvas !== null) {
-        //@ts-ignore
-            particleCanvas.style.pointerEvents = "none";
-        }
-
     }, []);
+
+    // var particleCanvas = document.querySelector("#tsparticles > canvas");
+    // useEffect(() => {
+    //     setTimeout(() => {if (particleCanvas !== null){
+    //         //@ts-ignore
+    //         particleCanvas.style.pointerEvents = "none";
+    //     }}, 100)
+    // }, [particleCanvas])
 
     return (
         <>
             <div className="flex absolute justify-center w-full z-20 pointer-events-none">
             <div className="fiexd w-[640px] h-[480px] flex justify-center pointer-events-none">
                 <Particles
-                    id='mainparticle'
+                    id='myblackhallparticle'
                     init={particlesInit}
                     loaded={particlesLoaded}
                         options={{
                         fullScreen: {
-                            enable: true,
+                            enable: false,
                             zIndex: 10,
                         },
                         particles: {
                             number: {
-                                value: 800,
-                                limit: 1300,
+                                value: 200,
+                                limit: 300,
                                 density: {
                                     enable: true,
                                     value_area: 800
                                 }
                             },
                             color: {
-                                value: "#000000"
+                                value: "#ffffff"
                             },
                             shape: {
-                                type: "circle",
+                                type: "image",
                                 stroke: {
                                     width: 0,
                                     color: "#000000"
@@ -57,14 +58,14 @@ export default function MainParticles() {
                                     nb_sides: 3
                                 },
                                 image: {
-                                    src: "/images/iceicon.png",
+                                    src: "/images/magnet.png",
                                     width: 100,
                                     height: 100
                                 }
                             },
                             opacity: {
-                                value: 0.1,
-                                random: false,
+                                value: 1,
+                                random: true,
                                 anim: {
                                     enable: true,
                                     speed: 2,
@@ -73,7 +74,7 @@ export default function MainParticles() {
                                 }
                             },
                             size: {
-                                value: 100,
+                                value: 20,
                                 random: true,
                                 anim: {
                                     enable: true,

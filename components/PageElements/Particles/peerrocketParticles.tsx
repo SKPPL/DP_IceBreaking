@@ -2,7 +2,7 @@ import Particles from "react-tsparticles";
 import React, { useCallback, useEffect } from "react";
 import { loadFull } from "tsparticles";
 
-export default function RocketParticles() {
+export default function PeerRocketParticles() {
     const particlesInit = useCallback(async engine => {
         console.log(engine);
         // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
@@ -15,20 +15,20 @@ export default function RocketParticles() {
         await console.log(container);
     }, []);
 
-    var particleCanvas = document.querySelector("#tsparticles > canvas");
-    useEffect(() => {
-        setTimeout(() => {if (particleCanvas !== null){
-            //@ts-ignore
-            particleCanvas.style.pointerEvents = "none";
-        }}, 100)
-    }, [particleCanvas])
+    // var particleCanvas = document.querySelector("#tsparticles > canvas");
+    // useEffect(() => {
+    //     setTimeout(() => {if (particleCanvas !== null){
+    //         //@ts-ignore
+    //         particleCanvas.style.pointerEvents = "none";
+    //     }}, 100)
+    // }, [particleCanvas])
 
     return (
         <>
-            <div className="flex absolute justify-center w-full z-20 pointer-events-none">
+            <div className="flex absolute justify-center w-full z-0 pointer-events-none">
             <div className="fiexd w-[640px] h-[480px] flex justify-center pointer-events-none">
                 <Particles
-                    id={`${Math.random()}rocketparticle`}
+                    id='peerrocketparticle'
                     init={particlesInit}
                     loaded={particlesLoaded}
                         options={{

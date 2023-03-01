@@ -2,7 +2,7 @@ import Particles from "react-tsparticles";
 import React, { useCallback, useEffect } from "react";
 import { loadFull } from "tsparticles";
 
-export default function IceFlakeParticles() {
+export default function MyTwirlParticles() {
     const particlesInit = useCallback(async engine => {
         console.log(engine);
         // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
@@ -15,20 +15,20 @@ export default function IceFlakeParticles() {
         await console.log(container);
     }, []);
 
-    var particleCanvas = document.querySelector("#myice > div > div > div > canvas");
-    useEffect(() => {
-        setTimeout(() => {if (particleCanvas !== null){
-            //@ts-ignore
-            particleCanvas.style.pointerEvents = "none";
-        }}, 200)
-    }, [particleCanvas])
+    // var particleCanvas = document.querySelector("#twirltsparticles > canvas");
+    // useEffect(() => {
+    //     setTimeout(() => {if (particleCanvas !== null){
+    //         //@ts-ignore
+    //         particleCanvas.style.pointerEvents = "none";
+    //     }}, 500)
+    // }, [particleCanvas])
 
     return (
         <>
-            <div className="flex absolute justify-center w-full z-20 pointer-events-none">
+            <div className="flex absolute justify-center w-full z-0 pointer-events-none">
             <div className="fiexd w-[640px] h-[480px] flex justify-center pointer-events-none">
                 <Particles
-                    id={`$iceparticles${Math.random()}`}
+                    id='mytwirlparticle'
                     init={particlesInit}
                     loaded={particlesLoaded}
                         options={{
@@ -58,7 +58,7 @@ export default function IceFlakeParticles() {
                                     nb_sides: 3
                                 },
                                 image: {
-                                    src: "/images/iceicon.png",
+                                    src: "/images/twirl.png",
                                     width: 100,
                                     height: 100
                                 }
