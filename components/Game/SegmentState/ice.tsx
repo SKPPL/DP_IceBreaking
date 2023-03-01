@@ -10,7 +10,7 @@ import { useDrag, useGesture } from "@use-gesture/react";
 import CloneVideo from "../CloneVideo";
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
-const puzzleSoundUrl = '/sounds/puzzleHit.mp3';
+const puzzleSoundUrl = "/sounds/puzzleHit.mp3";
 
 interface Props {
     i: number;
@@ -21,14 +21,10 @@ interface Props {
     segmentState: string;
 }
 
-
 function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
-
     //TODO ice 버그 수정하기
 
-    const iceCrackSoundUrl = '/sounds/can.wav';
-
-
+    const iceCrackSoundUrl = "/sounds/can.wav";
 
     const [iceCount, setIceCount] = useState(2);
     const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, { playbackRate: 1 });
@@ -87,7 +83,6 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
         };
     }, []);
 
-
     const target = useRef<HTMLDivElement>(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => {
         return {
@@ -143,7 +138,10 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                     }
                 }
                 positionDataSend();
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
+                dispatch({
+                    type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                    payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
+                });
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;
@@ -155,18 +153,21 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
         },
         {
             target,
-            bounds: { top: 0 - storedPosition[i][1], bottom: heightOx * 4 - storedPosition[i][1], left: -widthOx * 2 - storedPosition[i][0], right: widthOx * 1 - storedPosition[i][0] },
+            bounds: {
+                top: 0 - storedPosition[i][1],
+                bottom: heightOx * 4 - storedPosition[i][1],
+                left: -widthOx * 2 - storedPosition[i][0],
+                right: widthOx * 1 - storedPosition[i][0],
+            },
             rubberband: 0.8,
         }
     );
-
 
     useGesture(
         {
             onDrag: ({ active }) => {
                 if (isRightPlace) return;
                 api.start({ rotateX: 0, rotateY: 0, scale: active ? 1 : 1.05 });
-
             },
             onMove: ({ xy: [px, py], dragging }) => {
                 !dragging &&
@@ -177,11 +178,9 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                     });
             },
             onHover: ({ hovering }) => !hovering && api.start({ rotateX: 0, rotateY: 0, scale: 1 }),
-
         },
         { target, eventOptions: { passive: false } }
     );
-
 
     var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
     const setMyWait = useSetRecoilState(myWaitState);
@@ -190,11 +189,10 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
         return () => {
             if (isRightPlace) {
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
-            }
-            else {
+            } else {
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
             }
-            auth ? setMyWait(false) : setPeerWait(false);
+            auth ? setMyWait((prev) => prev - 1) : setPeerWait((prev) => prev - 1);
         };
     }, []);
     return (
@@ -220,7 +218,11 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                         }}
                     >
                         <animated.div>
-                            {(iceCount <= 0) ? <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} /> : <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                            {iceCount <= 0 ? (
+                                <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                            ) : (
+                                <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                            )}
                         </animated.div>
                     </animated.div>
                 </div>
@@ -242,6 +244,5 @@ export function isSameOutline(x: number, y: number, positionx: number, positiony
         return true;
     } else return false;
 }
-
 
 export default memo(Ice);

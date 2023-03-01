@@ -1,34 +1,31 @@
-import React, { useRef, useEffect, useState, memo } from 'react';
-import { useSpring, animated, to, Spring } from '@react-spring/web';
-import { useGesture } from 'react-use-gesture';
-import { Provider, useSelector, useDispatch } from 'react-redux';
-import itemStore from '@/components/Game/store';
-import styles from './styles.module.css';
-import dynamic from 'next/dynamic';
-import Rocket from './SegmentState/rocket';
-import { useRouter } from 'next/router';
-import Modal from '../PageElements/ItemAlert/Modal';
-import MyBar from '../PageElements/ProgressBar/MyBar';
+import React, { useRef, useEffect, useState, memo } from "react";;
+import { useSpring, animated, to, Spring } from "@react-spring/web";;
+import { useGesture } from "react-use-gesture";;
+import { Provider, useSelector, useDispatch } from "react-redux";;
+import itemStore from "@/components/Game/store";;
+import styles from "./styles.module.css";;
+import dynamic from "next/dynamic";;
+import Rocket from "./SegmentState/rocket";;
+import { useRouter } from "next/router";;
+import Modal from "../PageElements/ItemAlert/Modal";;
+import MyBar from "../PageElements/ProgressBar/MyBar";;
 import { myWaitState } from "./atom";
-import { useRecoilState, useRecoilValue } from 'recoil';
-import useSound from 'use-sound';
-import MyIceFlakeParticles from '../PageElements/Particles/myiceFlakeParticles';
-import MyBlackhallParticles from '../PageElements/Particles/myblackhallParticles';
+import { useRecoilState, useRecoilValue } from "recoil";
+import useSound from "use-sound";
+import MyIceFlakeParticles from "../PageElements/Particles/myiceFlakeParticles";
+import MyBlackhallParticles from "../PageElements/Particles/myblackhallParticles";
 import { getGuestLip, startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
-import MyLipParticles from '../PageElements/Particles/mylipParticles';
-import MakeVideoTwirl from '../FaceDetection/MakeVideoTwirl';
-import MyTwirlParticles from '../PageElements/Particles/mytwirlParticles';
-import MyRocketParticles from '../PageElements/Particles/myrocketParticles';
-import MakeVideoLip from '../FaceDetection/MakeVideoLip';
+import MyLipParticles from "../PageElements/Particles/mylipParticles";
+import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
+import MyTwirlParticles from "../PageElements/Particles/mytwirlParticles";
+import MyRocketParticles from "../PageElements/Particles/myrocketParticles";
+import MakeVideoLip from "../FaceDetection/MakeVideoLip";
 
 // import Segment from './Segment'
-const PuzzleSegment = dynamic(
-    import('@/components/Game/Segment'), {
-    loading: () => (<div></div>),
+const PuzzleSegment = dynamic(import("@/components/Game/Segment"), {
+    loading: () => <div></div>,
     ssr: false,
-},
-);
-
+});
 
 interface Props {
     videoId: string;
@@ -36,15 +33,17 @@ interface Props {
     dataChannel: RTCDataChannel | undefined;
 }
 
-const fanFareSoundUrl = '/sounds/Fanfare.mp3';
-const shuffleSoundUrl = '/sounds/shuffle.mp3';
+const fanFareSoundUrl = "/sounds/Fanfare.mp3";
+const shuffleSoundUrl = "/sounds/shuffle.mp3";
 let isStart = true;
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     // segmentState for item use
     const [mySegmentState, setMySegmentState] = useState({ type: "item", segementState: "default" });
     // using after store value changed, for restoring purpose
-    const makeMyDefaultSegment = () => { setMySegmentState({ type: "item", segementState: "default" }); };
+    const makeMyDefaultSegment = () => {
+        setMySegmentState({ type: "item", segementState: "default" });
+    };
     const dispatch = useDispatch();
 
     const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
@@ -54,11 +53,10 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     if (isStart) {
         shuffleSoundPlay();
-        setTimeout(() => isStart = false, 1000);
+        setTimeout(() => (isStart = false), 1000);
     }
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
-
 
     const [myWait, setMyWait] = useRecoilState(myWaitState);
 
@@ -74,12 +72,31 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 dispatch({ type: "puzzleComplete/init_mine" });
                             }
                             switch (dataJSON.segementState) {
-                                case "rocket": setTimeout(() => { makeMyDefaultSegment(); }, 9000); break;
-                                case "ice": setTimeout(() => { makeMyDefaultSegment(); }, 15000); break;
-                                case "magnet": setTimeout(() => { makeMyDefaultSegment(); }, 7000); break;
-                                case "lip": setTimeout(() => { makeMyDefaultSegment(); }, 10000); break;
-                                case "twirl": setTimeout(() => { makeMyDefaultSegment(); }, 10000); break;
-
+                                case "rocket":
+                                    setTimeout(() => {
+                                        makeMyDefaultSegment();
+                                    }, 9000);
+                                    break;
+                                case "ice":
+                                    setTimeout(() => {
+                                        makeMyDefaultSegment();
+                                    }, 15000);
+                                    break;
+                                case "magnet":
+                                    setTimeout(() => {
+                                        makeMyDefaultSegment();
+                                    }, 7000);
+                                    break;
+                                case "lip":
+                                    setTimeout(() => {
+                                        makeMyDefaultSegment();
+                                    }, 10000);
+                                    break;
+                                case "twirl":
+                                    setTimeout(() => {
+                                        makeMyDefaultSegment();
+                                    }, 10000);
+                                    break;
                             }
                     }
                 }
@@ -105,9 +122,11 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         }
     }, [puzzleCompleteCounter.mine]);
 
-    if (mySegmentState.segementState === 'lip' || mySegmentState.segementState === 'twirl') {
+    if (mySegmentState.segementState === "lip" || mySegmentState.segementState === "twirl") {
         startItem();
-        setTimeout(() => { stopItem(); }, 10000);
+        setTimeout(() => {
+            stopItem();
+        }, 10000);
     }
 
     return (
@@ -141,6 +160,5 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         </>
     );
 }
-
 
 export default memo(MyPuzzle);

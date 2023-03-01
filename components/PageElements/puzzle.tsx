@@ -32,24 +32,26 @@ export default function PuzzleScreen() {
     const movingRef = useRef<HTMLDivElement>(null);
     const [divX, setDivX] = useState(0); //퍼즐의 절대위치 X
     const [divY, setDivY] = useState(0); //퍼즐의 절대위치 y
-    const [puzzleHoleX, setHoleX] = useState(1); //퍼즐 구멍의 화면 절대위치 X
-    const [puzzleHoleY, setHoleY] = useState(1); //퍼즐 구멍의 화면 절대위치 Y
-    const puzzleWidth = 300 / 1440 * innerWidth;
-    const puzzleHeight = 350 / 781 * innerHeight;
+    const [puzzleHoleX,setHoleX] = useState(1); //퍼즐 구멍의 화면 절대위치 X
+    const [puzzleHoleY,setHoleY] = useState(1); //퍼즐 구멍의 화면 절대위치 Y
+    const puzzleWidth = 230/1440*innerWidth;
+    const puzzleHeight = 255/781*innerHeight;
 
 
     function findPosition() {
         if (!movingRef.current) return;
         setDivX(movingRef.current!.getBoundingClientRect().x);
         setDivY(movingRef.current!.getBoundingClientRect().y);
-        setHoleX(innerWidth * (1250 / 1440));
-        setHoleY(innerHeight * (640 / 780));
+        setHoleX(innerWidth*(1250/1440));
+        setHoleY(innerHeight*(640/780));
+        console.log("innerWidth", innerWidth, "innerHeight", innerHeight);
+        console.log("puzzleW", puzzleWidth, "puzzleH", puzzleHeight);
     }
 
 
 
-    function draw() {
-        ctx!.drawImage(puzzleImage, 0, 0, 230 / 300 * puzzleWidth, 255 / 350 * puzzleHeight);
+    function draw(){
+        ctx!.drawImage(puzzleImage,0,0, puzzleWidth, puzzleHeight);
         setTimeout(() => {
             draw()
         }, 40);
@@ -86,22 +88,22 @@ export default function PuzzleScreen() {
             y: 0,
             config: { mass: 5, tension: 350, friction: 50 },
         })
-    )
-
-
-    const bind = useDrag(
-        (params) => {
-            if (!params.down) {
-                console.log(x.get(), y.get());
+        )
+    
+    
+        const bind = useDrag(
+            (params) => {
+                if(!params.down) {
+                    console.log(x.get(), y.get());
+                }
+                if(!params.down && isPuzzleMatched(x.get(), y.get(), puzzleHoleX, puzzleHoleY, divX, divY)) {
+                    router.push({
+                        pathname: '/ready',
+                    })
+                    console.log('성공')
+                }
             }
-            if (!params.down && isPuzzleMatched(x.get(), y.get(), puzzleHoleX, puzzleHoleY, divX, divY)) {
-                router.push({
-                    pathname: '/ready',
-                })
-                console.log('성공')
-            }
-        }
-    );
+        );
 
     useGesture(
         {

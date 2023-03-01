@@ -12,28 +12,28 @@ const SKILLS = [
     image: "/images/rocket.png",
     GIF: "/images/rocket_gif.gif",
     VIDEO: "/videos/rocket_video.mp4",
-    description: "9초동안 상대방 퍼즐이 귀여운 강아지가 탄 로켓으로 변합니다. 상대방이 퍼즐을 맞추지 못하도록 우주 멀리 날려보내세요.",
+    description: "9초 동안 상대방 퍼즐이 귀여운 강아지가 탄 로켓으로 변합니다. 상대방이 퍼즐을 맞추지 못하도록 우주 멀리 날려 보내세요.",
   },
   {
     name: "확 다 얼려부려ㅎ",
     image: "/images/iceIcon.png",
     GIF: "/images/ice_gif.gif",
     VIDEO: "/videos/ice_video.mp4",
-    description: "15초동안 상대방 퍼즐이 움직이지 못하도록 얼려버립니다. 잠깐! 얼어붙은 카드는 상대방이 열심히 클릭하여 녹일 수 있습니다.",
+    description: "15초 동안 상대방 퍼즐이 움직이지 못하도록 얼려버립니다. 잠깐! 얼어붙은 카드는 상대방이 열심히 클릭하여 녹일 수 있습니다.",
   },
   {
     name: "ㅋㅋ블랙홀이요~",
     image: "/images/magnet.png",
     GIF: "/images/magnet_gif.gif",
     VIDEO: "/videos/magnet_video.mp4",
-    description: "응 블랙홀~ 7초동안 상대방 마우스 포인터가 블랙홀로 변합니다. 상대방이 기껏 정성스레 맞춰놓은 퍼즐까지 모두 다 빨아드립니다..",
+    description: "응 블랙홀~ 7초 동안 상대방 마우스 포인터가 블랙홀로 변합니다. 상대방이 기껏 정성스레 맞춰놓은 퍼즐까지 모두 다 빨아드립니다..",
   },
   {
     name: "입술 쪽",
     image: "/images/lip.png",
     GIF: "/images/lip_gif.gif",
     VIDEO: "/videos/lip_video.mp4",
-    description: "10초동안 상대방 퍼즐이 내 입술로 변합니다. 매혹적인 입술로 상대방을 당황시키세요~ >3<",
+    description: "10초 동안 상대방 퍼즐이 내 입술로 변합니다. 매혹적인 입술로 상대방을 당황시키세요! >3<",
   },
 ];
 

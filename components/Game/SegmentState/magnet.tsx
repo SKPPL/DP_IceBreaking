@@ -98,7 +98,7 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
     }, []);
     useEffect(() => {
         return () => {
-            auth ? setMyWait(false) : setPeerWait(false);
+            auth ? setMyWait((prev) => prev - 1) : setPeerWait((prev) => prev - 1);
         };
     }, []);
     return (

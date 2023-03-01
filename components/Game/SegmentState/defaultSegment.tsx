@@ -4,16 +4,24 @@ import { useDrag, useGesture } from "@use-gesture/react";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import styles from "../styles.module.css";
 import CloneVideo from "../CloneVideo";
-import useSound from 'use-sound';
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { myFaceLandMarkState, myLipState, myTwirlState, myWaitState, peerFaceLandMarkState, peerLipState, peerTwirlState, peerWaitState } from "../atom";
+import useSound from "use-sound";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+    myFaceLandMarkState,
+    myLipState,
+    myTwirlState,
+    myWaitState,
+    peerFaceLandMarkState,
+    peerLipState,
+    peerTwirlState,
+    peerWaitState,
+} from "../atom";
 import LipVideo from "../../FaceDetection/LipVideo";
 import TwirlVideo from "@/components/FaceDetection/TwirlVideo";
 
-
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
-const puzzleSoundUrl = '/sounds/puzzleHit.mp3';
+const puzzleSoundUrl = "/sounds/puzzleHit.mp3";
 
 interface Props {
     i: number;
@@ -26,7 +34,6 @@ interface Props {
 }
 
 function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard }: Props) {
-
     //퍼즐 데이터 스토어와 연결 react-redux
     const dispatch = useDispatch();
     const storedPosition = useSelector((state: any) => {
@@ -71,7 +78,6 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
         };
     });
 
-
     useEffect(() => {
         if (peerxy !== undefined) {
             dispatch({ type: `${peerxy ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [peerxy.peerx, peerxy.peery] } });
@@ -113,7 +119,10 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     }
                 }
                 positionDataSend();
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
+                dispatch({
+                    type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                    payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
+                });
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;
@@ -126,7 +135,12 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
         },
         {
             target,
-            bounds: { top: 0 - storedPosition[i][1], bottom: heightOx * 4 - storedPosition[i][1], left: -widthOx * 2 - storedPosition[i][0], right: widthOx * 1 - storedPosition[i][0] },
+            bounds: {
+                top: 0 - storedPosition[i][1],
+                bottom: heightOx * 4 - storedPosition[i][1],
+                left: -widthOx * 2 - storedPosition[i][0],
+                right: widthOx * 1 - storedPosition[i][0],
+            },
             rubberband: 0.8,
             delay: true,
             pointer: { capture: true },
@@ -167,18 +181,17 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
             // unmount될 떄, 즉 아이템을 써서 segmentState가 변할 때 좌표를 저장함에 있어 오차가 없도록 하기 위해 isRightPlace가 true인 경우와 아닌 경우로 나눠서 저장함
             if (isRightPlace) {
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
-            }
-            else {
+            } else {
                 //isRightPlace가 false인 경우, 마지막으로 저장된 좌표를 저장함, 이는 부정확해도 되므로 아래 animated.div에서 memo를 매번 저장하지 않도록 함. 8번에 한 번씩만 저장함
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
             }
-            auth ? setMyWait(true) : setPeerWait(true);
+
+            auth ? setMyWait((prev) => prev + 1) : setPeerWait((prev) => prev + 1);
         };
     }, []);
 
     useEffect(() => {
-        if (isRightCard)
-            setZindex(0);
+        if (isRightCard) setZindex(0);
     }, [isRightCard]);
 
 
@@ -232,6 +245,5 @@ export function isSameOutline(x: number, y: number, positionx: number, positiony
         return true;
     } else return false;
 }
-
 
 export default memo(DefaultSegment);

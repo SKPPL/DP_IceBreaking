@@ -92,7 +92,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
     useEffect(() => {
         return () => {
             dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
-            auth ? setMyWait(false) : setPeerWait(false);
+            auth ? setMyWait((prev) => prev - 1) : setPeerWait((prev) => prev - 1);
         };
     }, []);
     return (
