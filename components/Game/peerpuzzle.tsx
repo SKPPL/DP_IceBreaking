@@ -73,7 +73,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
             case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가
               dispatch({ type: `puzzleComplete/plus_peer` });
               i = dataJSON.i
-              { dataJSON.isRightPlace ? isRightPlace[i] = true : "" }
+              { dataJSON.isRightPlace ? isRightPlace[i] = true : false }
               break;
           }
         }
@@ -143,14 +143,16 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         return (
           <>
             <div className={styles.c1} key={`peerpuzzle_${i}`}>
-              {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
+              {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />}
               {(peerPosition.i !== i) &&
-                <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />
+                <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />
               }
             </div>
           </>
         );
       })}
+
+      {/* 상대가 카드를 맞췄을 때 나오는 효과 */}
       <div className="absolute grid grid-cols-3 w-[640px] h-[480px] mt-[160px]">
         <div className={isRightPlace[0] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
         <div className={isRightPlace[1] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>

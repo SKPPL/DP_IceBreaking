@@ -17,13 +17,14 @@ interface Props {
   peerxy: { peerx: number; peery: number } | undefined;
   dataChannel: RTCDataChannel | undefined;
   segmentState: string;
+  isRightCard: boolean;
 }
-function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
+function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard }: Props) {
   const myWait = useRecoilValue(myWaitState)
   const peerWait = useRecoilValue(peerWaitState)
   return (
     <>
-      {(auth ? (myWait === false) : (peerWait === false)) && (segmentState === "default" || segmentState === "lip" || segmentState === "twirl") && <DefaultSegment key={`default_${i}`} i={i} auth={auth} peerxy={peerxy} dataChannel={dataChannel} videoId={videoId} segmentState={segmentState} />}
+      {(auth ? (myWait === false) : (peerWait === false)) && (segmentState === "default" || segmentState === "lip" || segmentState === "twirl") && <DefaultSegment key={`default_${i}`} i={i} auth={auth} peerxy={peerxy} dataChannel={dataChannel} videoId={videoId} segmentState={segmentState} isRightCard={isRightCard} />}
       {(auth ? (myWait === true) : (peerWait === true)) && segmentState === "rocket" && <Rocket key={`rocket_${i}`} i={i} auth={auth} peerxy={undefined} dataChannel={dataChannel} />}
       {(auth ? (myWait === true) : (peerWait === true)) && segmentState === "ice" && <Ice key={`ice_${i}`} i={i} auth={auth} segmentState={segmentState} videoId={videoId} peerxy={peerxy} dataChannel={dataChannel} />}
       {(auth ? (myWait === true) : (peerWait === true)) && segmentState === "magnet" && <Magnet key={`magnet_${i}`} i={i} auth={auth} peerxy={undefined} dataChannel={dataChannel} videoId={videoId} segmentState={segmentState} />}

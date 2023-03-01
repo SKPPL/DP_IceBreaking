@@ -22,9 +22,10 @@ interface Props {
     peerxy: { peerx: number; peery: number } | undefined;
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
+    isRightCard: boolean;
 }
 
-function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
+function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard }: Props) {
 
     //퍼즐 데이터 스토어와 연결 react-redux
     const dispatch = useDispatch();
@@ -174,6 +175,11 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState }:
             auth ? setMyWait(true) : setPeerWait(true);
         }
     }, []);
+
+    useEffect(() => {
+        if (isRightCard) 
+            setZindex(0);
+    }, [isRightCard])
 
 
 
