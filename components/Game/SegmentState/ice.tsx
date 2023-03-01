@@ -60,6 +60,9 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     const storedPosition = useSelector((state: any) => {
         return auth ? state.myPuzzle : state.peerPuzzle;
     });
+    const isRight = useSelector((state: any) => {
+        return state.defaultSegmentRightPlace[i];
+    })
     const [isRightPlace, setIsRightPlace] = useState(false);
 
     const [zindex, setZindex] = useState(Math.floor(Math.random() * 10));
@@ -119,6 +122,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
             if (!auth) return;
             if (iceCount !== 0) return;
             if (isSameOutline(x.get(), y.get(), width, height)) return;
+            if (isRight) return;
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
             // !params.down : 마우스를 떼는 순간
@@ -132,18 +136,23 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                     puzzleSoundPlay();
                     if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
                     dispatch({ type: "puzzleComplete/plus_mine" });
+                    dispatch({ type: `defaultSegmentRightPlace/setRight`, payload: { index: i, isRight: true}});
                     setZindex(0);
-                    dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
+                    dispatch({
+                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        payload: { index: i, position: [width, height] },
+                    });
                     if (dataChannel?.readyState === "open") {
                         dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
                         return;
                     }
+                }else{
+                    dispatch({
+                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
+                    });
                 }
                 positionDataSend();
-                dispatch({
-                    type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
-                    payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
-                });
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;
