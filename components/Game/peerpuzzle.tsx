@@ -9,7 +9,7 @@ import Rocket from "./SegmentState/rocket";
 import { useRouter } from "next/router";
 import ModalPeer from "../PageElements/ItemAlertPeer/ModalPeer";
 import Bar from "@/components/PageElements/ProgressBar/Bar";
-import useSound from 'use-sound'
+import useSound from 'use-sound';
 import PeerIceFlakeParticles from "../PageElements/Particles/peericeFlakeParticles";
 import PeerBlackhallParticles from "../PageElements/Particles/peerblackhallParticles";
 import FaceLandMarkMy, { startItem, stopItem } from "../FaceDetection/FaceLandMarkMy";
@@ -72,8 +72,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
               break;
             case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가
               dispatch({ type: `puzzleComplete/plus_peer` });
-              i = dataJSON.i
-              { dataJSON.isRightPlace ? isRightPlace[i] = true : false }
+              i = dataJSON.i;
+              { dataJSON.isRightPlace ? isRightPlace[i] = true : false; }
               break;
           }
         }
@@ -98,7 +98,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
           .then(() => router.reload());
       }, 15000);
     }
-  }, [puzzleCompleteCounter.peer])
+  }, [puzzleCompleteCounter.peer]);
 
   //item 사용을 위한 코드
   const itemList = useSelector((state: any) => {
@@ -121,11 +121,11 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
           dispatch({ type: `puzzleComplete/init_peer` });
         }
         switch (keys[cnt]) {
-          case "rocket": setTimeout(() => { makePeerDefaultSegment() }, 9000); break;
-          case "ice": setTimeout(() => { makePeerDefaultSegment() }, 15000); break;
-          case "magnet": setTimeout(() => { makePeerDefaultSegment() }, 7000); break;
-          case "lip": setTimeout(() => { makePeerDefaultSegment() }, 10000); break;
-          case "twirl": setTimeout(() => { makePeerDefaultSegment() }, 10000); break;
+          case "rocket": setTimeout(() => { makePeerDefaultSegment(); }, 9000); break;
+          case "ice": setTimeout(() => { makePeerDefaultSegment(); }, 15000); break;
+          case "magnet": setTimeout(() => { makePeerDefaultSegment(); }, 7000); break;
+          case "lip": setTimeout(() => { makePeerDefaultSegment(); }, 10000); break;
+          case "twirl": setTimeout(() => { makePeerDefaultSegment(); }, 10000); break;
 
         }
       }
@@ -134,7 +134,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   if (peerSegmentState.segementState === 'lip' || peerSegmentState.segementState === 'twirl') {
     startItem();
-    setTimeout(() => { stopItem() }, 10000);
+    setTimeout(() => { stopItem(); }, 10000);
   }
 
   return (
