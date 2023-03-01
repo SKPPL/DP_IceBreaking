@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import { isMacOs, isChrome } from 'react-device-detect';
 interface segmentData {
     auth: boolean;
     id: number;
@@ -6,43 +7,41 @@ interface segmentData {
     segmentState: string | undefined;
 }
 export default function CloneVideo({ id, auth, videoId, segmentState }: segmentData) {
-    var cloneRef = useRef<HTMLCanvasElement>(null);
-    var requestID = useRef<number>(0);
+    const cloneRef = useRef<HTMLCanvasElement>(null);
+    const requestID = useRef<number>(0);
     var ctx: CanvasRenderingContext2D | null = null;
-    var unmountCheck = false;
+
     useEffect(() => {
-        unmountCheck = false;
-        if (!cloneRef.current) return
-        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
-        return () => {
-            unmountCheck = true;
+        if (!cloneRef.current) return;
+        if (isMacOs && isChrome) {
+            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
         }
-    }, [cloneRef])
+        else {
+            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
+        }
+        return () => {
+            cancelAnimationFrame(requestID.current);
+        };
+    }, [cloneRef]);
 
     const video = document.getElementById(videoId) as HTMLVideoElement;
 
-
     const draw = useCallback(() => {
-        if (!unmountCheck) {
-            ctx!.drawImage(video, 640 / 3 * (id % 3), 160 * ((id - id % 3) / 3), 640 / 3, 160, 0, 0, 213, 160);
-            requestAnimationFrame(draw);
-        } else {
-            cancelAnimationFrame(requestID.current);
-        }
-
+        ctx!.drawImage(video, 213 * (id % 3), 160 * ((id - id % 3) / 3), 213, 160, 0, 0, 213, 160);
+        requestID.current = requestAnimationFrame(draw);
     }, [video]);
 
     useEffect(() => {
         if (!video) return;
         if (!ctx) return;
         requestID.current = requestAnimationFrame(draw);
-    }, [video])
+    }, [video]);
 
 
     return (
         <>
             <canvas id={`${auth ? 'my' : 'peer'}_${id}`} width="213" height="160" ref={cloneRef} ></canvas>
         </>
-    )
+    );
 
 }

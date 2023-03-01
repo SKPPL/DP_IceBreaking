@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, memo, useCallback } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import styles from "../styles.module.css";
-import useSound from "use-sound"
+import useSound from "use-sound";
 import { useSetRecoilState } from "recoil";
 import { myWaitState, peerWaitState } from "../atom";
 import IcedVideo from "../IcedVideo";
@@ -10,28 +10,24 @@ import { useDrag, useGesture } from "@use-gesture/react";
 import CloneVideo from "../CloneVideo";
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
-const puzzleSoundUrl = '/sounds/puzzleHit.mp3'
+const puzzleSoundUrl = "/sounds/puzzleHit.mp3";
 
 interface Props {
     i: number;
     videoId: string;
     auth: boolean;
-    peerxy: { peerx: number; peery: number } | undefined;
+    peerxy: { peerx: number; peery: number; } | undefined;
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
 }
 
-
 function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
-
     //TODO ice 버그 수정하기
 
-    const iceCrackSoundUrl = '/sounds/can.wav'
-
-
+    const iceCrackSoundUrl = "/sounds/can.wav";
 
     const [iceCount, setIceCount] = useState(2);
-    const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, { playbackRate: 1 })
+    const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, { playbackRate: 1 });
 
     function breakTheIce() {
         if (!auth) return;
@@ -71,8 +67,8 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
     const d = 1;
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
-    const [widthOx, heightOx] = [(640 / 3) * d, (480 / 3) * d];
-    const [width, height] = [(640 / 3) * (i % 3) - widthOx * 1.5, (480 / 3) * ((i - (i % 3)) / 3) + heightOx];
+    const [widthOx, heightOx] = [213 * d, 160 * d];
+    const [width, height] = [213 * (i % 3) - widthOx * 1.5, 160 * ((i - (i % 3)) / 3) + heightOx];
     const [puzzleSoundPlay] = useSound(puzzleSoundUrl);
 
     // TODO : 옆으로 init 시 api.start 이동
@@ -86,7 +82,6 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
             document.removeEventListener("gesturechange", preventDefault);
         };
     }, []);
-
 
     const target = useRef<HTMLDivElement>(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => {
@@ -115,7 +110,8 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
         }
     }, [dataChannel]);
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    let dataTransferCount = 0; // 좌표 데이터 10번 중 한 번 보내기 위한 변수
+    let isDataIn:boolean = false;
+    let isRigthPlaceForSetTimeout = isRightPlace;
 
     useDrag(
         (params) => {
@@ -130,6 +126,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                 //알맞은 위치에 놓았을 때
                 if (!isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
                     target.current!.setAttribute("style", "z-index: 0");
+                    isRigthPlaceForSetTimeout = true;
                     api.start({ x: width, y: height });
                     setIsRightPlace(true);
                     puzzleSoundPlay();
@@ -143,30 +140,41 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                     }
                 }
                 positionDataSend();
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] } });
+                dispatch({
+                    type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                    payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
+                });
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;
-            } else if (dataTransferCount % 4 === 0) {
-                // 알맞은 위치에 놓지 않더라도, 아무튼 좌표 보냄
-                positionDataSend();
             }
-            dataTransferCount++;
+
+            if(!isDataIn){
+                isDataIn = true;
+                setTimeout(function noName(){
+                    if (isRigthPlaceForSetTimeout) return;
+                    positionDataSend();
+                    isDataIn = false;
+                }, 16);
+            }
         },
         {
             target,
-            bounds: { top: 0 - storedPosition[i][1], bottom: heightOx * 4 - storedPosition[i][1], left: -widthOx * 2 - storedPosition[i][0], right: widthOx * 1 - storedPosition[i][0] },
+            bounds: {
+                top: 0 - storedPosition[i][1],
+                bottom: heightOx * 4 - storedPosition[i][1],
+                left: -widthOx * 2 - storedPosition[i][0],
+                right: widthOx * 1 - storedPosition[i][0],
+            },
             rubberband: 0.8,
         }
     );
-
 
     useGesture(
         {
             onDrag: ({ active }) => {
                 if (isRightPlace) return;
                 api.start({ rotateX: 0, rotateY: 0, scale: active ? 1 : 1.05 });
-
             },
             onMove: ({ xy: [px, py], dragging }) => {
                 !dragging &&
@@ -177,26 +185,23 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                     });
             },
             onHover: ({ hovering }) => !hovering && api.start({ rotateX: 0, rotateY: 0, scale: 1 }),
-
         },
         { target, eventOptions: { passive: false } }
     );
 
-
-    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] })
-    const setMyWait = useSetRecoilState(myWaitState)
-    const setPeerWait = useSetRecoilState(peerWaitState)
+    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
+    const setMyWait = useSetRecoilState(myWaitState);
+    const setPeerWait = useSetRecoilState(peerWaitState);
     useEffect(() => {
         return () => {
             if (isRightPlace) {
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
-            }
-            else {
+            } else {
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
             }
-            auth ? setMyWait(false) : setPeerWait(false);
+            auth ? setMyWait((prev) => prev - 1) : setPeerWait((prev) => prev - 1);
         };
-    }, [])
+    }, []);
     return (
         <>
             <div className="">
@@ -211,7 +216,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                             scale: to([scale, zoom], (s, z) => {
                                 memo.current.x = x.get();
                                 memo.current.y = y.get();
-                                return s + z
+                                return s + z;
                             }),
                             rotateX,
                             rotateY,
@@ -220,7 +225,11 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                         }}
                     >
                         <animated.div>
-                            {(iceCount <= 0) ? <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} /> : <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                            {iceCount <= 0 ? (
+                                <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                            ) : (
+                                <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                            )}
                         </animated.div>
                     </animated.div>
                 </div>
@@ -242,6 +251,5 @@ export function isSameOutline(x: number, y: number, positionx: number, positiony
         return true;
     } else return false;
 }
-
 
 export default memo(Ice);

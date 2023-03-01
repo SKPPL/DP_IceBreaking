@@ -9,7 +9,7 @@ import Rocket from "./SegmentState/rocket";
 import { useRouter } from "next/router";
 import ModalPeer from "../PageElements/ItemAlertPeer/ModalPeer";
 import Bar from "@/components/PageElements/ProgressBar/Bar";
-import useSound from 'use-sound'
+import useSound from 'use-sound';
 import PeerIceFlakeParticles from "../PageElements/Particles/peericeFlakeParticles";
 import PeerBlackhallParticles from "../PageElements/Particles/peerblackhallParticles";
 import FaceLandMarkMy, { startItem, stopItem } from "../FaceDetection/FaceLandMarkMy";
@@ -72,14 +72,16 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
               break;
             case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가
               dispatch({ type: `puzzleComplete/plus_peer` });
-              i = dataJSON.i
-              { dataJSON.isRightPlace ? isRightPlace[i] = true : "" }
+              i = dataJSON.i;
+              { dataJSON.isRightPlace ? isRightPlace[i] = true : false; }
               break;
           }
         }
       });
     }
   }, []);
+
+  
 
   //useSelector는 state가 변경되었다면 functional component가 render한 이후에 실행됩니다.
   useEffect(() => {
@@ -98,7 +100,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
           .then(() => router.reload());
       }, 15000);
     }
-  }, [puzzleCompleteCounter.peer])
+  }, [puzzleCompleteCounter.peer]);
 
   //item 사용을 위한 코드
   const itemList = useSelector((state: any) => {
@@ -119,13 +121,14 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         setPeerSegmentState({ type: "item", segementState: keys[cnt] });
         if (keys[cnt] === "rocket" || keys[cnt] === "magnet") {
           dispatch({ type: `puzzleComplete/init_peer` });
+          isRightPlace = [false, false, false, false, false, false, false, false, false];
         }
         switch (keys[cnt]) {
-          case "rocket": setTimeout(() => { makePeerDefaultSegment() }, 9000); break;
-          case "ice": setTimeout(() => { makePeerDefaultSegment() }, 15000); break;
-          case "magnet": setTimeout(() => { makePeerDefaultSegment() }, 7000); break;
-          case "lip": setTimeout(() => { makePeerDefaultSegment() }, 10000); break;
-          case "twirl": setTimeout(() => { makePeerDefaultSegment() }, 10000); break;
+          case "rocket": setTimeout(() => { makePeerDefaultSegment(); }, 9000); break;
+          case "ice": setTimeout(() => { makePeerDefaultSegment(); }, 15000); break;
+          case "magnet": setTimeout(() => { makePeerDefaultSegment(); }, 7000); break;
+          case "lip": setTimeout(() => { makePeerDefaultSegment(); }, 10000); break;
+          case "twirl": setTimeout(() => { makePeerDefaultSegment(); }, 10000); break;
 
         }
       }
@@ -134,7 +137,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   if (peerSegmentState.segementState === 'lip' || peerSegmentState.segementState === 'twirl') {
     startItem();
-    setTimeout(() => { stopItem() }, 10000);
+    setTimeout(() => { stopItem(); }, 10000);
   }
 
   return (
@@ -142,15 +145,17 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       {[...Array(9)].map((_, i) => {
         return (
           <>
-            <div className={styles.c1} key={`peerpuzzle_${i}`}>
-              {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />}
+            <div className={`${styles[`c${i}`]}`} key={`peerpuzzle_${i}`}>
+              {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />}
               {(peerPosition.i !== i) &&
-                <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} />
+                <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />
               }
-            </div>
+              </div>
           </>
         );
       })}
+
+      {/* 상대가 카드를 맞췄을 때 나오는 효과 */}
       <div className="absolute grid grid-cols-3 w-[640px] h-[480px] mt-[160px]">
         <div className={isRightPlace[0] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
         <div className={isRightPlace[1] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>

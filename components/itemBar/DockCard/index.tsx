@@ -1,51 +1,51 @@
-import * as React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import * as React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { animated, useIsomorphicLayoutEffect, useSpringValue } from '@react-spring/web'
+import { animated, useIsomorphicLayoutEffect, useSpringValue } from '@react-spring/web';
 
-import { useMousePosition } from '../hooks/useMousePosition'
-import { useWindowResize } from '../hooks/useWindowResize'
+import { useMousePosition } from '../hooks/useMousePosition';
+import { useWindowResize } from '../hooks/useWindowResize';
 
-import { useDock } from '../Dock/DockContext'
+import { useDock } from '../Dock/DockContext';
 
-import styles from './styles.module.scss'
-import { useRecoilValue } from 'recoil'
-import { dataChannelState, peerWaitState } from "../../Game/atom";
+import styles from './styles.module.scss';
+import { useRecoilValue } from 'recoil';
+import { dataChannelState, peerLipState, peerTwirlState, peerWaitState } from "../../Game/atom";
 
 interface DockCardProps {
-  children: React.ReactNode
-  item: number
+  children: React.ReactNode;
+  item: number;
 }
 
-const INITIAL_WIDTH = 48
+const INITIAL_WIDTH = 48;
 
-const itemList = ['rocket', 'ice', 'lip', 'twirl', 'magnet']
+const itemList = ['rocket', 'ice', 'lip', 'twirl', 'magnet'];
 
 export const DockCard = ({ children, item }: DockCardProps) => {
   const dispatch = useDispatch();
-  const cardRef = React.useRef<HTMLButtonElement>(null!)
+  const cardRef = React.useRef<HTMLButtonElement>(null!);
   /**
    * This doesn't need to be real time, think of it as a static
    * value of where the card should go to at the end.
    */
-  const [elCenterX, setElCenterX] = React.useState<number>(0)
+  const [elCenterX, setElCenterX] = React.useState<number>(0);
 
   const size = useSpringValue(INITIAL_WIDTH, {
     config: {
       mass: 0.1,
       tension: 320,
     },
-  })
+  });
 
-  const opacity = useSpringValue(0)
+  const opacity = useSpringValue(0);
   const y = useSpringValue(0, {
     config: {
       friction: 30,
       tension: 350,
     },
-  })
+  });
 
-  const dock = useDock()
+  const dock = useDock();
 
   /**
    * This is just an abstraction around a `useSpring` hook, if you wanted you could do this
@@ -54,61 +54,64 @@ export const DockCard = ({ children, item }: DockCardProps) => {
   useMousePosition(
     {
       onChange: ({ value }) => {
-        const mouseX = value.x
+        const mouseX = value.x;
 
         if (dock.width > 0) {
           const transformedValue =
-            INITIAL_WIDTH + 36 * Math.cos((((mouseX - elCenterX) / dock.width) * Math.PI) / 2) ** 12
+            INITIAL_WIDTH + 36 * Math.cos((((mouseX - elCenterX) / dock.width) * Math.PI) / 2) ** 12;
 
           if (dock.hovered) {
-            size.start(transformedValue)
+            size.start(transformedValue);
           }
         }
       },
     },
     [elCenterX, dock]
-  )
+  );
 
   useIsomorphicLayoutEffect(() => {
     if (!dock.hovered) {
-      size.start(INITIAL_WIDTH)
+      size.start(INITIAL_WIDTH);
     }
-  }, [dock.hovered])
+  }, [dock.hovered]);
 
   useWindowResize(() => {
-    const { x } = cardRef.current.getBoundingClientRect()
+    const { x } = cardRef.current.getBoundingClientRect();
 
-    setElCenterX(x + INITIAL_WIDTH / 2)
-  })
+    setElCenterX(x + INITIAL_WIDTH / 2);
+  });
 
-  const timesLooped = React.useRef(0)
-  const timeoutRef = React.useRef<number>()
-  const wasUsed = React.useRef(false)
+  const timesLooped = React.useRef(0);
+  const timeoutRef = React.useRef<number>();
+  const wasUsed = React.useRef(false);
 
-  const peerWait = useRecoilValue(peerWaitState)
+  const peerWait = useRecoilValue(peerWaitState);
   const dataChannel = useRecoilValue(dataChannelState);
+  const peerLipWait = useRecoilValue(peerLipState);
+  const peerTwirlWait = useRecoilValue(peerTwirlState);
+  const itemWait = peerLipWait || peerTwirlWait;
 
   const handleClick = () => {
     // peer에 쓴 아이템이 진행중일 때는 눌러도 아무일도 일어나지 않음
-    if (peerWait === true || dataChannel === false) return;
+    if (peerWait === 9 || itemWait === true || dataChannel === false) return;
     dispatch({ type: `item/${itemList[item]}` });
     if (!wasUsed.current) {
-      wasUsed.current = true
+      wasUsed.current = true;
 
-      opacity.start(0.5)
-      timesLooped.current = 0
+      opacity.start(0.5);
+      timesLooped.current = 0;
 
       y.start(-INITIAL_WIDTH / 2, {
         loop: () => {
           if (1 === timesLooped.current++) {
-            opacity.start(0)
+            opacity.start(0);
             // y.set(0)
-            timeoutRef.current = undefined
-            y.set(0)
+            timeoutRef.current = undefined;
+            y.set(0);
           }
-          return { reverse: false }
+          return { reverse: false };
         },
-      })
+      });
     }
     // else {
     //   /**
@@ -120,9 +123,9 @@ export const DockCard = ({ children, item }: DockCardProps) => {
     //   y.start(0)
     //   isAnimating.current = false
     // }
-  }
+  };
 
-  React.useEffect(() => () => clearTimeout(timeoutRef.current), [])
+  React.useEffect(() => () => clearTimeout(timeoutRef.current), []);
 
   return (
     <div className={styles['dock-card-container']}>
@@ -139,5 +142,5 @@ export const DockCard = ({ children, item }: DockCardProps) => {
       </animated.button>
       <animated.div className={styles['dock-dot']} style={{ opacity }} />
     </div>
-  )
-}
+  );
+};

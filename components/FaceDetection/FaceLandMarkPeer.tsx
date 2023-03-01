@@ -10,17 +10,11 @@ import { annotateFeatures, scaler, setupModel } from "./predictionPeer";
 const WIDTH = 640;
 const HEIGHT = 480;
 
-let total: number[] | undefined;
 let guestLip: number[] | undefined;
-let guestFace: number[] | undefined;
 
 export function getGuestLip() {
   return guestLip;
 }
-
-// export function getGuestFace() {
-//   return guestFace;
-// }
 
 export function startItem() {
   doRun = true;
@@ -49,9 +43,7 @@ const predict = async (model: MediaPipeFaceMesh) => {
         predictIrises: false,
       });
       if (predictions.length > 0) {
-        total = annotateFeatures(predictions, scaler([WIDTH / video.videoWidth, WIDTH / video.videoWidth, 1]));
-        guestLip = [total![0], total![1], total![2]];
-        // guestFace = [total![3], total![4], ((total![5] - total![3]) ** 2 + (total![6] - total![4]) ** 2) ** (1 / 2)];
+        guestLip = annotateFeatures(predictions, scaler([WIDTH / video.videoWidth, HEIGHT / video.videoHeight, 1]));
       }
     }
     cancelAnimationFrame(rafId);
@@ -69,7 +61,7 @@ export default function FaceLandMark() {
 
     setupModel().then((model) => {
       predictModel = model;
-
+      console.log('peermodel is ready', predictModel);
     });
 
     return () => {
@@ -79,17 +71,17 @@ export default function FaceLandMark() {
     };
   }, [videoElementUse]);
 
-  const faceLandMarkReady = useSetRecoilState(peerFaceLandMarkState)
-  const isMounted = useIsMounted()
+  const faceLandMarkReady = useSetRecoilState(peerFaceLandMarkState);
+  const isMounted = useIsMounted();
   useEffect(() => {
     if (isMounted()) {
-      faceLandMarkReady(true)
+      faceLandMarkReady(true);
     }
-  }, [isMounted])
+  }, [isMounted]);
 
   return (
     <>
     </>
-  )
+  );
 
 }
