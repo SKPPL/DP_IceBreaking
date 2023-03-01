@@ -142,7 +142,7 @@ const SocketHandler = (_: any, res: NextApiResponseServerIO): any => {
       }
 
       joinedRooms.forEach((room) => {
-        socket.to(room).emit("leave");
+        socket.broadcast.to(room).emit("leave");
       });
     });
   });
