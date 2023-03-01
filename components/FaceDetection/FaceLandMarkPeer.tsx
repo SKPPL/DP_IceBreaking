@@ -16,12 +16,12 @@ export function getGuestLip() {
   return guestLip;
 }
 
-export function startItem(){
+export function startItem() {
   doRun = true;
   predict(predictModel);
 }
 
-export function stopItem(){
+export function stopItem() {
   doRun = false;
 }
 
@@ -29,7 +29,7 @@ let predictModel: MediaPipeFaceMesh;
 
 let rafId: number;
 
-let doRun:boolean = false;
+let doRun: boolean = false;
 
 const predict = async (model: MediaPipeFaceMesh) => {
   const videoElement = document.getElementById('peerface') as HTMLVideoElement;
@@ -47,7 +47,7 @@ const predict = async (model: MediaPipeFaceMesh) => {
       }
     }
     cancelAnimationFrame(rafId);
-    if (doRun){
+    if (doRun) {
       rafId = requestAnimationFrame(run);
     }
   };
@@ -71,17 +71,17 @@ export default function FaceLandMark() {
     };
   }, [videoElementUse]);
 
-  const faceLandMarkReady = useSetRecoilState(peerFaceLandMarkState)
-  const isMounted = useIsMounted()
+  const faceLandMarkReady = useSetRecoilState(peerFaceLandMarkState);
+  const isMounted = useIsMounted();
   useEffect(() => {
     if (isMounted()) {
-      faceLandMarkReady(true)
+      faceLandMarkReady(true);
     }
-  }, [isMounted])
+  }, [isMounted]);
 
   return (
     <>
     </>
-  )
+  );
 
 }

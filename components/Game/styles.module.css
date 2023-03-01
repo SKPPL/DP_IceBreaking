@@ -1,6 +1,6 @@
 .card {
   position: absolute;
-  width: (640/3)px;
+  width: 213px;
   height: 160px;
   background: transparent;
   border-radius: 5px;
@@ -8,6 +8,7 @@
   transition: box-shadow 0.5s, opacity 0.5s;
   will-change: transform;
   border: 2px solid white;
+  box-shadow: 0 0 0 1px white inset; 
   cursor: grab;
   overflow: hidden;
   touch-action: none;
@@ -43,7 +44,7 @@
 
 .rightCard {
   position: absolute;
-  width: (640/3)px;
+  width: 213px;
   height: 160px;
   background: transparent;
   border-radius: 5px;
@@ -139,7 +140,7 @@
 
 .ice {
   position: absolute;
-  width: (640/3)px;
+  width: 213px;
   height: 160px;
   /* background: url("../../public/images/ice.png"); */
   border-radius: 5px;

@@ -91,18 +91,16 @@ const SocketHandler = (_: any, res: NextApiResponseServerIO): any => {
       console.log("[emit answer]");
       socket.broadcast.to(roomName).emit("answer", answer); // room에 있는 다른 peer에게 "answer" emit
     });
-    //서버가 room에 있는 peer로부터 "leave"를 받을 때 트리거
+    //"leave"를 받을 때 트리거
     socket.on("leave", (roomName) => {
       console.log("[emit leave]", roomName);
       socket.leave(roomName);
-
-      socket.broadcast.to(roomName).emit("leave"); // room에 있는 다른 peer에게 "leave" emit
-      //방 상태가 변경 될 가능성이 있으니 room-list emit
+      socket.to(roomName).emit("leave"); // room에 있는 다른 peer에게 "leave" emit하여 방을 폭파
       io.sockets.emit("room-list", publicRooms());
     });
 
     socket.on("room-list", () => {
-      socket.emit("room-list", publicRooms());
+      io.sockets.emit("room-list", publicRooms());
       console.log("[room-list]", publicRooms());
     });
 
@@ -132,11 +130,20 @@ const SocketHandler = (_: any, res: NextApiResponseServerIO): any => {
         done({ success: true, payload: roomName });
       }
     });
+    socket.on("disconnecting", () => {
+      console.log("[emit disconnecting]");
+      const joinedRooms = [];
+      //@ts-ignore
+      for (const room of socket.rooms) {
+        if (room !== socket.id) {
+          //@ts-ignore
+          joinedRooms.push(room);
+        }
+      }
 
-    socket.on("peerleave", (roomName: string) => {
-      socket.broadcast.to(roomName).emit("leave");
-      console.log("[emit reload]");
-      socket.broadcast.to(roomName).emit("reload");
+      joinedRooms.forEach((room) => {
+        socket.broadcast.to(room).emit("leave");
+      });
     });
   });
   return res.end();
