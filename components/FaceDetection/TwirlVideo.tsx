@@ -31,7 +31,7 @@ export default function TwirlVideo({ auth }: segmentData) {
         // ctx!.drawImage(video, xyr.current[0] - lr, xyr.current[1] - sr, 2 * lr, 2 * sr, 0, 0, 320, 240);
         ctx!.drawImage(video, 47, 45, 226, 150, 0, 0, 213, 160); // 주석처리한 것들을 종합하면 이렇게 됨
         requestID.current = requestAnimationFrame(draw);
-    }, [video]);
+    }, []);
 
     useEffect(() => {
         if (!video) return;
