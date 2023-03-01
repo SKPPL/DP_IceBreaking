@@ -56,8 +56,7 @@ export default function PuzzleScreen() {
     }
 
     useEffect(() => {
-        if (!cloneRef) return;
-
+        if (!cloneRef.current) return;
         ctx = cloneRef.current!.getContext('2d');
 
         const preventDefault = (e: Event) => e.preventDefault();

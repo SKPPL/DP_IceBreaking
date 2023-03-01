@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-
+import { isMacOs, isChrome } from 'react-device-detect';
 interface segmentData {
     auth: boolean;
 }
@@ -14,7 +14,12 @@ export default function LipVideo({ auth }: segmentData) {
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return
-        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
+        if (isMacOs && isChrome) {
+            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
+        }
+        else {
+            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
+        }
         return () => {
             unmountCheck = true;
         }

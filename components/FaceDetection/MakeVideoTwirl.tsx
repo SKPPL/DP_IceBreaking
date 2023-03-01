@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
-
+import { isMacOs, isChrome } from 'react-device-detect';
 import { useSetRecoilState } from 'recoil'
 import { myTwirlState, peerTwirlState } from '../Game/atom'
 interface Props {
@@ -18,7 +18,12 @@ export default function MakeVideoTwirl({ videoId, auth }: Props) {
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return
-        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
+        if (isMacOs && isChrome) {
+            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
+        }
+        else {
+            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
+        }
         return () => {
             unmountCheck = true;
             auth ? myTwirlSet(false) : peerTwirlSet(false)
@@ -29,7 +34,13 @@ export default function MakeVideoTwirl({ videoId, auth }: Props) {
     const canvas2 = document.createElement('canvas');
     canvas2.width = 320;
     canvas2.height = 240;
-    const ctx2 = canvas2.getContext('2d', { alpha: false, willReadFrequently: true });
+    var ctx2: CanvasRenderingContext2D | null = null;
+    if (isMacOs) {
+        ctx2 = canvas2.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
+    }
+    else {
+        ctx2 = canvas2.getContext('2d', { alpha: false, willReadFrequently: true });
+    }
     const d = 0.7
 
     // angle from -2 rad to 2 rad, function is made to pass the origin quickly!
