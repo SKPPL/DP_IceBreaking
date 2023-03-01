@@ -29,7 +29,7 @@ export default function LipVideo({ auth }: segmentData) {
     const draw = useCallback(() => {
         ctx!.drawImage(video, 0, 0, 213, 160, 0, 0, 213, 160);
         requestID.current = requestAnimationFrame(draw);
-    }, [video]);
+    }, []);
 
     useEffect(() => {
         if (!video) return;

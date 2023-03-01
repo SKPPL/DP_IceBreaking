@@ -304,6 +304,10 @@ export default function WebRTC() {
       {dataChannel && <CheckReady dataChannel={dataChannel} />}
       {dataChannel && <FaceLandMarkMy />}
       {dataChannel && <FaceLandMarkPeer />}
+      <canvas id="my_lip" width="213" height="160" style={{ display: "none" }} ></canvas>
+      <canvas id="peer_lip" width="213" height="160" style={{ display: "none" }} ></canvas>
+      <canvas id="myface_twirl" width="320" height="240" style={{ display: "none" }} ></canvas>
+      <canvas id="peerface_twirl" width="320" height="240" style={{ display: "none" }} ></canvas>
     </>
   );
 }
