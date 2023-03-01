@@ -115,7 +115,8 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
         }
     }, [dataChannel]);
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    let dataTransferCount = 0; // 좌표 데이터 10번 중 한 번 보내기 위한 변수
+    let isDataIn:boolean = false;
+    let isRigthPlaceForSetTimeout = isRightPlace;
 
     useDrag(
         (params) => {
@@ -130,6 +131,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                 //알맞은 위치에 놓았을 때
                 if (!isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
                     target.current!.setAttribute("style", "z-index: 0");
+                    isRigthPlaceForSetTimeout = true;
                     api.start({ x: width, y: height });
                     setIsRightPlace(true);
                     puzzleSoundPlay();
@@ -147,11 +149,16 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;
-            } else if (dataTransferCount % 4 === 0) {
-                // 알맞은 위치에 놓지 않더라도, 아무튼 좌표 보냄
-                positionDataSend();
             }
-            dataTransferCount++;
+
+            if(!isDataIn){
+                isDataIn = true;
+                setTimeout(function noName(){
+                    if (isRigthPlaceForSetTimeout) return;
+                    positionDataSend();
+                    isDataIn = false;
+                }, 16);
+            }
         },
         {
             target,
