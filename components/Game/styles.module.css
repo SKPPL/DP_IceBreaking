@@ -388,6 +388,7 @@
   100% {
     position:fixed;
     transform: translate(0, 0);
+    pointer-events: none;
   }
 }
 
@@ -408,10 +409,12 @@
   100% {
     position:fixed;
     transform: translate(0px, 0px);
+    pointer-events: none;
   }
 }
 
-@keyframes cardstart2 {
+@keyframes 
+cardstart2 {
   0% {
     position:fixed;
     transform: translate(200px, 0px);
@@ -429,6 +432,8 @@
   100% {
     position:fixed;
     transform: translate(0px, 0px);
+    pointer-events: none;
+    
   }
 }
 
@@ -450,6 +455,8 @@
   100% {
     position:fixed;
     transform: translate(0px, 0px);
+    pointer-events: none;
+    
   }
 }
 
@@ -471,6 +478,8 @@
   100% {
     position:fixed;
     transform: translate(0px, 0px);
+    pointer-events: none;
+    
   }
 }
 
@@ -491,10 +500,12 @@
   100% {
     position:fixed;
     transform: translate(0px, 0px);
+    pointer-events: none;
   }
 }
 
-@keyframes cardstart6 {
+@keyframes 
+cardstart6 {
   0% {
     position:fixed;
     transform: translate(0px, 0px);
@@ -512,6 +523,8 @@
   100% {
     position:fixed;
     transform: translate(0px, 0px);
+    pointer-events: none;
+    
   }
 }
 
@@ -533,6 +546,8 @@
   100% {
     position:fixed;
     transform: translate(0px, 0px);
+    pointer-events: none;
+    
   }
 }
 
@@ -554,5 +569,7 @@
   100% {
     position:fixed;
     transform: translate(0px, 0px);
+    pointer-events: none;
+    
   }
 }
