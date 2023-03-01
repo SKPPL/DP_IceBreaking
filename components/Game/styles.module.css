@@ -57,7 +57,7 @@
   touch-action: none;
   animation-duration: 1s;
   animation-name: rightcard;
-  z-index: 0;
+  z-index: 10;
 }
 
 @keyframes rightcard {
@@ -168,27 +168,6 @@
   background-size: cover;
   background-position: center center;
   margin: 0vw 0;
-}
-
-.c1 {
-  animation-duration: 3s;
-  animation-name: cardstart;
-}
-
-@keyframes cardstart {
-  0% {
-    margin-left: 10%;
-    scale: 2;
-  }
-
-  50% {
-    margin-left: -50px;
-    scale: 1;
-  }
-
-  100% {
-    margin-left: 0%;
-  }
 }
 
 .rightCard2 {
@@ -342,4 +321,238 @@
   20%, 24%, 55% {        
       text-shadow: none;
   }    
+}
+
+/* card start animation */
+
+.c0 {
+  animation-duration: 5s;
+  animation-name: cardstart0;
+}
+
+.c1 {
+  animation-duration: 5s;
+  animation-name: cardstart1;
+}
+
+.c2 {
+  animation-duration: 5s;
+  animation-name: cardstart2;
+}
+
+.c3 {
+  animation-duration: 5s;
+  animation-name: cardstart3;
+}
+
+.c4 {
+  animation-duration: 5s;
+  animation-name: cardstart4;
+}
+
+.c5 {
+  animation-duration: 5s;
+  animation-name: cardstart5;
+}
+
+.c6 {
+  animation-duration: 5s;
+  animation-name: cardstart6;
+}
+
+.c7 {
+  animation-duration: 5s;
+  animation-name: cardstart7;
+}
+
+.c8 {
+  animation-duration: 5s;
+  animation-name: cardstart8;
+}
+
+@keyframes cardstart0 {
+  0% {
+    position:fixed;
+    transform: translate(300px, 0);
+  }
+  50% {
+    position:fixed;
+    transform: translate(0, 160px);
+  }
+
+  75% {
+    position:fixed;
+    transform: translate(300px, 0);
+  }
+
+  100% {
+    position:fixed;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes cardstart1 {
+  0% {
+    position:fixed;
+    transform: translate(250px, 0px);
+  }
+  50% {
+    position:fixed;
+    transform: translate(163px, 160px);
+  }
+
+  75% {
+    position:fixed;
+    transform: translate(250px, 0);
+  }
+  100% {
+    position:fixed;
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes cardstart2 {
+  0% {
+    position:fixed;
+    transform: translate(200px, 0px);
+  }
+  50% {
+    position:fixed;
+    transform: translate(326px, 160px);
+
+  }
+  75% {
+    position:fixed;
+    transform: translate(200px, 0);
+  }
+
+  100% {
+    position:fixed;
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes cardstart3 {
+    0% {
+    position:fixed;
+    transform: translate(150px, 0px);
+  }
+  50% {
+    position:fixed;
+    transform: translate(-150px, 320px);
+
+  }
+  75% {
+    position:fixed;
+    transform: translate(150px, 0);
+  }
+
+  100% {
+    position:fixed;
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes cardstart4 {
+  0% {
+    position:fixed;
+    transform: translate(100px, 0px);
+  }
+  50% {
+    position:fixed;
+    transform: translate(13px, 320px);
+
+  }
+  75% {
+    position:fixed;
+    transform: translate(100px, 0);
+  }
+
+  100% {
+    position:fixed;
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes cardstart5 {
+  0% {
+    position:fixed;
+    transform: translate(50px, 0px);
+  }
+  50% {
+    position:fixed;
+    transform: translate(176px, 320px);
+
+  }
+  75% {
+    position:fixed;
+    transform: translate(50px, 0);
+  }
+  100% {
+    position:fixed;
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes cardstart6 {
+  0% {
+    position:fixed;
+    transform: translate(0px, 0px);
+  }
+  50% {
+    position:fixed;
+    transform: translate(-300px, 480px);
+
+  }
+  75% {
+    position:fixed;
+    transform: translate(0px, 0);
+  }
+
+  100% {
+    position:fixed;
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes cardstart7 {
+  0% {
+    position:fixed;
+    transform: translate(-50px, 0px);
+  }
+  50% {
+    position:fixed;
+    transform: translate(-137px, 480px);
+
+  }
+  75% {
+    position:fixed;
+    transform: translate(-50px, 0);
+  }
+
+  100% {
+    position:fixed;
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes cardstart8 {
+  0% {
+    position:fixed;
+    transform: translate(-100px, 0px);
+  }
+  50% {
+    position:fixed;
+    transform: translate(26px, 480px);
+
+  }
+  75% {
+    position:fixed;
+    transform: translate(-100px, 0);
+  }
+
+  100% {
+    position:fixed;
+    transform: translate(0px, 0px);
+  }
 }

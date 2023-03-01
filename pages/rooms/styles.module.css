@@ -1,4 +1,5 @@
 .gameBackGround{
     background-size: contain;
     background-image: url("../../public/images/neon-purple.jpg");
+    height: 100vh;
 }

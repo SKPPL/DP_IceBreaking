@@ -33,8 +33,9 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     const [isRightPlace, setIsRightPlace] = useState(false);
     //아래 조건문 위로 올리면 안됨
 
-    const [zindex, setZindex] = useState(i + 1);
-
+    const arr = useSelector((state: any) => state.puzzleOrder);
+    const [zindex, setZindex] = useState(i);
+    
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
     const d = 1;
@@ -83,8 +84,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     }, [dataChannel]);
 
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    let dataTransferCount = 0; // 좌표 데이터 10번 중 한 번 보내기 위한 변수
-
+    let isDataIn:boolean = false;
+    let isRigthPlaceForSetTimeout = isRightPlace;
     useDrag(
         (params) => {
             if (isRightPlace) return;
@@ -97,6 +98,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 //알맞은 위치에 놓았을 때
                 if (!isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
                     target.current!.setAttribute("style", "z-index: 0");
+                    isRigthPlaceForSetTimeout = true;
                     api.start({ x: width, y: height });
                     setIsRightPlace(true);
                     puzzleSoundPlay();
@@ -118,11 +120,16 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 params.offset[0] = 0;
                 params.offset[1] = 0;
                 // 마우스를 떼는 순간에는 무조건 좌표+offset한 값을 저장하고 데이터를 보냄
-            } else if (dataTransferCount % 4 === 0) {
-                // 알맞은 위치에 놓지 않더라도, 아무튼 좌표 보냄
-                positionDataSend();
             }
-            dataTransferCount++;
+
+            if(!isDataIn){
+                isDataIn = true;
+                setTimeout(function noName(){
+                    if (isRigthPlaceForSetTimeout) return;
+                    positionDataSend();
+                    isDataIn = false;
+                }, 16);
+            }
         },
         {
             target,
@@ -185,6 +192,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
         if (isRightCard)
             setZindex(0);
     }, [isRightCard]);
+
 
 
 
