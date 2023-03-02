@@ -3,14 +3,7 @@ import styles from "./styles.module.css";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import useSound from "use-sound"
-import dynamic from "next/dynamic";
 
-const Bgm = dynamic(
-  import('@/pages/bgMusic'), {
-    loading: () => (<div></div>),
-    ssr: false,
-  },
-)
 
 interface Props {
   dataChannel: RTCDataChannel | undefined;
