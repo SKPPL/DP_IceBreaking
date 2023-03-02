@@ -14,14 +14,12 @@ export default function BagicHome() {
 
   useEffect(() => {
     setAppear(true)
-    // setTimeout(() => setAppear(true), 1700)    
   }, [])
 
   return (
     <>
       <div className="flex rounded-3xl absolute mt-[400px] mr-[10px]">
         <div className= "flex flex-col">
-            {/* { appear && <Start /> } */}
             { appear && <PuzzleScreen/> }
         </div>
       </div>

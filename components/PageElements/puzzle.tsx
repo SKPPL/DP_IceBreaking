@@ -44,8 +44,6 @@ export default function PuzzleScreen() {
         setDivY(movingRef.current!.getBoundingClientRect().y);
         setHoleX(innerWidth*(1250/1440));
         setHoleY(innerHeight*(640/780));
-        console.log("innerWidth", innerWidth, "innerHeight", innerHeight);
-        console.log("puzzleW", puzzleWidth, "puzzleH", puzzleHeight);
     }
 
 
@@ -93,14 +91,10 @@ export default function PuzzleScreen() {
     
         const bind = useDrag(
             (params) => {
-                if(!params.down) {
-                    console.log(x.get(), y.get());
-                }
                 if(!params.down && isPuzzleMatched(x.get(), y.get(), puzzleHoleX, puzzleHoleY, divX, divY)) {
                     router.push({
                         pathname: '/ready',
                     })
-                    console.log('성공')
                 }
             }
         );
