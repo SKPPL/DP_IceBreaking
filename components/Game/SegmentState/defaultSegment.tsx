@@ -59,6 +59,9 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
+        if (isRight){
+            setZindex(0);
+        }
         const preventDefault = (e: Event) => e.preventDefault();
         document.addEventListener("gesturestart", preventDefault);
         document.addEventListener("gesturechange", preventDefault);
