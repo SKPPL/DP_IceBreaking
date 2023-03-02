@@ -108,6 +108,19 @@ const puzzleCompleteSlice = createSlice({
     }
 });
 
+const defaultSegmentRightPlace = createSlice({
+    name: "defaultSegmentRightPlace",
+    initialState: [false, false, false, false, false, false, false, false, false],
+    reducers: {
+        setRight: (state, action: PayloadAction<{ index: number; isRight: boolean }>) => {
+            state[action.payload.index] = action.payload.isRight;
+        },
+        init: (state) => {
+            return [false, false, false, false, false, false, false, false, false];
+        }
+    }
+});
+
 
 
 
@@ -118,6 +131,7 @@ const store = configureStore({
         peerPuzzle: peerPuzzleSlice.reducer,
         puzzleComplete: puzzleCompleteSlice.reducer,
         puzzleOrder: order.reducer,
+        defaultSegmentRightPlace: defaultSegmentRightPlace.reducer,
     }
 })
 

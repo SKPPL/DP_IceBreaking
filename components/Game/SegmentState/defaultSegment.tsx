@@ -30,11 +30,14 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     const storedPosition = useSelector((state: any) => {
         return auth ? state.myPuzzle : state.peerPuzzle;
     });
+    const isRight = useSelector((state: any) => {
+        return state.defaultSegmentRightPlace[i];
+    })
     const [isRightPlace, setIsRightPlace] = useState(false);
     //아래 조건문 위로 올리면 안됨
 
     const arr = useSelector((state: any) => state.puzzleOrder);
-    const [zindex, setZindex] = useState(i);
+    const [zindex, setZindex] = useState(i+1);
     
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
@@ -43,6 +46,12 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     const [widthOx, heightOx] = [(640 / 3) * d, (480 / 3) * d];
     const [width, height] = [(640 / 3) * (i % 3) - widthOx * 1.5, (480 / 3) * ((i - (i % 3)) / 3) + heightOx];
     const [puzzleSoundPlay] = useSound(puzzleSoundUrl);
+
+    // isRight인 경우 안정적으로 고정 width, heigth에서 시작하게 하기 (얼음깨고 다시 맞출때 위치가 비정상적으로 저장중 (default로 돌아오기 직전만 api.start가 옮겨서 맞춰주기 전 위치로 돌아온다. 기능적인 문제는 없음))
+    let startXY = storedPosition[i];
+    if (isRight && auth){
+        startXY = [width, height];
+    }
 
     // TODO : 옆으로 init 시 api.start 이동
 
@@ -64,8 +73,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
             rotateZ: 0,
             scale: 1,
             zoom: 0,
-            x: storedPosition[i][0], // 초기 기준 좌표를 말하는 것 같음, offset은 상관없는듯
-            y: storedPosition[i][1],
+            x: startXY[0], // 초기 기준 좌표를 말하는 것 같음, offset은 상관없는듯
+            y: startXY[1],
             config: { mass: 2, tension: 750, friction: 30 },
         };
     });
@@ -91,6 +100,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
             if (isRightPlace) return;
             if (!auth) return;
             if (isSameOutline(x.get(), y.get(), width, height)) return;
+            if (isRight) return;
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
             // !params.down : 마우스를 떼는 순간
@@ -101,21 +111,26 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     isRigthPlaceForSetTimeout = true;
                     api.start({ x: width, y: height });
                     setIsRightPlace(true);
+                    dispatch({ type: `defaultSegmentRightPlace/setRight`, payload: { index: i, isRight: true}});
                     puzzleSoundPlay();
                     if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
                     dispatch({ type: "puzzleComplete/plus_mine" });
                     setZindex(0);
-                    dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/${i}`, payload: { x: width, y: height } });
+                    dispatch({
+                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        payload: { index: i, position: [width, height] },
+                    });
                     if (dataChannel?.readyState === "open") {
                         dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
                         return;
                     }
+                }else{
+                    dispatch({
+                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
+                    });
                 }
                 positionDataSend();
-                dispatch({
-                    type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
-                    payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
-                });
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;

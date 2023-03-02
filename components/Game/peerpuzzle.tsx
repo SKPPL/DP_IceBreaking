@@ -124,9 +124,17 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
           isRightPlace = [false, false, false, false, false, false, false, false, false];
         }
         switch (keys[cnt]) {
-          case "rocket": setTimeout(() => { makePeerDefaultSegment(); }, 9000); break;
-          case "ice": setTimeout(() => { makePeerDefaultSegment(); }, 15000); break;
-          case "magnet": setTimeout(() => { makePeerDefaultSegment(); }, 7000); break;
+          case "rocket": 
+            // default에서 마지막으로 세팅되어있던 peerposition이 다시 default로 돌아왔을때 영향을 주게하지 못하게 다른 아이템으로 넘어갈 때 peerposition을 초기화시키고 넘기기
+            setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
+            setTimeout(() => { makePeerDefaultSegment(); }, 9000);
+            break;
+          case "ice": setTimeout(() => { 
+            setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
+            makePeerDefaultSegment(); }, 15000); break;
+          case "magnet": setTimeout(() => { 
+            setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
+            makePeerDefaultSegment(); }, 7000); break;
           case "lip": setTimeout(() => { makePeerDefaultSegment(); }, 10000); break;
           case "twirl": setTimeout(() => { makePeerDefaultSegment(); }, 10000); break;
 

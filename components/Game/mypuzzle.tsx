@@ -61,6 +61,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                             setMySegmentState(dataJSON);
                             if (dataJSON.segementState === "rocket" || dataJSON.segementState === "magnet") {
                                 dispatch({ type: "puzzleComplete/init_mine" });
+                                dispatch({ type: "defaultSegmentRightPlace/init" });
                             }
                             switch (dataJSON.segementState) {
 
