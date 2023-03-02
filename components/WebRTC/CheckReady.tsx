@@ -3,6 +3,8 @@ import styles from "./styles.module.css";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import useSound from "use-sound"
+import dynamic from "next/dynamic";
+import { useDispatch } from "react-redux";
 
 
 interface Props {
@@ -14,6 +16,7 @@ export default function CheckReady({ dataChannel }: Props) {
     const [peerReadyState, setPeerReadyState] = useState(false);
     const [gameReadyState, setGameReadyState] = useState(false);
     const [isBgMusicOn, setIsBgMusicOn] = useState(true);
+    const dispatch = useDispatch();
 
     const readySoundUrl = '/sounds/ready.mp3'
     const [readySoundPlay] = useSound(readySoundUrl)
@@ -27,8 +30,10 @@ export default function CheckReady({ dataChannel }: Props) {
       document.getElementById("itembar")!.classList.add("visible")
       setIsBgMusicOn(false);
 
-      document.getElementById("itembar")!.classList.remove("invisible");
-      document.getElementById("itembar")!.classList.add("visible");
+      setTimeout(() => {
+        dispatch({ type: 'myPuzzle/start' })
+        dispatch({ type: 'peerPuzzle/start' })
+      }, 1000)
     }
   }, [myReadyState, peerReadyState]);
 
