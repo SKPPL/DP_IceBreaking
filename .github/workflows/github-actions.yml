@@ -34,7 +34,6 @@ jobs:
               sudo rm package-lock.json
               sudo npm install 
               sudo npm run build
-              sudo rm -rf package-lock.json
               npx pm2 restart nextjs
 
               
