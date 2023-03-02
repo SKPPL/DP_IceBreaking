@@ -42,7 +42,7 @@ export default function Home() {
           {/* <Provider store={store}> */}
             <BagicHome />
           {/* </Provider> */}
-          <Bgm musicPlay={isBgMusicOn}/>
+          {/* <Bgm musicPlay={isBgMusicOn}/> */}
           {/* <Playbgm musicPlay={isBgMusicOn}/> */}
         </div>
       </div>
