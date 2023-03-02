@@ -127,7 +127,6 @@ export default function CheckReady({ dataChannel }: Props) {
           </div>
         </div>
       </div>
-      <Bgm musicPlay={isBgMusicOn}/>
 
     </>
   );
