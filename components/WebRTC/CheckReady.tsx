@@ -6,12 +6,6 @@ import useSound from "use-sound"
 import dynamic from "next/dynamic";
 import { useDispatch } from "react-redux";
 
-const Bgm = dynamic(
-  import('@/pages/bgMusic'), {
-    loading: () => (<div></div>),
-    ssr: false,
-  },
-)
 
 interface Props {
   dataChannel: RTCDataChannel | undefined;
@@ -138,7 +132,6 @@ export default function CheckReady({ dataChannel }: Props) {
           </div>
         </div>
       </div>
-      <Bgm musicPlay={isBgMusicOn}/>
 
     </>
   );

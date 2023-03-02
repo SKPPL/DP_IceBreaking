@@ -31,10 +31,10 @@ jobs:
               cd DP_IceBreaking
               git fetch
               git pull origin main
+              sudo rm -rf node_modules/
               sudo rm package-lock.json
               sudo npm install 
               sudo npm run build
-              sudo rm -rf package-lock.json
               npx pm2 restart nextjs
 
               
