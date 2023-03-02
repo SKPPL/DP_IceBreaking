@@ -73,10 +73,12 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     const [widthOx, heightOx] = [213 * d, 160 * d];
     const [width, height] = [213 * (i % 3) - widthOx * 1.5, 160 * ((i - (i % 3)) / 3) + heightOx];
     const [puzzleSoundPlay] = useSound(puzzleSoundUrl);
-
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
+        if (isRight){
+            setZindex(0);
+        }
         const preventDefault = (e: Event) => e.preventDefault();
         document.addEventListener("gesturestart", preventDefault);
         document.addEventListener("gesturechange", preventDefault);
