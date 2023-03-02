@@ -38,8 +38,8 @@ export default function MyLipParticles() {
                         },
                         particles: {
                             number: {
-                                value: 50,
-                                limit: 70,
+                                value: 25,
+                                limit: 35,
                                 density: {
                                     enable: true,
                                     value_area: 800
@@ -74,7 +74,7 @@ export default function MyLipParticles() {
                                 }
                             },
                             size: {
-                                value: 100,
+                                value: 50,
                                 random: true,
                                 anim: {
                                     enable: true,

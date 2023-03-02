@@ -65,10 +65,10 @@ const myPuzzleSlice = createSlice({
             state[action.payload.index] = action.payload.position //index번째 퍼즐의 좌표를 position으로 변경
         },
         init: (state) => {
-            state = initialState
+            return [[-320, 0], [-270, 0], [-220, 0], [-170, 0], [-120, 0], [-70, 0], [-20, 0], [30, 0], [80, 0]]
         },
         start : (state) => {
-            state = initialState
+            return initialState
         }
     }
 });
@@ -81,10 +81,10 @@ const peerPuzzleSlice = createSlice({
             state[action.payload.index] = action.payload.position //index번째 퍼즐의 좌표를 position으로 변경
         },
         init: (state) => {
-            state = initialState;
+            return [[-320, 0], [-270, 0], [-220, 0], [-170, 0], [-120, 0], [-70, 0], [-20, 0], [30, 0], [80, 0]]
         },
         start: (state) => {
-            state = initialState;
+            return initialState;
         }
     }
 });

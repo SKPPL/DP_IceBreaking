@@ -14,6 +14,8 @@ const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
 const puzzleSoundUrl = '/sounds/puzzleHit.mp3';
 
+let isStart = true;
+
 interface Props {
     i: number;
     videoId: string;
@@ -37,7 +39,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     //아래 조건문 위로 올리면 안됨
 
     const arr = useSelector((state: any) => state.puzzleOrder);
-    const [zindex, setZindex] = useState(i+1);
+    const firstlocation = [arr[0]*50-50, arr[1]*50-100, arr[2]*50-150, arr[3]*50-200, arr[4]*50-250, arr[5]*50-300, arr[6]*50-350, arr[7]*50-400, arr[8]*50-450]
+    const [zindex, setZindex] = useState(arr[i]);
     
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
@@ -190,6 +193,10 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     const setPeerWait = useSetRecoilState(peerWaitState);
 
     useEffect(() => {
+        if (isStart) {
+            setTimeout(() => api.start({ x: x.get() + firstlocation[i], y: y.get() }), 5000)
+            setTimeout(() => isStart = false, 1000);
+        }
         return () => {
             // unmount될 떄, 즉 아이템을 써서 segmentState가 변할 때 좌표를 저장함에 있어 오차가 없도록 하기 위해 isRightPlace가 true인 경우와 아닌 경우로 나눠서 저장함
             if (isRightPlace) {
