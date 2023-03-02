@@ -37,7 +37,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     //아래 조건문 위로 올리면 안됨
 
     const arr = useSelector((state: any) => state.puzzleOrder);
-    const [zindex, setZindex] = useState(i);
+    const [zindex, setZindex] = useState(i+1);
     
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
@@ -49,7 +49,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
     // isRight인 경우 안정적으로 고정 width, heigth에서 시작하게 하기 (얼음깨고 다시 맞출때 위치가 비정상적으로 저장중 (default로 돌아오기 직전만 api.start가 옮겨서 맞춰주기 전 위치로 돌아온다. 기능적인 문제는 없음))
     let startXY = storedPosition[i];
-    if (isRight){
+    if (isRight && auth){
         startXY = [width, height];
     }
 
@@ -124,12 +124,13 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                         dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
                         return;
                     }
+                }else{
+                    dispatch({
+                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
+                    });
                 }
                 positionDataSend();
-                dispatch({
-                    type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
-                    payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
-                });
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;
