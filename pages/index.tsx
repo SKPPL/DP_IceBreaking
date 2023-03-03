@@ -33,17 +33,12 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="bg-[url('/images/ccccuuurrentEmptySpace.png')] bg-cover bg-center h-screen">
-        {/* {isFiveMinutes? ""  : <MainParticles />} */}
-        <div className={styles.indexbox}>
-          <div className={styles.indexText}>
-            DYNAMIC <br />
-            PUZZLE
-          </div>
-        </div>
-        <div className="absolute justify-end items-end flex w-1/4 h-4/5">
-          <BagicHome />
-        </div>
+      <div className="absolute w-full h-auto overflow-hidden m-0 z-0 ">
+        <video muted autoPlay loop src="videos/HIghBG.mp4">
+        </video>
+      </div>
+      <div className="absolute justify-end items-end flex w-1/5 h-4/5 z-10">
+        <BagicHome />
       </div>
     </>
   );
