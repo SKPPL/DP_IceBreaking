@@ -4,7 +4,7 @@ import React, { use, useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { useIsMounted } from "usehooks-ts";
 import { myFaceLandMarkState, peerFaceLandMarkState } from "../Game/atom";
-import LipVideo from "./LipVideo";
+import LipVideo from "../Game/VideoDivide/LipVideo";
 import { annotateFeatures, scaler, setupModel } from "./predictionMy";
 //npm install --no-progress --verbose --loglevel silly
 const WIDTH = 640;
@@ -16,12 +16,12 @@ export function getHostLip() {
   return hostLip;
 }
 
-export function startItem(){
+export function startItem() {
   doRun = true;
   predict(predictModel);
 }
 
-export function stopItem(){
+export function stopItem() {
   doRun = false;
 }
 
@@ -29,7 +29,7 @@ let predictModel: MediaPipeFaceMesh;
 
 let rafId: number;
 
-let doRun:boolean = false;
+let doRun: boolean = false;
 
 const predict = async (model: MediaPipeFaceMesh) => {
   const videoElement = document.getElementById('myface') as HTMLVideoElement;
@@ -47,7 +47,7 @@ const predict = async (model: MediaPipeFaceMesh) => {
       }
     }
     cancelAnimationFrame(rafId);
-    if (doRun){
+    if (doRun) {
       rafId = requestAnimationFrame(run);
     }
   };
@@ -71,17 +71,17 @@ export default function FaceLandMark() {
     };
   }, [videoElementUse]);
 
-  const faceLandMarkReady = useSetRecoilState(myFaceLandMarkState)
-  const isMounted = useIsMounted()
+  const faceLandMarkReady = useSetRecoilState(myFaceLandMarkState);
+  const isMounted = useIsMounted();
   useEffect(() => {
     if (isMounted()) {
-      faceLandMarkReady(true)
+      faceLandMarkReady(true);
     }
-  }, [isMounted])
+  }, [isMounted]);
 
   return (
     <>
     </>
-  )
+  );
 
 }
