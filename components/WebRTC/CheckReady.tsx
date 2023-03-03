@@ -4,7 +4,7 @@ import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import useSound from "use-sound";
 import { useDispatch } from "react-redux";
-import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
+import { indexBGMElement, indexBGMState, gameBGMElement, gameBGMState } from "@/components/Game/atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 interface Props {
   dataChannel: RTCDataChannel | undefined;
@@ -20,8 +20,18 @@ export default function CheckReady({ dataChannel }: Props) {
   const [readySoundPlay] = useSound(readySoundUrl);
   const indexBGM = useRecoilValue(indexBGMElement);
   const [isPlaying, setIsPlaying] = useRecoilState(indexBGMState);
+  const [gameBGM, setGameBGM] = useRecoilState(gameBGMElement);
+  const [isGameBGMPlaying, setIsGameBGMPlaying] = useRecoilState(gameBGMState);
 
   //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
+  useEffect(() => {
+    if (gameBGM && !isGameBGMPlaying) {
+      (gameBGM as HTMLAudioElement).loop = true;
+      (gameBGM as HTMLAudioElement).play();
+      setIsGameBGMPlaying(true);
+    }
+  }, [gameBGM]);
+
   useEffect(() => {
     readySoundPlay();
     setGameReadyState(myReadyState && peerReadyState);
@@ -30,7 +40,13 @@ export default function CheckReady({ dataChannel }: Props) {
       if (indexBGM && isPlaying) {
         setIsPlaying(false);
         (indexBGM as HTMLAudioElement).pause();
+        if (!gameBGM) {
+          const newAudio = new Audio("/sounds/gameBGM.mp3");
+          //@ts-ignore
+          setGameBGM(newAudio);
+        }
       }
+
       document.getElementById("itembar")!.classList.remove("invisible");
       document.getElementById("itembar")!.classList.add("visible");
 
