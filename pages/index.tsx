@@ -19,7 +19,7 @@ export default function Home() {
     }
     if (indexBGM && !isPlaying) {
       (indexBGM as HTMLAudioElement).loop = true;
-      // (indexBGM as HTMLAudioElement).play();
+      (indexBGM as HTMLAudioElement).play();
       setIsPlaying(true);
     }
   }, [indexBGM]);

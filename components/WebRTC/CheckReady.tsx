@@ -27,8 +27,8 @@ export default function CheckReady({ dataChannel }: Props) {
   useEffect(() => {
     if (gameBGM && !isGameBGMPlaying) {
       (gameBGM as HTMLAudioElement).loop = true;
-      // (gameBGM as HTMLAudioElement).play();
-      setIsPlaying(true);
+      (gameBGM as HTMLAudioElement).play();
+      setIsGameBGMPlaying(true);
     }
   }, [gameBGM]);
 
