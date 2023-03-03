@@ -76,7 +76,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
-        if (isRight){
+        if (isRight && auth){
             setZindex(0);
         }
         const preventDefault = (e: Event) => e.preventDefault();
@@ -219,7 +219,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                 <div className={styles.container} onClick={breakTheIce}>
                     <animated.div
                         ref={target}
-                        className={isRightPlace ? `${styles.rightCard}` : `${styles.card}`}
+                        className={isRightPlace ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
                         style={{
                             transform: "perspective(600px)",
                             x,
