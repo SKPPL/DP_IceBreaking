@@ -5,9 +5,9 @@ import styles from "../styles.module.css";
 import useSound from "use-sound";
 import { useSetRecoilState } from "recoil";
 import { myWaitState, peerWaitState } from "../atom";
-import IcedVideo from "../IcedVideo";
+import IcedVideo from "../VideoDivide/IcedVideo";
 import { useDrag, useGesture } from "@use-gesture/react";
-import CloneVideo from "../CloneVideo";
+import CloneVideo from "../VideoDivide/CloneVideo";
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
 const puzzleSoundUrl = "/sounds/puzzleHit.mp3";
@@ -62,7 +62,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     });
     const isRight = useSelector((state: any) => {
         return state.defaultSegmentRightPlace[i];
-    })
+    });
     const [isRightPlace, setIsRightPlace] = useState(false);
 
     const [zindex, setZindex] = useState(Math.floor(Math.random() * 10));
@@ -76,7 +76,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
-        if (isRight){
+    if (isRight && auth){
             setZindex(0);
         }
         const preventDefault = (e: Event) => e.preventDefault();
@@ -115,7 +115,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
         }
     }, [dataChannel]);
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    let isDataIn:boolean = false;
+    let isDataIn: boolean = false;
     let isRigthPlaceForSetTimeout = isRightPlace;
 
     useDrag(
@@ -138,7 +138,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                     puzzleSoundPlay();
                     if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
                     dispatch({ type: "puzzleComplete/plus_mine" });
-                    dispatch({ type: `defaultSegmentRightPlace/setRight`, payload: { index: i, isRight: true}});
+                    dispatch({ type: `defaultSegmentRightPlace/setRight`, payload: { index: i, isRight: true } });
                     setZindex(0);
                     dispatch({
                         type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
@@ -148,7 +148,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                         dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
                         return;
                     }
-                }else{
+                } else {
                     dispatch({
                         type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
                         payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
@@ -160,9 +160,9 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                 params.offset[1] = 0;
             }
 
-            if(!isDataIn){
+            if (!isDataIn) {
                 isDataIn = true;
-                setTimeout(function noName(){
+                setTimeout(function noName() {
                     if (isRigthPlaceForSetTimeout) return;
                     positionDataSend();
                     isDataIn = false;
@@ -219,7 +219,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                 <div className={styles.container} onClick={breakTheIce}>
                     <animated.div
                         ref={target}
-                        className={isRightPlace ? `${styles.rightCard}` : `${styles.card}`}
+                        className={isRightPlace ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
                         style={{
                             transform: "perspective(600px)",
                             x,

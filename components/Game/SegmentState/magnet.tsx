@@ -4,7 +4,7 @@ import styles from "../styles.module.css";
 import useMeasure from "react-use-measure";
 import { useTrail, animated } from "@react-spring/web";
 import dynamic from "next/dynamic";
-import CloneVideo from "../CloneVideo";
+import CloneVideo from "../VideoDivide/CloneVideo";
 import useMousePosition from "./useMousePosition";
 import { useWindowSize } from "usehooks-ts";
 // const trans = (x: number, y: number) => `translate3d(${x}px,${y}px,0) translate3d(-50%,-50%,0)`;
@@ -108,7 +108,7 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
                     <animated.div
                         ref={ref}
                         key={index}
-                        className={styles.card}
+                        className={(auth ? `${styles.myCard}` : `${styles.peerCard}`)}
                         style={{
                             zIndex: 20,
                             transform: props.xy.to(trans),

@@ -88,6 +88,11 @@ export default function CheckReady({ dataChannel }: Props) {
             </div>
           )}
           <div className="h-[480px] w-[640px] mt-[160px] self-center" id={styles.gamepan}>
+            {!(myReadyState && peerReadyState) && (
+              <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
+                <div className="absolute text-7xl text-red-600"> MY PUZZLE </div>
+              </div>
+            )}
             <div className="flex flex-row h-1/3">
               <div className={`w-1/3 ${styles.eachpan}`}></div>
               <div className={`w-1/3 ${styles.eachpan}`}></div>
@@ -121,6 +126,11 @@ export default function CheckReady({ dataChannel }: Props) {
             </div>
           )}
           <div className="h-[480px] w-[640px] mt-[160px] self-center" id={styles.gamepan}>
+            {!(myReadyState && peerReadyState) && (
+              <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
+                <div className="absolute text-7xl text-blue-600"> PEER PUZZLE </div>
+              </div>
+            )}
             <div className="flex flex-row h-1/3">
               <div className={`w-1/3 ${styles.eachpan}`}></div>
               <div className={`w-1/3 ${styles.eachpan}`}></div>
