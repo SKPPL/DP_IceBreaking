@@ -6,11 +6,11 @@ interface Props{
 }
 
 export default function LinearWithValueLabel({score}:Props) {
-  const [progress, setProgress] = React.useState(10);
+  const [progress, setProgress] = React.useState(0);
 
   React.useEffect(() => {
     var from = progress;
-    var to = score*10 + 10;
+    var to = score*10;
     var gap = to - from;
     var startTime = null;
     var duration = 300;
@@ -39,9 +39,9 @@ export default function LinearWithValueLabel({score}:Props) {
   }, [score]);
 
   return (
-    <div className={styles.neonbar}>
-      <progress className={styles.bar} value={progress} max='100'></progress>
-      <span className={styles.barvalue}>{progress}%</span>
+    <div className={styles.neonbarPeer}>
+      <progress className={styles.barPeer} value={progress} max='90'></progress>
+      <span className={styles.barvaluePeer}>{score}/9</span>
     </div>
   );
 }

@@ -368,8 +368,8 @@
     position: absolute;
     border-radius: 1.5rem;
     width: 20rem;
-    height: 5rem;
-    font-size: 3rem;
+    height: 4rem;
+    font-size: 2.5rem;
     text-align: center;
     animation: pulsate 1.5s infinite alternate;  
     border: 0.2rem solid #fff;
