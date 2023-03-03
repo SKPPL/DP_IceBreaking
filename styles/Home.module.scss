@@ -284,26 +284,45 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-$progress-height: 20px;
-$progress-width: 550px;
+$progress-height: 50px;
+$progress-width: 37%;
 $progress-padding: 0.3em;
-$progress-value-color: #03fcc2;
-$value-color: #fc0349;
-$value-size: 28px;
+$progress-value-color: red;
+$progress-value-color-peer: blue;
+$value-color: red;
+$value-color-peer: blue;
+$value-size: 60px;
 
-.neonbar {
+.neonbarMy {
+  top: 30px;
+  left: 0px;
+  z-index: 0;
   -webkit-user-select:none;
   -moz-user-select:none;
   -ms-user-select:none;
   user-select:none;
   pointer-events: none;
-  position: absolute;
+  position: fixed;
   box-sizing: border-box;
   font-family: 'Odibee Sans', cursive;
-  margin-top: 670px;
+}
+.neonbarPeer {
+  top: 30px;
+  right: 0px;
+  z-index: 0;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  pointer-events: none;
+  position: fixed;
+  box-sizing: border-box;
+  font-family: 'Odibee Sans', cursive;
 }
 
-.bar {
+.barMy {
+  position: fixed;
+  left: 150px;
   -webkit-appearance: none;
   height: $progress-height;
   width: $progress-width;
@@ -312,6 +331,7 @@ $value-size: 28px;
     padding: $progress-padding;
     border-radius: calc(#{$progress-height} / 2);
     background: lighten(#111, 5);
+    border: 3px solid rgba(255, 0, 0, 0.5);
   }
   &::-webkit-progress-value {
     background: $progress-value-color;
@@ -321,16 +341,50 @@ $value-size: 28px;
   }
 }
 
+.barPeer {
+  position: fixed;
+  right: 150px;
+  -webkit-appearance: none;
+  height: $progress-height;
+  width: $progress-width;
+
+  &::-webkit-progress-bar {
+    padding: $progress-padding;
+    border-radius: calc(#{$progress-height} / 2);
+    background: lighten(#111, 5);
+    border: 3px solid rgba(0, 0, 255, 0.5);
+  }
+  &::-webkit-progress-value {
+    background: $progress-value-color-peer;
+    box-shadow: 0 0 0.6em lighten($progress-value-color-peer, 2),
+      0 0 0.8em lighten($progress-value-color-peer, 4);
+    border-radius: calc(#{$progress-height}/2);
+  }
+}
+
 .mybar {
   direction: rtl;
 }
 
 .barvalue {
+  position: fixed;
+  left: 30px;
   color: $value-color;
   font-size: $value-size;
   line-height: $progress-height;
   letter-spacing: 1px;
   text-shadow: 0 0 .3em darken($value-color, 1),
     0 0 .6em darken($value-color, 6);
-  margin: 0.5em;
+  padding-bottom: 400px;
+}
+.barvaluePeer {
+  position: fixed;
+  right: 30px;
+  color: $value-color-peer;
+  font-size: $value-size;
+  line-height: $progress-height;
+  letter-spacing: 1px;
+  text-shadow: 0 0 .3em darken($value-color-peer, 1),
+    0 0 .6em darken($value-color-peer, 6);
+  padding-bottom: 400px;
 }

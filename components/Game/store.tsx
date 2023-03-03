@@ -55,7 +55,7 @@ const order = createSlice({
 })
 
 
-const initialState = [[arr[0]*50-370, 0], [arr[1]*50-370, 0], [arr[2]*50-370, 0], [arr[3]*50-370, 0], [arr[4]*50-370, 0], [arr[5]*50-370, 0], [arr[6]*50-370, 0], [arr[7]*50-370, 0], [arr[8]*50-370, 0]]
+const initialState = [[arr[0]*50-370, 90], [arr[1]*50-370, 90], [arr[2]*50-370, 90], [arr[3]*50-370, 90], [arr[4]*50-370, 90], [arr[5]*50-370, 90], [arr[6]*50-370, 90], [arr[7]*50-370, 90], [arr[8]*50-370, 90]]
 //내 퍼즐의 상태를 저장
 const myPuzzleSlice = createSlice({
     name: "myPuzzle",

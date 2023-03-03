@@ -164,7 +164,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       })}
 
       {/* 상대가 카드를 맞췄을 때 나오는 효과 */}
-      <div className="absolute grid grid-cols-3 w-[640px] h-[480px] mt-[160px]">
+      {/* <div className="absolute grid grid-cols-3 w-[640px] h-[480px] mt-[160px]">
         <div className={isRightPlace[0] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
         <div className={isRightPlace[1] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
         <div className={isRightPlace[2] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
@@ -174,10 +174,10 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         <div className={isRightPlace[6] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
         <div className={isRightPlace[7] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
         <div className={isRightPlace[8] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-      </div>
+      </div> */}
 
       {/* 아이템 쓸 때 나오는 효과 */}
-      <div className="absolute grid w-[640px] h-[480px] mt-[160px]" style={{ pointerEvents: "none" }}>
+      <div className="absolute grid w-[640px] h-[480px] mt-[100px]" style={{ pointerEvents: "none" }}>
         {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerIceFlakeParticles /> <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerBlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerLipParticles /> <img src="../images/lippeer.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}

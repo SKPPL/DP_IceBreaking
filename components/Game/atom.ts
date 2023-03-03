@@ -41,3 +41,23 @@ export const peerTwirlState = atom({
   key: "peerTwirl",
   default: false,
 });
+
+export const indexBGMElement = atom({
+  key: "indexBGMElement",
+  default: undefined,
+});
+
+export const indexBGMState = atom({
+  key: "indexBGMState",
+  default: false,
+});
+
+export const gameBGMElement = atom({
+  key: "gameBGMElement",
+  default: undefined,
+});
+
+export const gameBGMState = atom({
+  key: "gameBGMState",
+  default: false,
+});

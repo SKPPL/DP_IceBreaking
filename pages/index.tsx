@@ -1,19 +1,30 @@
-import Head from 'next/head'
-import BagicHome from '@/components/PageElements/BagicHome'
-import styles from './styles.module.css'
-import useSound from 'use-sound';
-import { useEffect, useState } from 'react';
-import MainParticles from '@/components/PageElements/Particles/mainParticles';
-import dynamic from 'next/dynamic';
+import Head from "next/head";
+import BagicHome from "@/components/PageElements/BagicHome";
+import styles from "./styles.module.css";
+import { useEffect } from "react";
+import MainParticles from "@/components/PageElements/Particles/mainParticles";
 
+import { useRecoilState } from "recoil";
+import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
 
 export default function Home() {
-  const [isBgMusicOn, setIsBgMusicOn] = useState(false);
+  const [indexBGM, setIndexBGM] = useRecoilState(indexBGMElement);
+  const [isPlaying, setIsPlaying] = useRecoilState(indexBGMState);
 
   useEffect(() => {
-    setTimeout(() => setIsBgMusicOn(true), 3000)
-  }, []);
-  
+    if (!indexBGM) {
+      const newAudio = new Audio("/sounds/bgm.mp3");
+      //@ts-ignore
+      setIndexBGM(newAudio);
+    }
+    if (indexBGM && !isPlaying) {
+      (indexBGM as HTMLAudioElement).loop = true;
+      (indexBGM as HTMLAudioElement).volume = 0.5;
+      (indexBGM as HTMLAudioElement).play();
+      setIsPlaying(true);
+    }
+  }, [indexBGM]);
+
   return (
     <>
       <Head>
@@ -22,18 +33,13 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="bg-[url('/images/ccccuuurrentEmptySpace.png')] bg-cover bg-center h-screen">
-        {/* {isFiveMinutes? ""  : <MainParticles />} */}
-        <div className={styles.indexbox}>
-          <div className={styles.indexText}>
-            DYNAMIC <br />
-            PUZZLE
-          </div>
-        </div>
-        <div className="absolute justify-end items-end flex w-1/4 h-4/5">
-            <BagicHome />
-        </div>
+      <div className="absolute w-full h-auto overflow-hidden m-0 z-0 ">
+        <video muted autoPlay loop src="videos/HIghBG.mp4">
+        </video>
+      </div>
+      <div className="absolute justify-end items-end flex w-1/5 h-4/5 z-10">
+        <BagicHome />
       </div>
     </>
-  )
+  );
 }
