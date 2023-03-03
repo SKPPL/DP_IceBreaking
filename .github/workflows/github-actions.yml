@@ -33,8 +33,8 @@ jobs:
               git pull origin main
               sudo rm -rf node_modules/
               sudo rm package-lock.json
-              sudo npm install 
-              sudo npm run build
+              npm install 
+              npm run build
               npx pm2 restart nextjs
 
               

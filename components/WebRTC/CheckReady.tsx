@@ -4,7 +4,7 @@ import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import useSound from "use-sound";
 import { useDispatch } from "react-redux";
-import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
+import { indexBGMElement, indexBGMState, gameBGMElement, gameBGMState } from "@/components/Game/atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 interface Props {
   dataChannel: RTCDataChannel | undefined;
@@ -20,8 +20,19 @@ export default function CheckReady({ dataChannel }: Props) {
   const [readySoundPlay] = useSound(readySoundUrl);
   const indexBGM = useRecoilValue(indexBGMElement);
   const [isPlaying, setIsPlaying] = useRecoilState(indexBGMState);
+  const [gameBGM, setGameBGM] = useRecoilState(gameBGMElement);
+  const [isGameBGMPlaying, setIsGameBGMPlaying] = useRecoilState(gameBGMState);
 
   //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
+  useEffect(() => {
+    if (gameBGM && !isGameBGMPlaying) {
+      (gameBGM as HTMLAudioElement).loop = true;
+      (gameBGM as HTMLAudioElement).volume = 0.5;
+      (gameBGM as HTMLAudioElement).play();
+      setIsGameBGMPlaying(true);
+    }
+  }, [gameBGM]);
+
   useEffect(() => {
     readySoundPlay();
     setGameReadyState(myReadyState && peerReadyState);
@@ -30,7 +41,13 @@ export default function CheckReady({ dataChannel }: Props) {
       if (indexBGM && isPlaying) {
         setIsPlaying(false);
         (indexBGM as HTMLAudioElement).pause();
+        if (!gameBGM) {
+          const newAudio = new Audio("/sounds/gameBGM.mp3");
+          //@ts-ignore
+          setGameBGM(newAudio);
+        }
       }
+
       document.getElementById("itembar")!.classList.remove("invisible");
       document.getElementById("itembar")!.classList.add("visible");
 
@@ -72,7 +89,7 @@ export default function CheckReady({ dataChannel }: Props) {
       <div className="flex flex-row" id="fullscreen">
         <div className="flex flex-col w-1/2 h-screen">
           {!gameReadyState && (
-            <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
+            <div className="flex justify-center items-center w-1/2 absolute h-[100px]">
               <div
                 className={`${styles.ready} ${!myReadyState ? (peerReadyState ? "bg-green-500" : "") : "bg-red-900"}`}
                 id="myReadyButton"
@@ -87,7 +104,7 @@ export default function CheckReady({ dataChannel }: Props) {
               <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className="h-[480px] w-[640px] mt-[160px] self-center" id={styles.gamepan}>
+          <div className="h-[480px] w-[640px] mt-[100px] self-center" id={styles.gamepan}>
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
                 <div className="absolute text-7xl text-red-600"> MY PUZZLE </div>
@@ -116,7 +133,7 @@ export default function CheckReady({ dataChannel }: Props) {
         </div>
         <div className="flex flex-col w-1/2 h-screen">
           {(!myReadyState || !peerReadyState) && (
-            <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
+            <div className="flex justify-center items-center w-1/2 absolute h-[100px]">
               <div className={`${styles.ready} ${!peerReadyState ? "" : "bg-red-900"}`}>{!peerReadyState ? "Not Ready" : "Peer Ready"}</div>
             </div>
           )}
@@ -125,7 +142,7 @@ export default function CheckReady({ dataChannel }: Props) {
               <PeerPuzzle auth={false} videoId={"myface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className="h-[480px] w-[640px] mt-[160px] self-center" id={styles.gamepan}>
+          <div className="h-[480px] w-[640px] mt-[100px] self-center" id={styles.gamepan}>
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
                 <div className="absolute text-7xl text-blue-600"> PEER PUZZLE </div>

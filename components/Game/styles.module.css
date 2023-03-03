@@ -433,21 +433,23 @@
   0% {
     position:fixed;
     transform: translate(300px, 0);
+    pointer-events: none;
+    z-index:1;
   }
   50% {
     position:fixed;
-    transform: translate(0, 160px);
+    transform: translate(0, 100px);
   }
 
   75% {
     position:fixed;
     transform: translate(300px, 0);
   }
-
   100% {
     position:fixed;
     transform: translate(0, 0);
     pointer-events: none;
+    z-index:1;
   }
 }
 
@@ -455,12 +457,13 @@
   0% {
     position:fixed;
     transform: translate(250px, 0px);
+    pointer-events: none;
+    z-index:2;
   }
   50% {
     position:fixed;
-    transform: translate(163px, 160px);
+    transform: translate(163px, 100px);
   }
-
   75% {
     position:fixed;
     transform: translate(250px, 0);
@@ -469,166 +472,167 @@
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none;
+    z-index:2;
   }
 }
 
-@keyframes 
-cardstart2 {
+@keyframes cardstart2 {
   0% {
     position:fixed;
     transform: translate(200px, 0px);
+    pointer-events: none;
+    z-index:3;
   }
   50% {
     position:fixed;
-    transform: translate(326px, 160px);
-
+    transform: translate(326px, 100px);
   }
   75% {
     position:fixed;
     transform: translate(200px, 0);
   }
-
   100% {
+    z-index:3;
     position:fixed;
     transform: translate(0px, 0px);
-    pointer-events: none;
-    
+    pointer-events: none; 
   }
 }
 
 @keyframes cardstart3 {
-    0% {
+  0% {
+    z-index:4;
     position:fixed;
     transform: translate(150px, 0px);
+    pointer-events: none;
   }
   50% {
     position:fixed;
-    transform: translate(-150px, 320px);
-
+    transform: translate(-150px, 260px);
   }
   75% {
     position:fixed;
     transform: translate(150px, 0);
   }
-
   100% {
+    z-index:4;
     position:fixed;
     transform: translate(0px, 0px);
-    pointer-events: none;
-    
+    pointer-events: none; 
   }
 }
 
 @keyframes cardstart4 {
   0% {
+    z-index:5;
     position:fixed;
     transform: translate(100px, 0px);
+    pointer-events: none;
   }
   50% {
     position:fixed;
-    transform: translate(13px, 320px);
-
+    transform: translate(13px, 260px);
   }
   75% {
     position:fixed;
     transform: translate(100px, 0);
   }
-
   100% {
+    z-index:5;
     position:fixed;
     transform: translate(0px, 0px);
-    pointer-events: none;
-    
+    pointer-events: none; 
   }
 }
 
 @keyframes cardstart5 {
   0% {
+    z-index:6;
     position:fixed;
     transform: translate(50px, 0px);
+    pointer-events: none;
   }
   50% {
     position:fixed;
-    transform: translate(176px, 320px);
-
+    transform: translate(176px, 260px);
   }
   75% {
     position:fixed;
     transform: translate(50px, 0);
   }
   100% {
+    z-index:6;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none;
   }
 }
 
-@keyframes 
-cardstart6 {
+@keyframes cardstart6 {
   0% {
+    z-index:7;
     position:fixed;
     transform: translate(0px, 0px);
+    pointer-events: none;
   }
   50% {
     position:fixed;
-    transform: translate(-300px, 480px);
-
+    transform: translate(-300px, 420px);
   }
   75% {
     position:fixed;
     transform: translate(0px, 0);
   }
-
   100% {
+    z-index:7;
     position:fixed;
     transform: translate(0px, 0px);
-    pointer-events: none;
-    
+    pointer-events: none; 
   }
 }
 
 @keyframes cardstart7 {
   0% {
+    z-index:8;
     position:fixed;
     transform: translate(-50px, 0px);
+    pointer-events: none;
   }
   50% {
     position:fixed;
-    transform: translate(-137px, 480px);
-
+    transform: translate(-137px, 420px);
   }
   75% {
     position:fixed;
     transform: translate(-50px, 0);
   }
-
   100% {
+    z-index:8;
     position:fixed;
     transform: translate(0px, 0px);
-    pointer-events: none;
-    
+    pointer-events: none; 
   }
 }
 
 @keyframes cardstart8 {
   0% {
+    z-index:9;
     position:fixed;
     transform: translate(-100px, 0px);
+    pointer-events: none;
   }
   50% {
     position:fixed;
-    transform: translate(26px, 480px);
-
+    transform: translate(26px, 420px);
   }
   75% {
     position:fixed;
     transform: translate(-100px, 0);
   }
-
   100% {
+    z-index:9;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none;
-    
   }
 }

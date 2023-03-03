@@ -71,7 +71,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     const d = 1;
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [213 * d, 160 * d];
-    const [width, height] = [213 * (i % 3) - widthOx * 1.5, 160 * ((i - (i % 3)) / 3) + heightOx];
+    const [width, height] = [213 * (i % 3) - widthOx * 1.5, 160 * ((i - (i % 3)) / 3) + heightOx - 60];
     const [puzzleSoundPlay] = useSound(puzzleSoundUrl);
     // TODO : 옆으로 init 시 api.start 이동
 
