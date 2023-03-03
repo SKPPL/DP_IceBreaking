@@ -17,7 +17,7 @@ interface DockCardProps {
   item: number;
 }
 
-const INITIAL_WIDTH = 48;
+const INITIAL_WIDTH = 80;
 
 const itemList = ['rocket', 'ice', 'lip', 'twirl', 'magnet'];
 

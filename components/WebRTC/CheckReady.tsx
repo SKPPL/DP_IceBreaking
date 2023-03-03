@@ -72,7 +72,7 @@ export default function CheckReady({ dataChannel }: Props) {
       <div className="flex flex-row" id="fullscreen">
         <div className="flex flex-col w-1/2 h-screen">
           {!gameReadyState && (
-            <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
+            <div className="flex justify-center items-center w-1/2 absolute h-[100px]">
               <div
                 className={`${styles.ready} ${!myReadyState ? (peerReadyState ? "bg-green-500" : "") : "bg-red-900"}`}
                 id="myReadyButton"
@@ -87,7 +87,7 @@ export default function CheckReady({ dataChannel }: Props) {
               <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className="h-[480px] w-[640px] mt-[160px] self-center" id={styles.gamepan}>
+          <div className="h-[480px] w-[640px] mt-[100px] self-center" id={styles.gamepan}>
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
                 <div className="absolute text-7xl text-red-600"> MY PUZZLE </div>
@@ -116,7 +116,7 @@ export default function CheckReady({ dataChannel }: Props) {
         </div>
         <div className="flex flex-col w-1/2 h-screen">
           {(!myReadyState || !peerReadyState) && (
-            <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
+            <div className="flex justify-center items-center w-1/2 absolute h-[100px]">
               <div className={`${styles.ready} ${!peerReadyState ? "" : "bg-red-900"}`}>{!peerReadyState ? "Not Ready" : "Peer Ready"}</div>
             </div>
           )}
@@ -125,7 +125,7 @@ export default function CheckReady({ dataChannel }: Props) {
               <PeerPuzzle auth={false} videoId={"myface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className="h-[480px] w-[640px] mt-[160px] self-center" id={styles.gamepan}>
+          <div className="h-[480px] w-[640px] mt-[100px] self-center" id={styles.gamepan}>
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
                 <div className="absolute text-7xl text-blue-600"> PEER PUZZLE </div>
