@@ -2,38 +2,42 @@ import React, { useState, useEffect } from "react";
 import styles from "./styles.module.css";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
-import useSound from "use-sound"
-import dynamic from "next/dynamic";
+import useSound from "use-sound";
 import { useDispatch } from "react-redux";
-
-
+import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
+import { useRecoilState, useRecoilValue } from "recoil";
 interface Props {
   dataChannel: RTCDataChannel | undefined;
 }
 
 export default function CheckReady({ dataChannel }: Props) {
-    const [myReadyState, setMyReadyState] = useState(false);
-    const [peerReadyState, setPeerReadyState] = useState(false);
-    const [gameReadyState, setGameReadyState] = useState(false);
-    const [isBgMusicOn, setIsBgMusicOn] = useState(true);
-    const dispatch = useDispatch();
+  const [myReadyState, setMyReadyState] = useState(false);
+  const [peerReadyState, setPeerReadyState] = useState(false);
+  const [gameReadyState, setGameReadyState] = useState(false);
+  const dispatch = useDispatch();
 
-    const readySoundUrl = '/sounds/ready.mp3'
-    const [readySoundPlay] = useSound(readySoundUrl)
-  
-    //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
+  const readySoundUrl = "/sounds/ready.mp3";
+  const [readySoundPlay] = useSound(readySoundUrl);
+  const indexBGM = useRecoilValue(indexBGMElement);
+  const [isPlaying, setIsPlaying] = useRecoilState(indexBGMState);
+
+  //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
   useEffect(() => {
     readySoundPlay();
     setGameReadyState(myReadyState && peerReadyState);
+
     if (myReadyState && peerReadyState) {
-      document.getElementById("itembar")!.classList.remove("invisible")
-      document.getElementById("itembar")!.classList.add("visible")
-      setIsBgMusicOn(false);
+      if (indexBGM && isPlaying) {
+        setIsPlaying(false);
+        (indexBGM as HTMLAudioElement).pause();
+      }
+      document.getElementById("itembar")!.classList.remove("invisible");
+      document.getElementById("itembar")!.classList.add("visible");
 
       setTimeout(() => {
-        dispatch({ type: 'myPuzzle/start' })
-        dispatch({ type: 'peerPuzzle/start' })
-      }, 1000)
+        dispatch({ type: "myPuzzle/start" });
+        dispatch({ type: "peerPuzzle/start" });
+      }, 1000);
     }
   }, [myReadyState, peerReadyState]);
 
@@ -69,10 +73,13 @@ export default function CheckReady({ dataChannel }: Props) {
         <div className="flex flex-col w-1/2 h-screen">
           {!gameReadyState && (
             <div className="flex justify-center items-center w-1/2 absolute h-[160px]">
-                <div className={`${styles.ready} ${!myReadyState ? peerReadyState ? "bg-green-500" : ""  : "bg-red-900"}`} id="myReadyButton" onClick={changeMyReadyState}>
-                    {!myReadyState ? peerReadyState ? "Start" : "Ready"  : "Cancel" } 
-                </div>
-
+              <div
+                className={`${styles.ready} ${!myReadyState ? (peerReadyState ? "bg-green-500" : "") : "bg-red-900"}`}
+                id="myReadyButton"
+                onClick={changeMyReadyState}
+              >
+                {!myReadyState ? (peerReadyState ? "Start" : "Ready") : "Cancel"}
+              </div>
             </div>
           )}
           {gameReadyState && dataChannel && (
@@ -132,7 +139,6 @@ export default function CheckReady({ dataChannel }: Props) {
           </div>
         </div>
       </div>
-
     </>
   );
 }

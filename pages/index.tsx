@@ -1,19 +1,29 @@
-import Head from 'next/head'
-import BagicHome from '@/components/PageElements/BagicHome'
-import styles from './styles.module.css'
-import useSound from 'use-sound';
-import { useEffect, useState } from 'react';
-import MainParticles from '@/components/PageElements/Particles/mainParticles';
-import dynamic from 'next/dynamic';
+import Head from "next/head";
+import BagicHome from "@/components/PageElements/BagicHome";
+import styles from "./styles.module.css";
+import { useEffect } from "react";
+import MainParticles from "@/components/PageElements/Particles/mainParticles";
 
+import { useRecoilState } from "recoil";
+import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
 
 export default function Home() {
-  const [isBgMusicOn, setIsBgMusicOn] = useState(false);
+  const [indexBGM, setIndexBGM] = useRecoilState(indexBGMElement);
+  const [isPlaying, setIsPlaying] = useRecoilState(indexBGMState);
 
   useEffect(() => {
-    setTimeout(() => setIsBgMusicOn(true), 3000)
-  }, []);
-  
+    if (!indexBGM) {
+      const newAudio = new Audio("/sounds/bgm.mp3");
+      //@ts-ignore
+      setIndexBGM(newAudio);
+    }
+    if (indexBGM && !isPlaying) {
+      (indexBGM as HTMLAudioElement).loop = true;
+      (indexBGM as HTMLAudioElement).play();
+      setIsPlaying(true);
+    }
+  }, [indexBGM]);
+
   return (
     <>
       <Head>
@@ -31,9 +41,9 @@ export default function Home() {
           </div>
         </div>
         <div className="absolute justify-end items-end flex w-1/4 h-4/5">
-            <BagicHome />
+          <BagicHome />
         </div>
       </div>
     </>
-  )
+  );
 }
