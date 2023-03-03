@@ -199,7 +199,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
     useEffect(() => {
         if (isStart) {
-            setTimeout(() => api.start({ x: x.get() + firstlocation[i], y: y.get() }), 5000);
+            setTimeout(() => api.start({ x: x.get() + firstlocation[i] }), 5000);
+            setTimeout(() => api.start({ y: y.get() + 90 }), 5300);
             setTimeout(() => isStart = false, 1000);
         }
         return () => {
