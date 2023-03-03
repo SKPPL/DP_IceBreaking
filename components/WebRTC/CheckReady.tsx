@@ -17,7 +17,6 @@ export default function CheckReady({ dataChannel }: Props) {
     const [gameReadyState, setGameReadyState] = useState(false);
     const [isBgMusicOn, setIsBgMusicOn] = useState(true);
     const dispatch = useDispatch();
-    const [announce, setAnnounce] = useState(false);
 
     const readySoundUrl = '/sounds/ready.mp3'
     const [readySoundPlay] = useSound(readySoundUrl)
@@ -30,11 +29,9 @@ export default function CheckReady({ dataChannel }: Props) {
       document.getElementById("itembar")!.classList.remove("invisible")
       document.getElementById("itembar")!.classList.add("visible")
       setIsBgMusicOn(false);
-      setAnnounce(true);
       setTimeout(() => {
         dispatch({ type: 'myPuzzle/start' })
         dispatch({ type: 'peerPuzzle/start' })
-        setAnnounce(false);
       }, 4000)
     }
   }, [myReadyState, peerReadyState]);
@@ -88,12 +85,6 @@ export default function CheckReady({ dataChannel }: Props) {
               <div className="absolute text-7xl text-red-600"> MY PUZZLE </div>
               </div>
             }
-            {announce &&
-              < div className="absolute h-[480px] justify-center items-center text-center w-[640px] flex">
-                <div className="absolute text-7xl text-red-600"> PEER FACE <br /> YOU HAVE TO MAKE
-                </div>
-              </div>
-            }
             <div className="flex flex-row h-1/3">
               <div className={`w-1/3 ${styles.eachpan}`}></div>
               <div className={`w-1/3 ${styles.eachpan}`}></div>
@@ -132,12 +123,6 @@ export default function CheckReady({ dataChannel }: Props) {
                 <div className="absolute text-7xl text-blue-600"> PEER PUZZLE </div>
               </div>
             }
-            {announce &&
-              < div className="absolute h-[480px] justify-center items-center text-center w-[640px] flex">
-                <div className="absolute text-7xl text-blue-600"> MY FACE <br /> PEER HAVE TO MAKE
-                </div>
-              </div>
-            }
               <div className="flex flex-row h-1/3">
               <div className={`w-1/3 ${styles.eachpan}`}></div>
               <div className={`w-1/3 ${styles.eachpan}`}></div>
@@ -156,7 +141,6 @@ export default function CheckReady({ dataChannel }: Props) {
           </div>
         </div>
       </div>
-
     </>
   );
 }
