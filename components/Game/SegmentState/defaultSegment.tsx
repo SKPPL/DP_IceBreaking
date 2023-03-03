@@ -3,12 +3,12 @@ import { useSpring, animated, to } from "@react-spring/web";
 import { useDrag, useGesture } from "@use-gesture/react";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import styles from "../styles.module.css";
-import CloneVideo from "../CloneVideo";
+import CloneVideo from "../VideoDivide/CloneVideo";
 import useSound from 'use-sound';
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { myFaceLandMarkState, myLipState, myTwirlState, myWaitState, peerFaceLandMarkState, peerLipState, peerTwirlState, peerWaitState } from "../atom";
-import LipVideo from "../../FaceDetection/LipVideo";
-import TwirlVideo from "@/components/FaceDetection/TwirlVideo";
+import LipVideo from "../VideoDivide/LipVideo";
+import TwirlVideo from "@/components/Game/VideoDivide/TwirlVideo";
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
@@ -35,15 +35,15 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     });
     const isRight = useSelector((state: any) => {
         return state.defaultSegmentRightPlace[i];
-    })
+    });
     const [isRightPlace, setIsRightPlace] = useState(false);
     //아래 조건문 위로 올리면 안됨
     console.log(isMyCard)
 
     const arr = useSelector((state: any) => state.puzzleOrder);
-    const firstlocation = [arr[0]*50-50, arr[1]*50-100, arr[2]*50-150, arr[3]*50-200, arr[4]*50-250, arr[5]*50-300, arr[6]*50-350, arr[7]*50-400, arr[8]*50-450]
+    const firstlocation = [arr[0] * 50 - 50, arr[1] * 50 - 100, arr[2] * 50 - 150, arr[3] * 50 - 200, arr[4] * 50 - 250, arr[5] * 50 - 300, arr[6] * 50 - 350, arr[7] * 50 - 400, arr[8] * 50 - 450];
     const [zindex, setZindex] = useState(arr[i]);
-    
+
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
     const d = 1;
@@ -54,14 +54,14 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
     // isRight인 경우 안정적으로 고정 width, heigth에서 시작하게 하기 (얼음깨고 다시 맞출때 위치가 비정상적으로 저장중 (default로 돌아오기 직전만 api.start가 옮겨서 맞춰주기 전 위치로 돌아온다. 기능적인 문제는 없음))
     let startXY = storedPosition[i];
-    if (isRight && auth){
+    if (isRight && auth) {
         startXY = [width, height];
     }
 
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
-        if (isRight){
+        if (isRight) {
             setZindex(0);
         }
         const preventDefault = (e: Event) => e.preventDefault();
@@ -101,7 +101,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     }, [dataChannel]);
 
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    let isDataIn:boolean = false;
+    let isDataIn: boolean = false;
     let isRigthPlaceForSetTimeout = isRightPlace;
     useDrag(
         (params) => {
@@ -120,7 +120,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     isRigthPlaceForSetTimeout = true;
                     api.start({ x: width, y: height });
                     setIsRightPlace(true);
-                    dispatch({ type: `defaultSegmentRightPlace/setRight`, payload: { index: i, isRight: true}});
+                    dispatch({ type: `defaultSegmentRightPlace/setRight`, payload: { index: i, isRight: true } });
                     puzzleSoundPlay();
                     if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
                     dispatch({ type: "puzzleComplete/plus_mine" });
@@ -133,7 +133,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                         dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
                         return;
                     }
-                }else{
+                } else {
                     dispatch({
                         type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
                         payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
@@ -147,9 +147,9 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 // 마우스를 떼는 순간에는 무조건 좌표+offset한 값을 저장하고 데이터를 보냄
             }
 
-            if(!isDataIn){
+            if (!isDataIn) {
                 isDataIn = true;
-                setTimeout(function noName(){
+                setTimeout(function noName() {
                     if (isRigthPlaceForSetTimeout) return;
                     positionDataSend();
                     isDataIn = false;
@@ -201,7 +201,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
     useEffect(() => {
         if (isStart) {
-            setTimeout(() => api.start({ x: x.get() + firstlocation[i], y: y.get() }), 5000)
+            setTimeout(() => api.start({ x: x.get() + firstlocation[i], y: y.get() }), 5000);
             setTimeout(() => isStart = false, 1000);
         }
         return () => {
