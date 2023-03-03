@@ -18,8 +18,9 @@ interface Props {
   dataChannel: RTCDataChannel | undefined;
   segmentState: string;
   isRightCard: boolean;
+  isMyCard: boolean;
 }
-function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard }: Props) {
+function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard, isMyCard }: Props) {
   const myWait = useRecoilValue(myWaitState);
   const peerWait = useRecoilValue(peerWaitState);
   return (
@@ -34,6 +35,7 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightC
           videoId={videoId}
           segmentState={segmentState}
           isRightCard={isRightCard}
+          isMyCard={isMyCard}
         />
       )}
       {(auth ? myWait === 9 : peerWait === 9) && segmentState === "rocket" && (

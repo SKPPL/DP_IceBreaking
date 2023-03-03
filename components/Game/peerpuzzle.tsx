@@ -154,9 +154,9 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         return (
           <>
             <div className={`${styles[`c${i}`]}`} key={`peerpuzzle_${i}`}>
-              {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />}
+              {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} isMyCard={false} />}
               {(peerPosition.i !== i) &&
-                <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />
+                <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} isMyCard={false} />
               }
               </div>
           </>
