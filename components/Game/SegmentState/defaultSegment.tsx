@@ -24,10 +24,9 @@ interface Props {
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
     isRightCard: boolean;
-    isMyCard: boolean;
 }
 
-function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard, isMyCard }: Props) {
+function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard }: Props) {
     //퍼즐 데이터 스토어와 연결 react-redux
     const dispatch = useDispatch();
     const storedPosition = useSelector((state: any) => {
@@ -38,7 +37,6 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     });
     const [isRightPlace, setIsRightPlace] = useState(false);
     //아래 조건문 위로 올리면 안됨
-    console.log(isMyCard)
 
     const arr = useSelector((state: any) => state.puzzleOrder);
     const firstlocation = [arr[0] * 50 - 50, arr[1] * 50 - 100, arr[2] * 50 - 150, arr[3] * 50 - 200, arr[4] * 50 - 250, arr[5] * 50 - 300, arr[6] * 50 - 350, arr[7] * 50 - 400, arr[8] * 50 - 450];
@@ -61,7 +59,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
-        if (isRight) {
+    if (isRight && auth){
             setZindex(0);
         }
         const preventDefault = (e: Event) => e.preventDefault();
@@ -234,7 +232,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 <div className={styles.container}>
                     <animated.div
                         ref={target}
-                        className={(isRightPlace || isRightCard) ? `${styles.rightCard}` : (isMyCard ? `${styles.myCard}` : `${styles.peerCard}`)}
+                        className={(isRightPlace || isRightCard) ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
                         style={{
                             transform: "perspective(600px)",
                             x,
