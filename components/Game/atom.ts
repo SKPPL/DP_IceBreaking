@@ -41,3 +41,13 @@ export const peerTwirlState = atom({
   key: "peerTwirl",
   default: false,
 });
+
+export const indexBGMElement = atom({
+  key: "indexBGMElement",
+  default: undefined,
+});
+
+export const indexBGMState = atom({
+  key: "indexBGMState",
+  default: false,
+});
