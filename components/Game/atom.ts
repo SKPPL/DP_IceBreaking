@@ -51,3 +51,13 @@ export const indexBGMState = atom({
   key: "indexBGMState",
   default: false,
 });
+
+export const gameBGMElement = atom({
+  key: "gameBGMElement",
+  default: undefined,
+});
+
+export const gameBGMState = atom({
+  key: "gameBGMState",
+  default: false,
+});
