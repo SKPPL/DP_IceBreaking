@@ -1,10 +1,11 @@
 import React, { useRef, useState, useMemo, useEffect, MouseEvent } from 'react'
 import { useTransition } from '@react-spring/web'
-import { MainR, ContainerR, MessageR, ButtonR, ContentR, LifeR } from './rocketStyles'
-import { MainM, ContainerM, MessageM, ButtonM, ContentM, LifeM } from './magnetStyles'
-import { MainI, ContainerI, MessageI, ButtonI, ContentI, LifeI } from './iceStyles'
-import { MainL, ContainerL, MessageL, ButtonL, ContentL, LifeL } from './lipStyles'
-import { MainT, ContainerT, MessageT, ButtonT, ContentT, LifeT } from './twirlStyles'
+import { ContainerR, MessageR, ContentR } from './rocketStyles'
+import { ContainerM, MessageM, ContentM } from './magnetStyles'
+import { ContainerI, MessageI, ContentI } from './iceStyles'
+import { ContainerL, MessageL, ContentL } from './lipStyles'
+import { ContainerT, MessageT, ContentT } from './twirlStyles'
+import { MessageA, ContentA } from './timeAlert'
 import useSound from "use-sound"
 
 let id = 0
@@ -32,17 +33,16 @@ function MessageHub({
   children,
 }: MessageHubProps) {
   const refMap = useMemo(() => new WeakMap(), [])
-  const cancelMap = useMemo(() => new WeakMap(), [])
   let [items, setItems] = useState<Item[]>([])
 
   let timeout;
 
   switch(segmentState){
-    case 'rocket': timeout = 8500;  break;
-    case 'magnet': timeout = 6500;  break;
-    case 'ice': timeout = 14500;  break;
-    case 'lip' : timeout = 9500; break;
-    case 'twirl' : timeout = 9500; break;
+    case 'rocket': timeout = 1500;  break;
+    case 'magnet': timeout = 1500;  break;
+    case 'ice': timeout = 1500;  break;
+    case 'lip' : timeout = 1500; break;
+    case 'twirl' : timeout = 1500; break;
     case 'default' : items = [];
   }
 
@@ -76,9 +76,16 @@ function MessageHub({
       return (
         <ContainerR>
           {transitions(({ life, ...style }, item) => (
+            <MessageA style={style}>
+              <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                <p>10초 지속</p>
+              </ContentA>
+            </MessageA>
+          ))}
+          {transitions(({ life, ...style }, item) => (
             <MessageR style={style}>
               <ContentR ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <LifeR style={{ right: life }} />
+                {/* <LifeR style={{ right: life }} /> */}
                 <p>{item.msg}</p>
               </ContentR>
             </MessageR>
@@ -89,9 +96,17 @@ function MessageHub({
       return (
         <ContainerM>
           {transitions(({ life, ...style }, item) => (
+            <MessageA style={style}>
+              <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                {/* <LifeI style={{ right: life }} /> */}
+                <p>10초 지속</p>
+              </ContentA>
+            </MessageA>
+          ))}
+          {transitions(({ life, ...style }, item) => (
             <MessageM style={style}>
               <ContentM ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <LifeM style={{ right: life }} />
+                {/* <LifeM style={{ right: life }} /> */}
                 <p>{item.msg}</p>
               </ContentM>
             </MessageM>
@@ -102,9 +117,17 @@ function MessageHub({
       return (
         <ContainerI>
           {transitions(({ life, ...style }, item) => (
+            <MessageA style={style}>
+              <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                {/* <LifeI style={{ right: life }} /> */}
+                <p>10초 지속</p>
+              </ContentA>
+            </MessageA>
+          ))}
+          {transitions(({ life, ...style }, item) => (
             <MessageI style={style}>
               <ContentI ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <LifeI style={{ right: life }} />
+                {/* <LifeI style={{ right: life }} /> */}
                 <p>{item.msg}</p>
               </ContentI>
             </MessageI>
@@ -115,9 +138,17 @@ function MessageHub({
       return (
         <ContainerL>
           {transitions(({ life, ...style }, item) => (
+            <MessageA style={style}>
+              <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                {/* <LifeI style={{ right: life }} /> */}
+                <p>10초 지속</p>
+              </ContentA>
+            </MessageA>
+          ))}
+          {transitions(({ life, ...style }, item) => (
             <MessageL style={style}>
               <ContentL ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <LifeL style={{ right: life }} />
+                {/* <LifeL style={{ right: life }} /> */}
                 <p>{item.msg}</p>
               </ContentL>
             </MessageL>
@@ -128,9 +159,17 @@ function MessageHub({
       return (
         <ContainerT>
           {transitions(({ life, ...style }, item) => (
+            <MessageA style={style}>
+              <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
+                {/* <LifeI style={{ right: life }} /> */}
+                <p>10초 지속</p>
+              </ContentA>
+            </MessageA>
+          ))}
+          {transitions(({ life, ...style }, item) => (
             <MessageT style={style}>
               <ContentT ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <LifeT style={{ right: life }} />
+                {/* <LifeT style={{ right: life }} /> */}
                 <p>{item.msg}</p>
               </ContentT>
             </MessageT>
@@ -161,11 +200,11 @@ export default function Modal({ segmentState }:Props) {
   useEffect(() => {
     switch(segmentState){
       case 'rocket':
-        ref.current?.(`내 조각이 로켓으로 변했습니다!`);
+        ref.current?.(`조각이 로켓으로 변했습니다!`);
         rocketPlay();
         break;
       case 'magnet':
-        ref.current?.(`블랙홀로 조각이 빨려들어갑니다!`);
+        ref.current?.(`블랙홀이 생성되었습니다!`);
         magnetPlay();
         break;
       case 'ice':
@@ -177,7 +216,7 @@ export default function Modal({ segmentState }:Props) {
         // iceSoundPlay();
         break;
       case 'twirl':
-        ref.current?.(`적의 얼굴이 빨려들어갑니다!`);
+        ref.current?.(`적의 얼굴이 돌아갑니다!`);
         // iceSoundPlay();
         break;
     }
