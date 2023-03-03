@@ -9,7 +9,6 @@ export default function Ready() {
   const [isPlaying, setIsPlaying] = useRecoilState(indexBGMState);
 
   useEffect(() => {
-    console.log(indexBGM);
     if (!indexBGM) {
       const newAudio = new Audio("/sounds/bgm.mp3");
       //@ts-ignore
@@ -17,6 +16,7 @@ export default function Ready() {
     }
     if (indexBGM && !isPlaying) {
       (indexBGM as HTMLAudioElement).loop = true;
+      (indexBGM as HTMLAudioElement).volume = 0.5;
       (indexBGM as HTMLAudioElement).play();
       setIsPlaying(true);
     }
