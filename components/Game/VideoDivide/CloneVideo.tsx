@@ -38,8 +38,8 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
             dividedVideoWidth = Math.floor(video.videoWidth / 3);
             dividedVideoHeight = Math.floor(video.videoHeight / 3);
             ctx!.drawImage(video, dividedVideoWidth * (id % 3), dividedVideoHeight * ((id - id % 3) / 3), dividedVideoWidth, dividedVideoHeight, 0, 0, 213, 160);
+            requestID.current = requestAnimationFrame(draw);
         }
-        requestID.current = requestAnimationFrame(draw);
     }, []);
 
     const draw640 = useCallback(() => {
