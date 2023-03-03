@@ -1,36 +1,95 @@
-.card {
+.myCard {
   position: absolute;
   width: 213px;
   height: 160px;
   background: transparent;
   border-radius: 5px;
-  box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 .2rem #fff,
+  0 0 .2rem #fff,
+  0 0 2rem red,
+  0 0 0.8rem red,
+  0 0 2.8rem red,
+  inset 0 0 1.3rem red; 
+  /* box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.2); */
   transition: box-shadow 0.5s, opacity 0.5s;
   will-change: transform;
   border: 2px solid white;
-  box-shadow: 0 0 0 1px white inset; 
+  /* box-shadow: 0 0 0 1px white inset;  */
   cursor: grab;
   overflow: hidden;
   touch-action: none;
 }
 
 
-.card:hover {
-  box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3);
+.myCard:hover {
+  /* box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3); */
+  box-shadow: 0 0 .2rem #fff,
+  0 0 .2rem #fff,
+  0 0 2rem greenyellow,
+  0 0 0.8rem greenyellow,
+  0 0 2.8rem greenyellow,
+  inset 0 0 1.3rem greenyellow; 
 }
 
-.card>div {
+.myCard>div {
   will-change: transform;
   height: 100%;
   margin: 0vw 0;
 }
 
-.card>div>* {
+.myCard>div>* {
   height: 100%;
   background-size: cover;
   background-position: center center;
   margin: 0vw 0;
 }
+
+.peerCard {
+  position: absolute;
+  width: 213px;
+  height: 160px;
+  background: transparent;
+  border-radius: 5px;
+  box-shadow: 0 0 .2rem #fff,
+  0 0 .2rem #fff,
+  0 0 2rem blue,
+  0 0 0.8rem blue,
+  0 0 2.8rem blue,
+  inset 0 0 1.3rem blue; 
+  /* box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.2); */
+  transition: box-shadow 0.5s, opacity 0.5s;
+  will-change: transform;
+  border: 2px solid white;
+  /* box-shadow: 0 0 0 1px white inset;  */
+  cursor: grab;
+  overflow: hidden;
+  touch-action: none;
+}
+
+
+.peerCard:hover {
+  /* box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3); */
+  box-shadow: 0 0 .2rem #fff,
+  0 0 .2rem #fff,
+  0 0 2rem blue,
+  0 0 0.8rem blue,
+  0 0 2.8rem blue,
+  inset 0 0 1.3rem blue; 
+}
+
+.peerCard>div {
+  will-change: transform;
+  height: 100%;
+  margin: 0vw 0;
+}
+
+.peerCard>div>* {
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  margin: 0vw 0;
+}
+
 
 .rightCard:hover {
   box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3);

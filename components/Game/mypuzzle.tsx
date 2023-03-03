@@ -129,7 +129,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                     return (
                         <>
                             <div className={`${styles[`c${i}`]}`} key={`mypuzzle_${i}`}>
-                                <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} isRightCard={false} />
+                                <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} isRightCard={false} isMyCard={true} />
                             </div>
                         </>
                     );
