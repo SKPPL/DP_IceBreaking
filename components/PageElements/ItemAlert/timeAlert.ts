@@ -1,8 +1,19 @@
 import styled from 'styled-components'
 import { animated } from '@react-spring/web'
 
+export const MainA = styled.div`
+  cursor: pointer;
+  color: #676767;
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+`
+
 // align-items 에서 알람 창 위치 조절
-export const ContainerI = styled.div`
+export const ContainerA = styled.div`
   -webkit-user-select:none;
   -moz-user-select:none;
   -ms-user-select:none;
@@ -15,7 +26,7 @@ export const ContainerI = styled.div`
   margin: 0 auto;
   left: 30px;
   right: 30px;
-  bottom: 20%;
+  bottom: 35%;
   display: flex;
   flex-direction: column;
   pointer-events: none;
@@ -25,36 +36,26 @@ export const ContainerI = styled.div`
   }
 `
 // 아이템 사용 모달 알람 박스 스타일
-export const MessageI = styled(animated.div)`
+export const MessageA = styled(animated.div)`
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
   @media (max-width: 680px) {
     width: 100%;
   }
-  width: 87vh;
-  height: 40vh;
-  background-image: url("/images/iceModalUser.gif");
-  opacity: 1.1;
+  width: 700px;
+  height: 130px;
+  background-image: url("");
+  opacity: 1;
   background-size: contain;
-  border: 0.2rem solid #fff;
-  border-top-right-radius: 150px;
-  border-bottom-left-radius: 150px;
-  box-shadow: 0 0 .2rem #fff,
-            0 0 .2rem #fff,
-            0 0 2rem #fe135d,
-            0 0 0.8rem #fe135d,
-            0 0 2.8rem #fe135d,
-            inset 0 0 1.3rem #fe135d; 
 `
 // 아이템 사용 모달 알람 메시지 스타일
-export const ContentI = styled.div`
+export const ContentA = styled.div`
   color: #fff;
-  font-weight: 400;
-  text-shadow: 0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d;
+  font-weight: 500;
+  text-shadow: 0 0 10px black, 0 0 10px black, 0 0 10px black, 0 0 10px black, 0 0 10px black;
   opacity: 1;
-  padding: 50px 20px;
-  font-size: 3.2em;
+  font-size: 2.3em;
   display: grid;
   grid-template-columns: 1fr auto;
   grid-gap: 10px;
