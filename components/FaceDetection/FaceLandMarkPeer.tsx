@@ -4,7 +4,7 @@ import React, { use, useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { useIsMounted } from "usehooks-ts";
 import { myFaceLandMarkState, peerFaceLandMarkState } from "../Game/atom";
-import LipVideo from "./LipVideo";
+import LipVideo from "../Game/VideoDivide/LipVideo";
 import { annotateFeatures, scaler, setupModel } from "./predictionPeer";
 //npm install --no-progress --verbose --loglevel silly
 const WIDTH = 640;

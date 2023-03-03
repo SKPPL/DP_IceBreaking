@@ -25,17 +25,33 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
     }, [cloneRef]);
 
     const video = document.getElementById(videoId) as HTMLVideoElement;
+    let dividedVideoWidth = Math.floor(video.videoWidth / 3);
+    let dividedVideoHeight = Math.floor(video.videoHeight / 3);
 
     const draw = useCallback(() => {
-        ctx!.drawImage(video, 213 * (id % 3), 160 * ((id - id % 3) / 3), 213, 160, 0, 0, 213, 160);
+        if (video.videoWidth === 640) {
+            ctx!.drawImage(video, 213 * (id % 3), 160 * ((id - id % 3) / 3), 213, 160, 0, 0, 213, 160);
+            cancelAnimationFrame(requestID.current);
+            requestID.current = requestAnimationFrame(draw640);
+        }
+        else {
+            dividedVideoWidth = Math.floor(video.videoWidth / 3);
+            dividedVideoHeight = Math.floor(video.videoHeight / 3);
+            ctx!.drawImage(video, dividedVideoWidth * (id % 3), dividedVideoHeight * ((id - id % 3) / 3), dividedVideoWidth, dividedVideoHeight, 0, 0, 213, 160);
+        }
         requestID.current = requestAnimationFrame(draw);
-    }, [video]);
+    }, []);
+
+    const draw640 = useCallback(() => {
+        ctx!.drawImage(video, 213 * (id % 3), 160 * ((id - id % 3) / 3), 213, 160, 0, 0, 213, 160);
+        requestID.current = requestAnimationFrame(draw640);
+    }, []);
+
 
     useEffect(() => {
-        if (!video) return;
         if (!ctx) return;
         requestID.current = requestAnimationFrame(draw);
-    }, [video]);
+    }, []);
 
 
     return (
