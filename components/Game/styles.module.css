@@ -434,6 +434,7 @@
     position:fixed;
     transform: translate(300px, 0);
     pointer-events: none;
+    z-index:1;
   }
   50% {
     position:fixed;
@@ -448,6 +449,7 @@
     position:fixed;
     transform: translate(0, 0);
     pointer-events: none;
+    z-index:1;
   }
 }
 
@@ -456,6 +458,7 @@
     position:fixed;
     transform: translate(250px, 0px);
     pointer-events: none;
+    z-index:2;
   }
   50% {
     position:fixed;
@@ -469,6 +472,7 @@
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none;
+    z-index:2;
   }
 }
 
@@ -477,6 +481,7 @@
     position:fixed;
     transform: translate(200px, 0px);
     pointer-events: none;
+    z-index:3;
   }
   50% {
     position:fixed;
@@ -487,6 +492,7 @@
     transform: translate(200px, 0);
   }
   100% {
+    z-index:3;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none; 
@@ -495,6 +501,7 @@
 
 @keyframes cardstart3 {
   0% {
+    z-index:4;
     position:fixed;
     transform: translate(150px, 0px);
     pointer-events: none;
@@ -508,6 +515,7 @@
     transform: translate(150px, 0);
   }
   100% {
+    z-index:4;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none; 
@@ -516,8 +524,10 @@
 
 @keyframes cardstart4 {
   0% {
+    z-index:5;
     position:fixed;
     transform: translate(100px, 0px);
+    pointer-events: none;
   }
   50% {
     position:fixed;
@@ -528,6 +538,7 @@
     transform: translate(100px, 0);
   }
   100% {
+    z-index:5;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none; 
@@ -536,6 +547,7 @@
 
 @keyframes cardstart5 {
   0% {
+    z-index:6;
     position:fixed;
     transform: translate(50px, 0px);
     pointer-events: none;
@@ -549,6 +561,7 @@
     transform: translate(50px, 0);
   }
   100% {
+    z-index:6;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none;
@@ -557,6 +570,7 @@
 
 @keyframes cardstart6 {
   0% {
+    z-index:7;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none;
@@ -570,6 +584,7 @@
     transform: translate(0px, 0);
   }
   100% {
+    z-index:7;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none; 
@@ -578,6 +593,7 @@
 
 @keyframes cardstart7 {
   0% {
+    z-index:8;
     position:fixed;
     transform: translate(-50px, 0px);
     pointer-events: none;
@@ -591,6 +607,7 @@
     transform: translate(-50px, 0);
   }
   100% {
+    z-index:8;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none; 
@@ -599,6 +616,7 @@
 
 @keyframes cardstart8 {
   0% {
+    z-index:9;
     position:fixed;
     transform: translate(-100px, 0px);
     pointer-events: none;
@@ -612,6 +630,7 @@
     transform: translate(-100px, 0);
   }
   100% {
+    z-index:9;
     position:fixed;
     transform: translate(0px, 0px);
     pointer-events: none;
