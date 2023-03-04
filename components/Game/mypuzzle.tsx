@@ -21,6 +21,9 @@ import MyTwirlParticles from "../PageElements/Particles/mytwirlParticles";
 import MyRocketParticles from "../PageElements/Particles/myrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
 
+let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
+let i: number;
+
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(import("@/components/Game/Segment"), {
     loading: () => <div></div>,
