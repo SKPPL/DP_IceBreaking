@@ -2,7 +2,7 @@ import Head from "next/head";
 import BagicHome from "@/components/PageElements/BagicHome";
 import styles from "./styles.module.css";
 import { useEffect } from "react";
-import MainParticles from "@/components/PageElements/Particles/mainParticles";
+import MainParticles from "@/components/PageElements/Particles/ceremonyParticles";
 
 import { useRecoilState } from "recoil";
 import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
