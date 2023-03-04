@@ -25,13 +25,20 @@ export function stopItem() {
   doRun = false;
 }
 
+export function isLoad(){
+  return loadCompleteMy;
+}
+
 let predictModel: MediaPipeFaceMesh;
 
 let rafId: number;
 
 let doRun: boolean = false;
 
+let loadCompleteMy: boolean = false;
+
 const predict = async (model: MediaPipeFaceMesh) => {
+  loadCompleteMy = true;
   const videoElement = document.getElementById('peerface') as HTMLVideoElement;
   const run = async () => {
     const video = videoElement;
@@ -62,7 +69,6 @@ export default function FaceLandMark() {
     setupModel().then((model) => {
       predictModel = model;
       predict(model);
-      console.log('1회 predict. peer');
     });
 
     return () => {
