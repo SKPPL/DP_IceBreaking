@@ -59,7 +59,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
-    if (isRight && auth){
+    if (isRight || isRightCard){
             setZindex(0);
         }
         const preventDefault = (e: Event) => e.preventDefault();
