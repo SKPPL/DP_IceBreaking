@@ -4,7 +4,7 @@ import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import useSound from "use-sound";
 import { useDispatch } from "react-redux";
-import { indexBGMElement, indexBGMState, gameBGMElement, gameBGMState } from "@/components/Game/atom";
+import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import GameBGM from "../PageElements/GameBGM";
 interface Props {
@@ -22,19 +22,7 @@ export default function CheckReady({ dataChannel }: Props) {
 
   const indexBGM = useRecoilValue(indexBGMElement);
   const [isPlaying, setIsPlaying] = useRecoilState(indexBGMState);
-  // const [gameBGM, setGameBGM] = useRecoilState(gameBGMElement);
-  // const [isGameBGMPlaying, setIsGameBGMPlaying] = useRecoilState(gameBGMState);
 
-  const [gameBGMState, setGameBGMState] = useState(false);
-  //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
-  // useEffect(() => {
-  //   if (gameBGM && !isGameBGMPlaying) {
-  //     (gameBGM as HTMLAudioElement).loop = true;
-  //     (gameBGM as HTMLAudioElement).volume = 0.5;
-  //     (gameBGM as HTMLAudioElement).play();
-  //     setIsGameBGMPlaying(true);
-  //   }
-  // }, [gameBGM]);
 
   useEffect(() => {
     readySoundPlay();
@@ -44,12 +32,6 @@ export default function CheckReady({ dataChannel }: Props) {
       if (indexBGM && isPlaying) {
         setIsPlaying(false);
         (indexBGM as HTMLAudioElement).pause();
-        // if (!gameBGM) {
-        //   const newAudio = new Audio("/sounds/gameBGM.mp3");
-        //   //@ts-ignore
-        //   setGameBGM(newAudio);
-        // }
-        // setGameBGMState(true);
       }
 
       document.getElementById("itembar")!.classList.remove("invisible");
@@ -100,7 +82,7 @@ export default function CheckReady({ dataChannel }: Props) {
                 id="myReadyButton"
                 onClick={changeMyReadyState}
               >
-                {!myReadyState ? (peerReadyState ? "Start" : "Ready") : "Cancel"}
+                {!myReadyState ? (peerReadyState ? "시작" : "준비") : "취소"}
               </div>
             </div>
           )}
@@ -109,12 +91,11 @@ export default function CheckReady({ dataChannel }: Props) {
               <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className={`h-[480px] w-[640px] mt-[100px] self-center ${styles.gamepanMy}`} >
+          <div className={`h-[480px] w-[640px] mt-[100px] self-center ${styles.gamepanMy}`}>
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
-                <div className="absolute text-5xl text-blue-600">
-                  MY PUZZLE BOARD <br />
-                  <br /> 이곳에 상대방 얼굴 조각을 맞추세요.
+                <div className="absolute text-7xl text-blue-600">
+                  나는 여기에 상대방 얼굴을 맞춥니다.😏
                 </div>
               </div>
             )}
@@ -142,7 +123,7 @@ export default function CheckReady({ dataChannel }: Props) {
         <div className="flex flex-col w-1/2 h-screen">
           {(!myReadyState || !peerReadyState) && (
             <div className="flex justify-center items-center w-1/2 absolute h-[100px]">
-              <div className={`${styles.readyPeer} ${!peerReadyState ? "" : "bg-red-900"}`}>{!peerReadyState ? "Not Ready" : "Peer Ready"}</div>
+              <div className={`${styles.readyPeer} ${!peerReadyState ? "" : "bg-red-900"}`}>{!peerReadyState ? "준비 중" : "준비 완료"}</div>
             </div>
           )}
           {gameReadyState && dataChannel && (
@@ -153,7 +134,7 @@ export default function CheckReady({ dataChannel }: Props) {
           <div className={`h-[480px] w-[640px] mt-[100px] self-center ${styles.gamepanPeer}`}>
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
-                <div className="absolute text-7xl text-red-600"> PEER PUZZLE </div>
+                <div className="absolute text-7xl text-red-600"> 상대가 여기에 내 얼굴을 맞춥니다.🤗 </div>
               </div>
             )}
             <div className="flex flex-row h-1/3">
