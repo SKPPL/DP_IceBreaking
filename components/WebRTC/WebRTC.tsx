@@ -66,14 +66,6 @@ export default function WebRTC() {
   const [checkLeave, setCheckLeave] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    let checkLoading = setInterval(() => {
-      if (isLoadMy() && isLoadPeer()) {
-        setLoading(true);
-        clearInterval(checkLoading);
-      }
-    }, 500);
-  }, []);
   //segementState is for item using, owner is my or peer
   useEffect(() => {
     if (typeof socketConnect !== "undefined") {
@@ -295,7 +287,14 @@ export default function WebRTC() {
 
   const [dataChannelExist, setDataChannelExist] = useRecoilState(dataChannelState);
   useEffect(() => {
-    if (dataChannel) setDataChannelExist(true);
+    if (dataChannel) {
+      let checkLoading = setInterval(() => {
+        if (isLoadMy() && isLoadPeer()) {
+          setLoading(true);
+          clearInterval(checkLoading);
+        }
+      }, 1000);
+    }
   }, [dataChannel]);
 
   return (
