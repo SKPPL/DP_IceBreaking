@@ -12,9 +12,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <IndexBGM />
-      {/* <div className="absolute w-screen h-auto overflow-hidden m-0 z-0 ">
-        <video muted autoPlay loop src="videos/HIghBG.mp4" className=" w"></video>
-      </div> */}
       <div className="absolute flex">
         <img src="images/dp_indexBg.png" className="w-screen h-max z-5"></img>
       </div>
