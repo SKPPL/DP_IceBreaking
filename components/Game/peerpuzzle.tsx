@@ -18,6 +18,7 @@ import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
 import PeerTwirlParticles from "../PageElements/Particles/peertwirlParticles";
 import PeerRocketParticles from "../PageElements/Particles/peerrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
+import CeremonyParticles from "../PageElements/Particles/ceremonyParticles";
 
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
@@ -36,12 +37,14 @@ interface Props {
 }
 
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
+const loseSoundUrl = '/sounds/YouLose.mp3';
 
 function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   // peerPosition for concurrent position sync
   const [peerPosition, setPeerPosition] = useState({ type: "move", i: -1, peerx: 0, peery: 0 });
   // for peer Item state
   const [peerSegmentState, setPeerSegmentState] = useState({ type: "item", segementState: "default" });
+  const [isFinished, setIsFinished] = useState(false);
 
   const dispatch = useDispatch();
   const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
@@ -52,6 +55,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   const router = useRouter();
 
   const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
+  const [loseSoundPlay] = useSound(loseSoundUrl);
   //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
   useEffect(() => {
@@ -86,6 +90,9 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   //useSelector는 state가 변경되었다면 functional component가 render한 이후에 실행됩니다.
   useEffect(() => {
     if (puzzleCompleteCounter.peer === 9) {
+      setIsFinished(true)
+      loseSoundPlay();
+      setTimeout(() => {
       const peer = document.getElementById("peerface");
       peer!.style.display = "block";
       document.getElementById("fullscreen")!.style.display = "none";
@@ -98,7 +105,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
             pathname: "/ready",
           })
           .then(() => router.reload());
-      }, 15000);
+      }, 15000); }, 5000)
+
     }
   }, [puzzleCompleteCounter.peer]);
 
@@ -150,6 +158,10 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   return (
     <>
+      {isFinished && <>
+        <div className="fixed mr-[50vw] mt-[270px] w-[100vw] text-center overflow-visible text-9xl z-50 text-blue-900"> YOU LOSE </div>
+        <CeremonyParticles />
+        </>}
       {[...Array(9)].map((_, i) => {
         return (
           <>
@@ -164,17 +176,11 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       })}
 
       {/* 상대가 카드를 맞췄을 때 나오는 효과 */}
-      {/* <div className="absolute grid grid-cols-3 w-[640px] h-[480px] mt-[160px]">
-        <div className={isRightPlace[0] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-        <div className={isRightPlace[1] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-        <div className={isRightPlace[2] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-        <div className={isRightPlace[3] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-        <div className={isRightPlace[4] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-        <div className={isRightPlace[5] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-        <div className={isRightPlace[6] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-        <div className={isRightPlace[7] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-        <div className={isRightPlace[8] ? `w-[210px] h-[160px] ${styles.rightCard2}` : `w-[210px] h-[160px] `}></div>
-      </div> */}
+      {isFinished &&
+          <div className={`absolute flex justify-center items-center w-[640px] h-[480px] mt-[100px] ${styles.finish}`}>
+              <img src="../images/finish.gif" className={`z-40 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} />
+          </div>
+      }
 
       {/* 아이템 쓸 때 나오는 효과 */}
       <div className="absolute grid w-[640px] h-[480px] mt-[100px]" style={{ pointerEvents: "none" }}>
@@ -182,7 +188,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerBlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerLipParticles /> <img src="../images/lippeer.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerTwirlParticles /> </div>)}
-        {peerSegmentState.segementState === 'rocket' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerRocketParticles /> </div>)}
+        {peerSegmentState.segementState === 'rocket' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerRocketParticles /> <img src="../images/rocketpeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div> )}
+        
       </div>
 
       <Bar score={puzzleCompleteCounter.peer} />

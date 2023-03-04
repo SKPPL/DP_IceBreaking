@@ -636,3 +636,57 @@
     pointer-events: none;
   }
 }
+
+.finish {
+  animation-duration: 1s;
+  animation-name: finisheffect;
+  animation-iteration-count: 5;
+}
+
+@keyframes finisheffect {
+  0% {
+    outline: 2rem solid;
+  }
+
+  10% {
+    outline-color: aqua;
+  }
+
+  20% {
+    outline-color: green;
+  }
+
+  30% {
+    outline-color: blueviolet;
+  }
+
+  40% {
+    outline-color: burlywood;
+  }
+
+  50% {
+    outline-color: red;
+  }
+
+  60% {
+    outline-color: purple;
+  }
+
+  70% {
+    outline-color: gainsboro;
+  }
+
+  80% {
+    outline-color: paleturquoise;
+  }
+
+  90% {
+    outline-color: lightcoral;
+  }
+
+  100% {
+    outline-color: wheat;
+    outline: solid;
+  }
+
+}
