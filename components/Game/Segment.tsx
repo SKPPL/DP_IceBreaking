@@ -40,7 +40,7 @@ function Segment({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightC
         <Rocket key={`rocket_${i}`} i={i} auth={auth} peerxy={undefined} dataChannel={dataChannel} />
       )}
       {(auth ? myWait === 9 : peerWait === 9) && segmentState === "ice" && (
-        <Ice key={`ice_${i}`} i={i} auth={auth} segmentState={segmentState} videoId={videoId} peerxy={peerxy} dataChannel={dataChannel} />
+        <Ice key={`ice_${i}`} i={i} auth={auth} segmentState={segmentState} videoId={videoId} peerxy={peerxy} dataChannel={dataChannel} isRightCard={isRightCard} />
       )}
       {(auth ? myWait === 9 : peerWait === 9) && segmentState === "magnet" && (
         <Magnet key={`magnet_${i}`} i={i} auth={auth} peerxy={undefined} dataChannel={dataChannel} videoId={videoId} segmentState={segmentState} />
