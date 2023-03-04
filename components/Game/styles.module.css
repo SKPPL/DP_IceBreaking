@@ -6,10 +6,9 @@
   border-radius: 5px;
   box-shadow: 0 0 .2rem #fff,
   0 0 .2rem #fff,
-  0 0 2rem red,
-  0 0 0.8rem red,
-  0 0 2.8rem red,
-  inset 0 0 1.3rem red; 
+  0 0 2rem #A8E8FB,
+  0 0 0.8rem #A8E8FB,
+  inset 0 0 1.3rem #A8E8FB; 
   /* box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.2); */
   transition: box-shadow 0.5s, opacity 0.5s;
   will-change: transform;
@@ -25,10 +24,10 @@
   /* box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3); */
   box-shadow: 0 0 .2rem #fff,
   0 0 .2rem #fff,
-  0 0 2rem greenyellow,
-  0 0 0.8rem greenyellow,
-  0 0 2.8rem greenyellow,
-  inset 0 0 1.3rem greenyellow; 
+  0 0 2rem rgb(99, 166, 0),
+  0 0 1.8rem rgb(99, 166, 0),
+  0 0 1.8rem rgb(99, 166, 0),
+  inset 0 0 1.3rem rgb(99, 166, 0); 
 }
 
 .myCard>div {
@@ -52,10 +51,9 @@
   border-radius: 5px;
   box-shadow: 0 0 .2rem #fff,
   0 0 .2rem #fff,
-  0 0 2rem blue,
-  0 0 0.8rem blue,
-  0 0 2.8rem blue,
-  inset 0 0 1.3rem blue; 
+  0 0 2rem red,
+  0 0 0.8rem red,
+  inset 0 0 1.3rem red; 
   /* box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.2); */
   transition: box-shadow 0.5s, opacity 0.5s;
   will-change: transform;
@@ -71,10 +69,10 @@
   /* box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3); */
   box-shadow: 0 0 .2rem #fff,
   0 0 .2rem #fff,
-  0 0 2rem blue,
-  0 0 0.8rem blue,
-  0 0 2.8rem blue,
-  inset 0 0 1.3rem blue; 
+  0 0 2rem red,
+  0 0 0.8rem red,
+  0 0 2.8rem red,
+  inset 0 0 1.3rem red; 
 }
 
 .peerCard>div {

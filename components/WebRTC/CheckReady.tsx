@@ -96,7 +96,7 @@ export default function CheckReady({ dataChannel }: Props) {
           {!gameReadyState && (
             <div className="flex justify-center items-center w-1/2 absolute h-[100px]">
               <div
-                className={`${styles.ready} ${!myReadyState ? (peerReadyState ? "bg-green-500" : "") : "bg-red-900"}`}
+                className={`${styles.readyMy} ${!myReadyState ? (peerReadyState ? "bg-green-500" : "") : "bg-red-900"}`}
                 id="myReadyButton"
                 onClick={changeMyReadyState}
               >
@@ -109,29 +109,29 @@ export default function CheckReady({ dataChannel }: Props) {
               <MyPuzzle auth={true} videoId={"peerface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className={`h-[480px] w-[640px] mt-[100px] self-center ${styles.gamepan}`} >
+          <div className={`h-[480px] w-[640px] mt-[100px] self-center ${styles.gamepanMy}`} >
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
-                <div className="absolute text-5xl text-red-600">
+                <div className="absolute text-5xl text-blue-600">
                   MY PUZZLE BOARD <br />
                   <br /> 이곳에 상대방 얼굴 조각을 맞추세요.
                 </div>
               </div>
             )}
             <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpanMy}`}></div>
+              <div className={`w-1/3 ${styles.eachpanMy}`}></div>
+              <div className={`w-1/3 ${styles.eachpanMy}`}></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpanMy}`}></div>
+              <div className={`w-1/3 ${styles.eachpanMy}`}></div>
+              <div className={`w-1/3 ${styles.eachpanMy}`}></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpanMy}`}></div>
+              <div className={`w-1/3 ${styles.eachpanMy}`}></div>
+              <div className={`w-1/3 ${styles.eachpanMy}`}></div>
             </div>
           </div>
           {/* <button id="cameraBtn" onClick={changeCameraSetting} type="button" className="hidden box-border height width mb-5-4 text-white">
@@ -142,7 +142,7 @@ export default function CheckReady({ dataChannel }: Props) {
         <div className="flex flex-col w-1/2 h-screen">
           {(!myReadyState || !peerReadyState) && (
             <div className="flex justify-center items-center w-1/2 absolute h-[100px]">
-              <div className={`${styles.ready} ${!peerReadyState ? "" : "bg-red-900"}`}>{!peerReadyState ? "Not Ready" : "Peer Ready"}</div>
+              <div className={`${styles.readyPeer} ${!peerReadyState ? "" : "bg-red-900"}`}>{!peerReadyState ? "Not Ready" : "Peer Ready"}</div>
             </div>
           )}
           {gameReadyState && dataChannel && (
@@ -150,26 +150,26 @@ export default function CheckReady({ dataChannel }: Props) {
               <PeerPuzzle auth={false} videoId={"myface"} dataChannel={dataChannel} />
             </div>
           )}
-          <div className={`h-[480px] w-[640px] mt-[100px] self-center ${styles.gamepan}`}>
+          <div className={`h-[480px] w-[640px] mt-[100px] self-center ${styles.gamepanPeer}`}>
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
-                <div className="absolute text-7xl text-blue-600"> PEER PUZZLE </div>
+                <div className="absolute text-7xl text-red-600"> PEER PUZZLE </div>
               </div>
             )}
             <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpanPeer}`}></div>
+              <div className={`w-1/3 ${styles.eachpanPeer}`}></div>
+              <div className={`w-1/3 ${styles.eachpanPeer}`}></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpanPeer}`}></div>
+              <div className={`w-1/3 ${styles.eachpanPeer}`}></div>
+              <div className={`w-1/3 ${styles.eachpanPeer}`}></div>
             </div>
             <div className="flex flex-row h-1/3">
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
-              <div className={`w-1/3 ${styles.eachpan}`}></div>
+              <div className={`w-1/3 ${styles.eachpanPeer}`}></div>
+              <div className={`w-1/3 ${styles.eachpanPeer}`}></div>
+              <div className={`w-1/3 ${styles.eachpanPeer}`}></div>
             </div>
           </div>
         </div>
