@@ -32,7 +32,7 @@ export const MessageI = styled(animated.div)`
   @media (max-width: 680px) {
     width: 100%;
   }
-  width: 87vh;
+  width: 80vh;
   height: 40vh;
   background-image: url("/images/iceModal.jpg");
   opacity: 1.1;

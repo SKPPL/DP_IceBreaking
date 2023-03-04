@@ -78,7 +78,7 @@ function MessageHub({
           {transitions(({ life, ...style }, item) => (
             <MessageA style={style}>
               <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <p>10초 지속</p>
+                <p>9초 지속</p>
               </ContentA>
             </MessageA>
           ))}
@@ -97,7 +97,7 @@ function MessageHub({
           {transitions(({ life, ...style }, item) => (
             <MessageA style={style}>
               <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <p>10초 지속</p>
+                <p>7초 지속</p>
               </ContentA>
             </MessageA>
           ))}
@@ -116,7 +116,7 @@ function MessageHub({
           {transitions(({ life, ...style }, item) => (
             <MessageA style={style}>
               <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <p>10초 지속</p>
+                <p>15초 지속</p>
               </ContentA>
             </MessageA>
           ))}

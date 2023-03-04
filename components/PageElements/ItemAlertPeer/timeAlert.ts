@@ -21,12 +21,12 @@ export const ContentA = styled.div`
   font-weight: 500;
   text-shadow: 0 0 10px black, 0 0 10px black, 0 0 10px black, 0 0 10px black, 0 0 10px black;
   opacity: 1;
-  font-size: 2.3em;
+  font-size: 3em;
   display: grid;
   grid-template-columns: 1fr auto;
   grid-gap: 10px;
   overflow: hidden;
   height: auto;
   border-radius: 3px;
-  margin: 10% 0 0 74%;
+  margin: 7% 0 0 68%;
 `
