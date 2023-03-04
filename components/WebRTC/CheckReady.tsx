@@ -91,7 +91,7 @@ export default function CheckReady({ dataChannel }: Props) {
         Leave
     </button> */}
       <div className="flex flex-row" id="fullscreen">
-        {gameReadyState && <GameBGM prevPlayingState />}
+        {gameReadyState && <GameBGM prevPlayingState={false} />}
         <div className="flex flex-col w-1/2 h-screen">
           {!gameReadyState && (
             <div className="flex justify-center items-center w-1/2 absolute h-[100px]">
