@@ -25,8 +25,8 @@ export function stopItem() {
   doRun = false;
 }
 
-export function isLoad(){
-  return loadCompleteMy;
+export function isLoadPeer() {
+  return loadCompletePeer;
 }
 
 let predictModel: MediaPipeFaceMesh;
@@ -35,11 +35,11 @@ let rafId: number;
 
 let doRun: boolean = false;
 
-let loadCompleteMy: boolean = false;
+let loadCompletePeer: boolean = false;
 
 const predict = async (model: MediaPipeFaceMesh) => {
-  loadCompleteMy = true;
-  const videoElement = document.getElementById('peerface') as HTMLVideoElement;
+  loadCompletePeer = true;
+  const videoElement = document.getElementById("peerface") as HTMLVideoElement;
   const run = async () => {
     const video = videoElement;
     if (video && !video.paused && !video.ended) {
@@ -62,10 +62,9 @@ const predict = async (model: MediaPipeFaceMesh) => {
 };
 
 export default function FaceLandMark() {
-  const videoElementUse = document.getElementById('peerface') as HTMLVideoElement;
+  const videoElementUse = document.getElementById("peerface") as HTMLVideoElement;
 
   useEffect(() => {
-
     setupModel().then((model) => {
       predictModel = model;
       predict(model);
@@ -86,9 +85,5 @@ export default function FaceLandMark() {
     }
   }, [isMounted]);
 
-  return (
-    <>
-    </>
-  );
-
+  return <></>;
 }

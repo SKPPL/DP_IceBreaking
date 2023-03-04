@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import useSocket from "../../pages/hooks/useSocket";
 
 import Waiting from "../PageElements/Waiting";
+import Loading from "../PageElements/Loading";
 import styles from "./styles.module.css";
 import Ceremony from "../Game/Ceremony";
 import { useRecoilState } from "recoil";
@@ -13,6 +14,9 @@ import CheckReady from "./CheckReady";
 import FaceLandMarkMy from "../FaceDetection/FaceLandMarkMy";
 import FaceLandMarkPeer from "../FaceDetection/FaceLandMarkPeer";
 import GameBGM from "../PageElements/GameBGM";
+
+import { isLoadMy } from "../FaceDetection/FaceLandMarkMy";
+import { isLoadPeer } from "../FaceDetection/FaceLandMarkPeer";
 
 const ICE_SERVERS = {
   iceServers: [
@@ -60,7 +64,16 @@ export default function WebRTC() {
   const [roomName, setRoomName] = useState<string | string[] | undefined>("");
   const [socketConnect, setSocketConnect] = useState<any>();
   const [checkLeave, setCheckLeave] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
+  useEffect(() => {
+    let checkLoading = setInterval(() => {
+      if (isLoadMy() && isLoadPeer()) {
+        setLoading(true);
+        clearInterval(checkLoading);
+      }
+    }, 500);
+  }, []);
   //segementState is for item using, owner is my or peer
   useEffect(() => {
     if (typeof socketConnect !== "undefined") {
@@ -303,9 +316,10 @@ export default function WebRTC() {
           <Waiting />
         </div>
       )}
-      {dataChannel && <CheckReady dataChannel={dataChannel} />}
       {dataChannel && <FaceLandMarkMy />}
       {dataChannel && <FaceLandMarkPeer />}
+      {dataChannel && !loading && <Loading />}
+      {dataChannel && loading && <CheckReady dataChannel={dataChannel} />}
       <canvas id="my_lip" width="213" height="160" style={{ display: "none" }}></canvas>
       <canvas id="peer_lip" width="213" height="160" style={{ display: "none" }}></canvas>
       <canvas id="myface_twirl" width="320" height="240" style={{ display: "none" }}></canvas>
