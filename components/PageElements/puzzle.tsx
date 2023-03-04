@@ -50,10 +50,6 @@ export default function PuzzleScreen() {
     
     
     const handleResize = () => {
-        // setInnerWidth(window.innerWidth);
-        // setInnerHeight(window.innerHeight);
-        // setHoleX(innerWidth*(1250/1440));
-        // setHoleY(innerHeight*(640/780));
         router.reload();
         
     }
@@ -111,12 +107,9 @@ export default function PuzzleScreen() {
         const bind = useDrag(
             (params) => {
                 if(!params.down && isPuzzleMatched(x.get(), y.get(), puzzleHoleX, puzzleHoleY, divX, divY)) {
-                    // router.push({
-                    //     pathname: '/ready',
-                    // })
-                    console.log('성공', x.get(), y.get(), "구멍X", puzzleHoleX, "구멍y", puzzleHoleY, "divx", divX, "divy", divY);
-                }
-                if (!params.down) {
+                    router.push({
+                        pathname: '/ready',
+                    })
                 }
             }
         );
