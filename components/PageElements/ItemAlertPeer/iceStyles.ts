@@ -1,12 +1,12 @@
-import styled from 'styled-components'
-import { animated } from '@react-spring/web'
+import styled from "styled-components";
+import { animated } from "@react-spring/web";
 
 // align-items 에서 알람 창 위치 조절
 export const ContainerI = styled.div`
-  -webkit-user-select:none;
-  -moz-user-select:none;
-  -ms-user-select:none;
-  user-select:none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   pointer-events: none;
   position: fixed;
   z-index: 1000;
@@ -23,7 +23,7 @@ export const ContainerI = styled.div`
   @media (max-width: 680px) {
     align-items: center;
   }
-`
+`;
 // 아이템 사용 모달 알람 박스 스타일
 export const MessageI = styled(animated.div)`
   box-sizing: border-box;
@@ -34,25 +34,20 @@ export const MessageI = styled(animated.div)`
   }
   width: 87vh;
   height: 40vh;
-  background-image: url("/images/iceModalPeer.gif");
+  background-image: url("/images/iceModal.jpg");
   opacity: 1.1;
-  background-size: contain;
+  background-size: cover;
   border: 0.2rem solid #fff;
   border-top-left-radius: 150px;
   border-bottom-right-radius: 150px;
-  box-shadow: 0 0 .2rem #fff,
-            0 0 .2rem #fff,
-            0 0 2rem #1b13fe,
-            0 0 0.8rem #1b13fe,
-            0 0 2.8rem #1b13fe,
-            inset 0 0 1.3rem #1b13fe; 
-`
+  box-shadow: 0 0 0.2rem #fff, 0 0 0.2rem #fff, 0 0 2rem #1b13fe, 0 0 0.8rem #1b13fe, 0 0 2.8rem #1b13fe, inset 0 0 1.3rem #1b13fe;
+`;
 // 아이템 사용 모달 알람 메시지 스타일
 export const ContentI = styled.div`
   text-align: right;
   color: #fff;
   font-weight: 400;
-  text-shadow: 0 0 5px #1b13fe,0 0 5px #1b13fe,0 0 5px #1b13fe,0 0 5px #1b13fe,0 0 5px #1b13fe,0 0 5px #1b13fe,0 0 5px #1b13fe,0 0 5px #1b13fe;
+  text-shadow: 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe;
   opacity: 1;
   padding: 50px 20px;
   font-size: 3.2em;
@@ -63,4 +58,4 @@ export const ContentI = styled.div`
   height: auto;
   border-radius: 3px;
   margin: 10% 0 0 5%;
-`
+`;

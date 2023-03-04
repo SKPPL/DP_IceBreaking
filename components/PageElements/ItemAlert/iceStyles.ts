@@ -34,9 +34,9 @@ export const MessageI = styled(animated.div)`
   }
   width: 87vh;
   height: 40vh;
-  background-image: url("/images/iceModalUser.gif");
+  background-image: url("/images/iceModal.jpg");
   opacity: 1.1;
-  background-size: contain;
+  background-size: cover;
   border: 0.2rem solid #fff;
   border-top-right-radius: 150px;
   border-bottom-left-radius: 150px;
