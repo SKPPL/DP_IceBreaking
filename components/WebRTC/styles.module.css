@@ -118,6 +118,8 @@
 /* -------------------------- RoomList -------------------------- */
 .readyContainer{
     height: 100vh;
+    background-image: url(../../public/images/perfectBackground.png);
+    background-size: cover;
 }
 
 .btnReady{
