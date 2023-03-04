@@ -174,5 +174,5 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         </>
     );
 
-
+}
 export default memo(MyPuzzle);
