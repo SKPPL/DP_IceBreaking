@@ -188,6 +188,7 @@ const icesoundUrl = '/sounds/iceCrack.mp3'
 const magnetSoundUrl = '/sounds/MagnetSound.mp3'
 const rocketSoundUrl = '/sounds/rocketLaunch.mp3'
 const twirlSoundUrl = '/sounds/twirl.mp3'
+const lipSoundUrl = '/sounds/lip.mp3'
 
 
 export default function Modal({ segmentState }:Props) {
@@ -197,6 +198,7 @@ export default function Modal({ segmentState }:Props) {
   const [magnetPlay] = useSound(magnetSoundUrl);
   const [rocketPlay] = useSound(rocketSoundUrl);
   const [twirlPlay] = useSound(twirlSoundUrl);
+  const [lipPlay] = useSound(lipSoundUrl);
 
   
   useEffect(() => {
@@ -215,7 +217,7 @@ export default function Modal({ segmentState }:Props) {
         break;
       case 'lip':
         ref.current?.(`Chu ~ ❤️ `);
-        // iceSoundPlay();
+        lipPlay();
         break;
       case 'twirl':
         ref.current?.(`적의 얼굴이 빨려들어갑니다!`);
