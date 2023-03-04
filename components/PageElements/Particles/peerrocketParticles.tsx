@@ -58,7 +58,7 @@ export default function PeerRocketParticles() {
                                     nb_sides: 3
                                 },
                                 image: {
-                                    src: "/images/musk.png",
+                                    src: "/images/doge.png",
                                     width: 100,
                                     height: 100
                                 }

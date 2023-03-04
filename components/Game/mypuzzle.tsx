@@ -136,7 +136,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     return (
         <>
             {isFinished && <>
-                <div className="fixed ml-[50vw] mt-[270px] w-[100vw] text-center overflow-visible text-9xl z-50 text-red-900"> YOU WIN </div>
+                <div className={`fixed ml-[50vw] mt-[270px] w-[100vw] text-center overflow-visible text-9xl z-50 ${styles.win}`}> YOU WIN </div>
                 <CeremonyParticles />
             </>}
             {
