@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import styles from "./styles.module.css";
 
-export default function Waiting() {
+export default function Loading() {
   const [state, toggle] = useState(true);
   setInterval(function () {
     toggle(!state);
@@ -24,7 +24,7 @@ export default function Waiting() {
           }),
         }}
       >
-        상대방을 기다리고 있습니다..
+        게임이 로딩중입니다.
       </animated.div>
     </div>
   );
