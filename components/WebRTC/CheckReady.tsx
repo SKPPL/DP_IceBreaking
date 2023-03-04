@@ -6,6 +6,7 @@ import useSound from "use-sound";
 import { useDispatch } from "react-redux";
 import { indexBGMElement, indexBGMState, gameBGMElement, gameBGMState } from "@/components/Game/atom";
 import { useRecoilState, useRecoilValue } from "recoil";
+import GameBGM from "../PageElements/GameBGM";
 interface Props {
   dataChannel: RTCDataChannel | undefined;
 }
@@ -18,20 +19,22 @@ export default function CheckReady({ dataChannel }: Props) {
 
   const readySoundUrl = "/sounds/ready.mp3";
   const [readySoundPlay] = useSound(readySoundUrl);
+
   const indexBGM = useRecoilValue(indexBGMElement);
   const [isPlaying, setIsPlaying] = useRecoilState(indexBGMState);
-  const [gameBGM, setGameBGM] = useRecoilState(gameBGMElement);
-  const [isGameBGMPlaying, setIsGameBGMPlaying] = useRecoilState(gameBGMState);
+  // const [gameBGM, setGameBGM] = useRecoilState(gameBGMElement);
+  // const [isGameBGMPlaying, setIsGameBGMPlaying] = useRecoilState(gameBGMState);
 
+  const [gameBGMState, setGameBGMState] = useState(false);
   //나의 ready 상태와 상대방 ready 상태를 확인하여 gameReady 상태를 결정
-  useEffect(() => {
-    if (gameBGM && !isGameBGMPlaying) {
-      (gameBGM as HTMLAudioElement).loop = true;
-      (gameBGM as HTMLAudioElement).volume = 0.5;
-      (gameBGM as HTMLAudioElement).play();
-      setIsGameBGMPlaying(true);
-    }
-  }, [gameBGM]);
+  // useEffect(() => {
+  //   if (gameBGM && !isGameBGMPlaying) {
+  //     (gameBGM as HTMLAudioElement).loop = true;
+  //     (gameBGM as HTMLAudioElement).volume = 0.5;
+  //     (gameBGM as HTMLAudioElement).play();
+  //     setIsGameBGMPlaying(true);
+  //   }
+  // }, [gameBGM]);
 
   useEffect(() => {
     readySoundPlay();
@@ -41,11 +44,12 @@ export default function CheckReady({ dataChannel }: Props) {
       if (indexBGM && isPlaying) {
         setIsPlaying(false);
         (indexBGM as HTMLAudioElement).pause();
-        if (!gameBGM) {
-          const newAudio = new Audio("/sounds/gameBGM.mp3");
-          //@ts-ignore
-          setGameBGM(newAudio);
-        }
+        // if (!gameBGM) {
+        //   const newAudio = new Audio("/sounds/gameBGM.mp3");
+        //   //@ts-ignore
+        //   setGameBGM(newAudio);
+        // }
+        // setGameBGMState(true);
       }
 
       document.getElementById("itembar")!.classList.remove("invisible");
@@ -87,6 +91,7 @@ export default function CheckReady({ dataChannel }: Props) {
         Leave
     </button> */}
       <div className="flex flex-row" id="fullscreen">
+        {gameReadyState && <GameBGM prevPlayingState />}
         <div className="flex flex-col w-1/2 h-screen">
           {!gameReadyState && (
             <div className="flex justify-center items-center w-1/2 absolute h-[100px]">

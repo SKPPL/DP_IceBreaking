@@ -12,6 +12,7 @@ import { dataChannelState } from "../Game/atom";
 import CheckReady from "./CheckReady";
 import FaceLandMarkMy from "../FaceDetection/FaceLandMarkMy";
 import FaceLandMarkPeer from "../FaceDetection/FaceLandMarkPeer";
+import GameBGM from "../PageElements/GameBGM";
 
 const ICE_SERVERS = {
   iceServers: [
@@ -291,6 +292,7 @@ export default function WebRTC() {
       </button> */}
       <div className="hidden h-screen" id="face">
         <Ceremony />
+        <GameBGM prevPlayingState={true} />
         <div className={`flex justify-center`}>
           <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
           <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
@@ -304,10 +306,10 @@ export default function WebRTC() {
       {dataChannel && <CheckReady dataChannel={dataChannel} />}
       {dataChannel && <FaceLandMarkMy />}
       {dataChannel && <FaceLandMarkPeer />}
-      <canvas id="my_lip" width="213" height="160" style={{ display: "none" }} ></canvas>
-      <canvas id="peer_lip" width="213" height="160" style={{ display: "none" }} ></canvas>
-      <canvas id="myface_twirl" width="320" height="240" style={{ display: "none" }} ></canvas>
-      <canvas id="peerface_twirl" width="320" height="240" style={{ display: "none" }} ></canvas>
+      <canvas id="my_lip" width="213" height="160" style={{ display: "none" }}></canvas>
+      <canvas id="peer_lip" width="213" height="160" style={{ display: "none" }}></canvas>
+      <canvas id="myface_twirl" width="320" height="240" style={{ display: "none" }}></canvas>
+      <canvas id="peerface_twirl" width="320" height="240" style={{ display: "none" }}></canvas>
     </>
   );
 }
