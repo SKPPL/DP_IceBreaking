@@ -151,7 +151,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     }
   }, [itemList]);
 
-  if (peerSegmentState.segementState === 'lip' || peerSegmentState.segementState === 'twirl') {
+  if (peerSegmentState.segementState === 'lip') {
     startItem();
     setTimeout(() => { stopItem(); }, 10000);
   }

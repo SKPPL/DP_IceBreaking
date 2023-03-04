@@ -1,14 +1,14 @@
-import React, { useRef, useEffect, useState, memo } from "react";;
-import { useSpring, animated, to, Spring } from "@react-spring/web";;
-import { useGesture } from "react-use-gesture";;
-import { Provider, useSelector, useDispatch } from "react-redux";;
-import itemStore from "@/components/Game/store";;
-import styles from "./styles.module.css";;
-import dynamic from "next/dynamic";;
-import Rocket from "./SegmentState/rocket";;
-import { useRouter } from "next/router";;
-import Modal from "../PageElements/ItemAlert/Modal";;
-import MyBar from "../PageElements/ProgressBar/MyBar";;
+import React, { useRef, useEffect, useState, memo } from "react";
+import { useSpring, animated, to, Spring } from "@react-spring/web";
+import { useGesture } from "react-use-gesture";
+import { Provider, useSelector, useDispatch } from "react-redux";
+import itemStore from "@/components/Game/store";
+import styles from "./styles.module.css";
+import dynamic from "next/dynamic";
+import Rocket from "./SegmentState/rocket";
+import { useRouter } from "next/router";
+import Modal from "../PageElements/ItemAlert/Modal";
+import MyBar from "../PageElements/ProgressBar/MyBar";
 import { myWaitState } from "./atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useSound from "use-sound";
@@ -21,18 +21,19 @@ import MyTwirlParticles from "../PageElements/Particles/mytwirlParticles";
 import MyRocketParticles from "../PageElements/Particles/myrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
 import CeremonyParticles from "../PageElements/Particles/ceremonyParticles";
+import GameBGM from "../PageElements/GameBGM";
 
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(import("@/components/Game/Segment"), {
-    loading: () => <div></div>,
-    ssr: false,
+  loading: () => <div></div>,
+  ssr: false,
 });
 
 interface Props {
-    videoId: string;
-    auth: boolean;
-    dataChannel: RTCDataChannel | undefined;
+  videoId: string;
+  auth: boolean;
+  dataChannel: RTCDataChannel | undefined;
 }
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
 const winSoundUrl = '/sounds/YouWin.mp3';
@@ -172,6 +173,6 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             {mySegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
         </>
     );
-}
+
 
 export default memo(MyPuzzle);
