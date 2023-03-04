@@ -94,8 +94,8 @@ export default function CheckReady({ dataChannel }: Props) {
           <div className={`h-[480px] w-[640px] mt-[100px] self-center ${styles.gamepanMy}`}>
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
-                <div className="absolute text-7xl text-blue-600">
-                  나는 여기에 상대방 얼굴을 맞춥니다.😏
+                <div className={`absolute text-7xl text-center ${styles.lose}`}>
+                  내가 상대 얼굴을 <br/> <br/> &nbsp;&nbsp;&nbsp;&nbsp;맞춥니다. &nbsp;😏
                 </div>
               </div>
             )}
@@ -134,7 +134,7 @@ export default function CheckReady({ dataChannel }: Props) {
           <div className={`h-[480px] w-[640px] mt-[100px] self-center ${styles.gamepanPeer}`}>
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
-                <div className="absolute text-7xl text-red-600"> 상대가 여기에 내 얼굴을 맞춥니다.🤗 </div>
+                <div className={`absolute text-7xl text-center ${styles.win}`}> 상대가 내 얼굴을 <br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;맞춥니다. &nbsp;🤗 </div>
               </div>
             )}
             <div className="flex flex-row h-1/3">

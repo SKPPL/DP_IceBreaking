@@ -51,7 +51,7 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
             //나의 범위 안에서 카드가 움직이도록 설정
             mpx = Math.min(mousePosition.clientX - left, width / 6);
             mpx = Math.max(mpx, -left);
-            mpy = Math.max(mousePosition.clientY - top, top);
+            mpy = Math.max(mousePosition.clientY - top - 270 , top + 130);
             mpy = Math.min(mpy, height);
             //useTail을 사용하여 마우스 움직임
             api.start({ xy: [mpx, mpy], delay: 0 });
