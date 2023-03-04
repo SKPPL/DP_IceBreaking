@@ -32,12 +32,12 @@ export default function CeremonyParticles() {
                     options={{
                     fullScreen: {
                         enable: true,
-                        zIndex: 50,
+                        zIndex: 9999,
                     },
                     particles: {
                         number: {
-                            value: 50,
-                            limit: 100,
+                            value: 1,
+                            limit: 1,
                             density: {
                                 enable: true,
                                 value_area: 800
