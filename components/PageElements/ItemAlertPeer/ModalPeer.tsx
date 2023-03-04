@@ -200,6 +200,7 @@ export default function ModalPeer({ segmentState }:Props) {
       case 'magnet':
         ref.current?.(`블랙홀이 생성되었습니다!`);
         magnetPlay();
+        break;
       case 'ice':
         ref.current?.(`적의 조각이 얼어붙었습니다!`); 
         iceSoundPlay();

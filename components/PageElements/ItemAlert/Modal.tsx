@@ -99,7 +99,7 @@ function MessageHub({
             <MessageA style={style}>
               <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
                 {/* <LifeI style={{ right: life }} /> */}
-                <p>7 지속</p>
+                <p>7초 지속</p>
               </ContentA>
             </MessageA>
           ))}
