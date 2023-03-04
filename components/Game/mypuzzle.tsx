@@ -165,7 +165,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 {mySegmentState.segementState === 'magnet' && (<div id="mymagnet" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyBlackhallParticles /> <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
                 {mySegmentState.segementState === 'lip' && (<div id="mylip" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyLipParticles /> <img src="../images/lipmine.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
                 {mySegmentState.segementState === 'twirl' && (<div id="mytwirl" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyTwirlParticles />  </div>)}
-                {mySegmentState.segementState === 'rocket' && (<div id="myrocket" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyRocketParticles /> <img src="../images/rocketmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div> )}
+                {mySegmentState.segementState === 'rocket' && (<div id="myrocket" className={`flex fill`} style={{ pointerEvents: "none" }} > <MyRocketParticles /> <img src="../images/rocketmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
             </div>
             <MyBar score={puzzleCompleteCounter.mine} />
             <Modal segmentState={mySegmentState.segementState} />
@@ -173,6 +173,6 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
             {mySegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
         </>
     );
-
+}
 
 export default memo(MyPuzzle);
