@@ -25,7 +25,7 @@ export function stopItem() {
   doRun = false;
 }
 
-export function isLoad(){
+export function isLoadMy() {
   return loadCompleteMy;
 }
 
@@ -39,7 +39,7 @@ let loadCompleteMy: boolean = false;
 
 const predict = async (model: MediaPipeFaceMesh) => {
   loadCompleteMy = true;
-  const videoElement = document.getElementById('myface') as HTMLVideoElement;
+  const videoElement = document.getElementById("myface") as HTMLVideoElement;
   const run = async () => {
     const video = videoElement;
     if (video && !video.paused && !video.ended) {
@@ -62,10 +62,9 @@ const predict = async (model: MediaPipeFaceMesh) => {
 };
 
 export default function FaceLandMark() {
-  const videoElementUse = document.getElementById('myface') as HTMLVideoElement;
+  const videoElementUse = document.getElementById("myface") as HTMLVideoElement;
 
   useEffect(() => {
-
     setupModel().then((model) => {
       predictModel = model;
       predict(model);
@@ -86,9 +85,5 @@ export default function FaceLandMark() {
     }
   }, [isMounted]);
 
-  return (
-    <>
-    </>
-  );
-
+  return <></>;
 }
