@@ -35,7 +35,7 @@ export default function PuzzleScreen() {
     const [puzzleHoleX,setHoleX] = useState(1); //퍼즐 구멍의 화면 절대위치 X
     const [puzzleHoleY,setHoleY] = useState(1); //퍼즐 구멍의 화면 절대위치 Y
     const puzzleWidth = 230/1440*innerWidth;
-    const puzzleHeight = 255/781*innerHeight;
+    const puzzleHeight = 255/781*innerWidth/1440*781;
 
 
     function findPosition() {
@@ -43,9 +43,25 @@ export default function PuzzleScreen() {
         setDivX(movingRef.current!.getBoundingClientRect().x);
         setDivY(movingRef.current!.getBoundingClientRect().y);
         setHoleX(innerWidth*(1250/1440));
-        setHoleY(innerHeight*(640/780));
+        setHoleY(innerWidth*(781/1440)*640/781);
+        // setHoleY(innerHeight*(640/780));
+        // console.log("foundposition", "x",puzzleHoleX, "y", puzzleHoleY);
+    }
+    
+    
+    const handleResize = () => {
+        router.reload();
+        
     }
 
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            document.removeEventListener('resize', handleResize);
+        }
+    }, [])
 
 
     function draw(){
@@ -82,7 +98,6 @@ export default function PuzzleScreen() {
             scale: 1,
             zoom: 0,
             x: 0,
-            //TODO: 시작위치는 왼쪽으로 조정이 되는데, 처음 잡았을때 다시 0/0으로 돌아간 다음에 시작함. 수정하자.
             y: 0,
             config: { mass: 5, tension: 350, friction: 50 },
         })
@@ -145,7 +160,7 @@ export default function PuzzleScreen() {
 
 
 export function isPuzzleMatched(x: number, y: number, holeX: number, holeY: number, divX: number, divY: number) {
-    const diff = 90;
+    const diff = 100;
     if (x + divX > holeX - diff && x + divX < holeX + diff && y + divY > holeY - diff && y + divY < holeY + diff) {
         return true;
     } else return false;
