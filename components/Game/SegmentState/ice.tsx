@@ -19,9 +19,10 @@ interface Props {
     peerxy: { peerx: number; peery: number; } | undefined;
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
+    isRightCard: boolean
 }
 
-function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
+function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard }: Props) {
     //TODO ice 버그 수정하기
 
     const iceCrackSoundUrl = "/sounds/can.wav";
@@ -64,8 +65,8 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
         return state.defaultSegmentRightPlace[i];
     });
     const [isRightPlace, setIsRightPlace] = useState(false);
-
-    const [zindex, setZindex] = useState(Math.floor(Math.random() * 10));
+    const arr = useSelector((state: any) => state.puzzleOrder);
+    const [zindex, setZindex] = useState(arr[i]);
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
     const d = 1;
@@ -76,7 +77,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
-    if (isRight && auth){
+    if (isRight || isRightCard){
             setZindex(0);
         }
         const preventDefault = (e: Event) => e.preventDefault();
@@ -219,7 +220,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState }: Props) {
                 <div className={styles.container} onClick={breakTheIce}>
                     <animated.div
                         ref={target}
-                        className={isRightPlace ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
+                        className={(isRightPlace || isRightCard|| (isRight && auth)) ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
                         style={{
                             transform: "perspective(600px)",
                             x,

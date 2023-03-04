@@ -217,8 +217,9 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     }, []);
 
     useEffect(() => {
-        if (isRightCard)
+        if (isRightCard){
             setZindex(0);
+        }
     }, [isRightCard]);
 
 
@@ -233,7 +234,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 <div className={styles.container}>
                     <animated.div
                         ref={target}
-                        className={(isRightPlace || isRightCard) ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
+                        className={(isRightPlace || isRightCard || (isRight && auth)) ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
                         style={{
                             transform: "perspective(600px)",
                             x,
