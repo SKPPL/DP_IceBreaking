@@ -7,6 +7,7 @@ import { ContainerI, MessageI, ContentI } from './iceStyles'
 import { ContainerL, MessageL, ContentL } from './lipStyles'
 import { ContainerT, MessageT, ContentT } from './twirlStyles'
 import { MessageA, ContentA } from './timeAlert'
+import useSound from "use-sound"
 
 let id = 0
 
@@ -175,16 +176,42 @@ interface Props {
   segmentState: string;
 }
 
+const icesoundUrl = '/sounds/iceCrack.mp3'
+const magnetSoundUrl = '/sounds/MagnetSound.mp3'
+const rocketSoundUrl = '/sounds/rocketstart.mp3'
+const twirlSoundUrl = '/sounds/twirl.mp3'
+const lipSoundUrl = '/sounds/lip.mp3'
+
 export default function ModalPeer({ segmentState }:Props) {
   const ref = useRef<null | AddFunction>(null)
 
+  const [iceSoundPlay] = useSound(icesoundUrl, { playbackRate: 1.5 });
+  const [magnetPlay] = useSound(magnetSoundUrl);
+  const [rocketPlay] = useSound(rocketSoundUrl);
+  const [twirlPlay] = useSound(twirlSoundUrl);
+  const [lipPlay] = useSound(lipSoundUrl);
+
   useEffect(() => {
     switch(segmentState){
-      case 'rocket': ref.current?.(`적의 로켓을 움직이세요!`);  break;
-      case 'magnet': ref.current?.(`블랙홀이 생성되었습니다!`);  break;
-      case 'ice': ref.current?.(`적의 조각이 얼어붙었습니다!`);  break;
-      case 'lip': ref.current?.(`Chu ~ ❤️ `); break;
-      case 'twirl': ref.current?.(`내 얼굴이 돌아갑니다!`); break;
+      case 'rocket': 
+        ref.current?.(`적의 로켓을 움직이세요!`);
+        rocketPlay();
+        break;
+      case 'magnet':
+        ref.current?.(`블랙홀이 생성되었습니다!`);
+        magnetPlay();
+      case 'ice':
+        ref.current?.(`적의 조각이 얼어붙었습니다!`); 
+        iceSoundPlay();
+        break;
+      case 'lip':
+        ref.current?.(`Chu ~ ❤️ `);
+        lipPlay();
+        break;
+      case 'twirl':
+        ref.current?.(`내 얼굴이 돌아갑니다!`);
+        twirlPlay();
+        break;
     }
   }, [segmentState]);
 
