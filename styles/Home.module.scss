@@ -285,12 +285,12 @@
 }
 
 $progress-height: 50px;
-$progress-width: 37%;
+$progress-width: 36%;
 $progress-padding: 0.3em;
-$progress-value-color: red;
-$progress-value-color-peer: blue;
-$value-color: red;
-$value-color-peer: blue;
+$progress-value-color: #A8E8FB;
+$progress-value-color-peer: red;
+$value-color: #A8E8FB;
+$value-color-peer: red;
 $value-size: 60px;
 
 .neonbarMy {
@@ -322,7 +322,28 @@ $value-size: 60px;
 
 .barMy {
   position: fixed;
-  left: 150px;
+  left: 57px;
+  -webkit-appearance: none;
+  height: $progress-height;
+  width: $progress-width;
+
+  &::-webkit-progress-bar {
+    padding: $progress-padding;
+    border-radius: calc(#{$progress-height} / 2);
+    background: lighten(#111, 5);
+    border: 3px solid rgba(168, 232, 251, 0.5);
+  }
+  &::-webkit-progress-value {
+    background: $progress-value-color;
+    box-shadow: 0 0 0.3em lighten($progress-value-color, 2),
+      0 0 0.8em lighten($progress-value-color, 4);
+    border-radius: calc(#{$progress-height}/2);
+  }
+}
+
+.barPeer {
+  position: fixed;
+  right: 57px;
   -webkit-appearance: none;
   height: $progress-height;
   width: $progress-width;
@@ -334,29 +355,8 @@ $value-size: 60px;
     border: 3px solid rgba(255, 0, 0, 0.5);
   }
   &::-webkit-progress-value {
-    background: $progress-value-color;
-    box-shadow: 0 0 0.6em lighten($progress-value-color, 2),
-      0 0 0.8em lighten($progress-value-color, 4);
-    border-radius: calc(#{$progress-height}/2);
-  }
-}
-
-.barPeer {
-  position: fixed;
-  right: 150px;
-  -webkit-appearance: none;
-  height: $progress-height;
-  width: $progress-width;
-
-  &::-webkit-progress-bar {
-    padding: $progress-padding;
-    border-radius: calc(#{$progress-height} / 2);
-    background: lighten(#111, 5);
-    border: 3px solid rgba(0, 0, 255, 0.5);
-  }
-  &::-webkit-progress-value {
     background: $progress-value-color-peer;
-    box-shadow: 0 0 0.6em lighten($progress-value-color-peer, 2),
+    box-shadow: 0 0 0.3em lighten($progress-value-color-peer, 2),
       0 0 0.8em lighten($progress-value-color-peer, 4);
     border-radius: calc(#{$progress-height}/2);
   }
@@ -368,23 +368,19 @@ $value-size: 60px;
 
 .barvalue {
   position: fixed;
-  left: 30px;
+  left: 41%;
   color: $value-color;
   font-size: $value-size;
   line-height: $progress-height;
   letter-spacing: 1px;
-  text-shadow: 0 0 .3em darken($value-color, 1),
-    0 0 .6em darken($value-color, 6);
-  padding-bottom: 400px;
+  text-shadow: 0 0 .3em $value-color,
 }
 .barvaluePeer {
   position: fixed;
-  right: 30px;
+  right: 41%;
   color: $value-color-peer;
   font-size: $value-size;
   line-height: $progress-height;
   letter-spacing: 1px;
-  text-shadow: 0 0 .3em darken($value-color-peer, 1),
-    0 0 .6em darken($value-color-peer, 6);
-  padding-bottom: 400px;
+  text-shadow: 0 0 .3em $value-color-peer,
 }

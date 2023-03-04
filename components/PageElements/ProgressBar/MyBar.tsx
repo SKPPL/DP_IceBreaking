@@ -40,8 +40,8 @@ export default function LinearWithValueLabel({score}:Props) {
 
   return (
     <div className={styles.neonbarMy}>
-      <span className={styles.barvalue}>{score}/9</span>
       <progress className={`${styles.barMy} ${styles.mybar}`} value={progress} max='90'></progress>
+      <span className={styles.barvalue}>{score}/9</span>
     </div>
   );
 }
