@@ -186,7 +186,7 @@ interface Props {
 
 const icesoundUrl = '/sounds/iceCrack.mp3'
 const magnetSoundUrl = '/sounds/MagnetSound.mp3'
-const rocketSoundUrl = '/sounds/rocketLaunch.mp3'
+const rocketSoundUrl = '/sounds/rocketstart.mp3'
 const twirlSoundUrl = '/sounds/twirl.mp3'
 
 
