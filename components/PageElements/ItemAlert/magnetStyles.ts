@@ -32,7 +32,7 @@ export const MessageM = styled(animated.div)`
   @media (max-width: 680px) {
     width: 100%;
   }
-  width: 87vh;
+  width: 80vh;
   height: 40vh;
   background-image: url("https://news.unist.ac.kr/kor/wp-content/uploads/2018/03/Physicist_Stephen_Hawking_in_Zero_Gravity_NASA-800x533.jpg");
   opacity: 1.1;

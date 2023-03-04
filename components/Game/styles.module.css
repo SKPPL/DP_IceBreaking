@@ -6,10 +6,9 @@
   border-radius: 5px;
   box-shadow: 0 0 .2rem #fff,
   0 0 .2rem #fff,
-  0 0 2rem red,
-  0 0 0.8rem red,
-  0 0 2.8rem red,
-  inset 0 0 1.3rem red; 
+  0 0 2rem #A8E8FB,
+  0 0 0.8rem #A8E8FB,
+  inset 0 0 1.3rem #A8E8FB; 
   /* box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.2); */
   transition: box-shadow 0.5s, opacity 0.5s;
   will-change: transform;
@@ -25,10 +24,10 @@
   /* box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3); */
   box-shadow: 0 0 .2rem #fff,
   0 0 .2rem #fff,
-  0 0 2rem greenyellow,
-  0 0 0.8rem greenyellow,
-  0 0 2.8rem greenyellow,
-  inset 0 0 1.3rem greenyellow; 
+  0 0 2rem rgb(99, 166, 0),
+  0 0 1.8rem rgb(99, 166, 0),
+  0 0 1.8rem rgb(99, 166, 0),
+  inset 0 0 1.3rem rgb(99, 166, 0); 
 }
 
 .myCard>div {
@@ -52,10 +51,9 @@
   border-radius: 5px;
   box-shadow: 0 0 .2rem #fff,
   0 0 .2rem #fff,
-  0 0 2rem blue,
-  0 0 0.8rem blue,
-  0 0 2.8rem blue,
-  inset 0 0 1.3rem blue; 
+  0 0 2rem red,
+  0 0 0.8rem red,
+  inset 0 0 1.3rem red; 
   /* box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.2); */
   transition: box-shadow 0.5s, opacity 0.5s;
   will-change: transform;
@@ -71,10 +69,10 @@
   /* box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.3); */
   box-shadow: 0 0 .2rem #fff,
   0 0 .2rem #fff,
-  0 0 2rem blue,
-  0 0 0.8rem blue,
-  0 0 2.8rem blue,
-  inset 0 0 1.3rem blue; 
+  0 0 2rem red,
+  0 0 0.8rem red,
+  0 0 2.8rem red,
+  inset 0 0 1.3rem red; 
 }
 
 .peerCard>div {
@@ -635,4 +633,86 @@
     transform: translate(0px, 0px);
     pointer-events: none;
   }
+}
+
+.finish {
+  animation-duration: 1s;
+  animation-name: finisheffect;
+  animation-iteration-count: 5;
+}
+
+@keyframes finisheffect {
+  0% {
+    outline: 2rem solid;
+  }
+
+  10% {
+    outline-color: aqua;
+  }
+
+  20% {
+    outline-color: green;
+  }
+
+  30% {
+    outline-color: blueviolet;
+  }
+
+  40% {
+    outline-color: burlywood;
+  }
+
+  50% {
+    outline-color: red;
+  }
+
+  60% {
+    outline-color: purple;
+  }
+
+  70% {
+    outline-color: gainsboro;
+  }
+
+  80% {
+    outline-color: paleturquoise;
+  }
+
+  90% {
+    outline-color: lightcoral;
+  }
+
+  100% {
+    outline-color: wheat;
+    outline: solid;
+  }
+
+}
+
+.win{
+    color: #fff;
+    text-shadow:
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px #fff,
+        0 0 30px #f08,
+        0 0 40px #f08,
+        0 0 50px #f08,
+        0 0 60px #f08,
+        0 0 70px #f08,
+        0 0 80px #f08;
+}
+
+.lose{
+  color: #fff;
+  text-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 20px #fff,
+      0 0 30px rgb(108, 95, 210),
+      0 0 40px rgb(108, 95, 210),
+      0 0 50px rgb(108, 95, 210),
+      0 0 60px rgb(108, 95, 210),
+      0 0 70px rgb(108, 95, 210),
+      0 0 80px rgb(108, 95, 210);
 }

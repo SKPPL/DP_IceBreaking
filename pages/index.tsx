@@ -1,7 +1,14 @@
 import Head from "next/head";
 import BagicHome from "@/components/PageElements/BagicHome";
+import styles from "./styles.module.css";
+import { useEffect } from "react";
+import MainParticles from "@/components/PageElements/Particles/ceremonyParticles";
+
+import { useRecoilState } from "recoil";
+import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
 import IndexBGM from "@/components/PageElements/IndexBGM";
 
+const bgUrl = 'images/DP'
 export default function Home() {
   return (
     <>
@@ -12,8 +19,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <IndexBGM />
-      <div className="absolute w-full h-auto overflow-hidden m-0 z-0 ">
-        <video muted autoPlay loop src="videos/HIghBG.mp4"></video>
+      <div className="absolute flex">
+        <img src="images/dpindexBg.png" className="w-screen h-max z-5"></img>
       </div>
       <div className="absolute justify-end items-end flex w-1/5 h-4/5 z-7">
         <BagicHome />

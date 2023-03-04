@@ -78,7 +78,7 @@ function MessageHub({
           {transitions(({ life, ...style }, item) => (
             <MessageA style={style}>
               <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <p>10초 지속</p>
+                <p>9초 지속</p>
               </ContentA>
             </MessageA>
           ))}
@@ -99,7 +99,7 @@ function MessageHub({
             <MessageA style={style}>
               <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
                 {/* <LifeI style={{ right: life }} /> */}
-                <p>10초 지속</p>
+                <p>7 지속</p>
               </ContentA>
             </MessageA>
           ))}
@@ -120,7 +120,7 @@ function MessageHub({
             <MessageA style={style}>
               <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
                 {/* <LifeI style={{ right: life }} /> */}
-                <p>10초 지속</p>
+                <p>15초 지속</p>
               </ContentA>
             </MessageA>
           ))}
@@ -186,7 +186,7 @@ interface Props {
 
 const icesoundUrl = '/sounds/iceCrack.mp3'
 const magnetSoundUrl = '/sounds/MagnetSound.mp3'
-const rocketSoundUrl = '/sounds/rocketLaunch.mp3'
+const rocketSoundUrl = '/sounds/rocketstart.mp3'
 const twirlSoundUrl = '/sounds/twirl.mp3'
 const lipSoundUrl = '/sounds/lip.mp3'
 

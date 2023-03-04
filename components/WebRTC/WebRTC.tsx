@@ -307,8 +307,8 @@ export default function WebRTC() {
         <Ceremony />
         <GameBGM prevPlayingState={true} />
         <div className={`flex justify-center`}>
-          <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
-          <video className={`${styles.gamepan} w-1/2 hidden rounded-2xl`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
+          <video className={`${styles.gamepanMy} w-1/2 hidden rounded-2xl`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
+          <video className={`${styles.gamepanPeer} w-1/2 hidden rounded-2xl`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
         </div>
       </div>
       {!dataChannel && (
