@@ -159,7 +159,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   return (
     <>
       {isFinished && <>
-        <div className="fixed mr-[50vw] mt-[270px] w-[100vw] text-center overflow-visible text-9xl z-50 text-blue-900"> YOU LOSE </div>
+        <div className={`fixed mr-[50vw] mt-[270px] w-[100vw] text-center overflow-visible text-9xl z-50 text-blue-900 ${styles.lose}`}> YOU LOSE </div>
         <CeremonyParticles />
         </>}
       {[...Array(9)].map((_, i) => {
