@@ -16,9 +16,6 @@ export default function Loading() {
     <div className={styles.container}>
       <animated.div
         className={styles.text}
-        style={{
-          opacity: x.to({ range: [0, 1], output: [0.3, 1] }),
-        }}
       >
         다이나믹 퍼즐이 준비 중입니다.
       </animated.div>
