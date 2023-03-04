@@ -34,9 +34,9 @@ export const MessageL = styled(animated.div)`
   }
   width: 87vh;
   height: 40vh;
-  background-image: url("https://thumbs.gfycat.com/FlickeringDamagedGentoopenguin-size_restricted.gif");
+  background-image: url("/images/lipHani.gif");
   opacity: 1.1;
-  background-size: contain;
+  background-size: cover;
   border: 0.2rem solid #fff;
   border-top-left-radius: 150px;
   border-bottom-right-radius: 150px;
