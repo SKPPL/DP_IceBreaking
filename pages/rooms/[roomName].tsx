@@ -10,7 +10,7 @@ export default function Play() {
   return (
     <>
       <Head>
-        <title>Jigsaw Puzzle</title>
+        <title>Dynamic Puzzle</title>
       </Head>
       <div className={`h-full ${styles.gameBackGround}`}>
         <Provider store={store}>
