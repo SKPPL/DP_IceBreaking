@@ -61,7 +61,8 @@ export default function FaceLandMark() {
 
     setupModel().then((model) => {
       predictModel = model;
-      console.log('mymodel is ready', predictModel);
+      predict(model);
+      console.log('1회 predict. my');
     });
 
     return () => {
