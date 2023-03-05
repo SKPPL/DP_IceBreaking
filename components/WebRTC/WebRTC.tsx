@@ -305,7 +305,7 @@ export default function WebRTC() {
           switch (dataJSON.type) {
             case "peerLoad":
               //상대방 브라우저에서 나와 상대방 얼굴인식 모델이 로드가 완료된 경우
-              setPeerLoading(true);
+              if (dataJSON.status == "ok") setPeerLoading(true);
               break;
           }
         }
