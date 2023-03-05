@@ -66,7 +66,8 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
     });
     const [isRightPlace, setIsRightPlace] = useState(false);
     const arr = useSelector((state: any) => state.puzzleOrder);
-    const [zindex, setZindex] = useState(arr[i]);
+    const arr2 = useSelector((state: any) => state.puzzleOrder2);
+    const [zindex, setZindex] = useState(auth ? arr[i] : arr2[i]);
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
     const d = 1;
