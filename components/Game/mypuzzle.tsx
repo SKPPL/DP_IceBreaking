@@ -53,11 +53,15 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
     const [winSoundPlay] = useSound(winSoundUrl);
     const [isFinished, setIsFinished] = useState(false);
+    const [isStart, setIsStart] = useState(true);
 
     //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
 
     useEffect(() => {
+        setTimeout(() => {
+            setIsStart(false)
+        }, 5800);
         if (dataChannel) {
             dataChannel!.addEventListener("message", function myData(event: MessageEvent<any>) {
                 if (event.data) {
@@ -104,7 +108,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     }, []);
 
     useEffect(() => {
-        if (puzzleCompleteCounter.mine === 9) {
+        if (puzzleCompleteCounter.mine === 9 && puzzleCompleteCounter.peer !== 9) {
             setIsFinished(true)
             winSoundPlay();
             setTimeout(() => {
@@ -134,10 +138,11 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     }
 
     return (
-        <>
+        <>  
+            {isStart && <div className="fixed h-screen w-[200vw] z-[9999]"></div>}
             {isFinished && <>
-                <div className={`fixed ml-[50vw] mt-[270px] w-[100vw] text-center overflow-visible text-9xl z-50 ${styles.win}`}> YOU WIN </div>
-                <CeremonyParticles />
+                <div className={`fixed ml-[50vw] mt-[270px] w-[100vw] text-center text-9xl z-50 ${styles.win}`}> YOU WIN </div>
+                <div className="fixed h-screen w-[200vw] z-[9999]"></div>
             </>}
             {
                 [...Array(9)].map((_, i) => {

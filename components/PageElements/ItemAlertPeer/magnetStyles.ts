@@ -34,9 +34,9 @@ export const MessageM = styled(animated.div)`
   }
   width: 80vh;
   height: 40vh;
-  background-image: url("https://news.unist.ac.kr/kor/wp-content/uploads/2018/03/Physicist_Stephen_Hawking_in_Zero_Gravity_NASA-800x533.jpg");
+  background-image: url("/images/blackholeItem.jpeg");
   opacity: 1.1;
-  background-size: contain;
+  background-size: cover;
   border: 0.2rem solid #fff;
   border-top-left-radius: 150px;
   border-bottom-right-radius: 150px;

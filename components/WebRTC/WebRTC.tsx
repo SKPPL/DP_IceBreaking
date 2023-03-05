@@ -64,16 +64,9 @@ export default function WebRTC() {
   const [roomName, setRoomName] = useState<string | string[] | undefined>("");
   const [socketConnect, setSocketConnect] = useState<any>();
   const [checkLeave, setCheckLeave] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [myLoading, setMyLoading] = useState<boolean>(false);
+  const [peerLoading, setPeerLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    let checkLoading = setInterval(() => {
-      if (isLoadMy() && isLoadPeer()) {
-        setLoading(true);
-        clearInterval(checkLoading);
-      }
-    }, 500);
-  }, []);
   //segementState is for item using, owner is my or peer
   useEffect(() => {
     if (typeof socketConnect !== "undefined") {
@@ -295,7 +288,30 @@ export default function WebRTC() {
 
   const [dataChannelExist, setDataChannelExist] = useRecoilState(dataChannelState);
   useEffect(() => {
-    if (dataChannel) setDataChannelExist(true);
+    if (dataChannel) {
+      let checkLoading = setInterval(() => {
+        //나의 브라우저에서 나와 상대방 얼굴인식 모델이 로드가 완료가 된 경우
+        if (isLoadMy() && isLoadPeer()) {
+          dataChannel!.send(JSON.stringify({ type: "peerLoad", status: "ok" }));
+          //나의 로딩은 완료
+          setMyLoading(true);
+          clearInterval(checkLoading);
+        }
+      }, 1000);
+
+      dataChannel!.addEventListener("message", function peerload(event: MessageEvent<any>) {
+        if (event.data) {
+          let dataJSON = JSON.parse(event.data);
+          switch (dataJSON.type) {
+            case "peerLoad":
+              //상대방 브라우저에서 나와 상대방 얼굴인식 모델이 로드가 완료된 경우
+              if (dataJSON.status == "ok") setPeerLoading(true);
+              break;
+          }
+        }
+      });
+      
+    }
   }, [dataChannel]);
 
   return (
@@ -318,8 +334,8 @@ export default function WebRTC() {
       )}
       {dataChannel && <FaceLandMarkMy />}
       {dataChannel && <FaceLandMarkPeer />}
-      {dataChannel && !loading && <Loading />}
-      {dataChannel && loading && <CheckReady dataChannel={dataChannel} />}
+      {dataChannel && (!myLoading || !peerLoading) && <Loading />}
+      {dataChannel && myLoading && peerLoading && <CheckReady dataChannel={dataChannel} />}
       <canvas id="my_lip" width="213" height="160" style={{ display: "none" }}></canvas>
       <canvas id="peer_lip" width="213" height="160" style={{ display: "none" }}></canvas>
       <canvas id="myface_twirl" width="320" height="240" style={{ display: "none" }}></canvas>

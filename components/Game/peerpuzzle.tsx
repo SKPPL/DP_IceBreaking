@@ -89,7 +89,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   //useSelector는 state가 변경되었다면 functional component가 render한 이후에 실행됩니다.
   useEffect(() => {
-    if (puzzleCompleteCounter.peer === 9) {
+    if (puzzleCompleteCounter.peer === 9 && puzzleCompleteCounter.mine !== 9) {
       setIsFinished(true)
       loseSoundPlay();
       setTimeout(() => {
@@ -159,8 +159,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   return (
     <>
       {isFinished && <>
-        <div className={`fixed mr-[50vw] mt-[270px] w-[100vw] text-center overflow-visible text-9xl z-50 text-blue-900 ${styles.lose}`}> YOU LOSE </div>
-        <CeremonyParticles />
+        <div className={`fixed mr-[50vw] mt-[270px] w-[100vw] text-center text-9xl z-50 text-blue-900 ${styles.lose}`}> YOU LOSE </div>
+        <div className="fixed h-screen w-[200vw] z-[9999]"></div>
         </>}
       {[...Array(9)].map((_, i) => {
         return (

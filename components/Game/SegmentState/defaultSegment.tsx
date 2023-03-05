@@ -32,15 +32,21 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     const storedPosition = useSelector((state: any) => {
         return auth ? state.myPuzzle : state.peerPuzzle;
     });
-    const isRight = useSelector((state: any) => {
+    let isRight = useSelector((state: any) => {
         return state.defaultSegmentRightPlace[i];
     });
-    const [isRightPlace, setIsRightPlace] = useState(false);
     //아래 조건문 위로 올리면 안됨
 
     const arr = useSelector((state: any) => state.puzzleOrder);
+    const arr2 = useSelector((state: any) => state.puzzleOrder2);
     const firstlocation = [arr[0] * 50 - 50, arr[1] * 50 - 100, arr[2] * 50 - 150, arr[3] * 50 - 200, arr[4] * 50 - 250, arr[5] * 50 - 300, arr[6] * 50 - 350, arr[7] * 50 - 400, arr[8] * 50 - 450];
-    const [zindex, setZindex] = useState(arr[i]);
+    const firstlocation2 = [arr2[0] * 50 - 50, arr2[1] * 50 - 100, arr2[2] * 50 - 150, arr2[3] * 50 - 200, arr2[4] * 50 - 250, arr2[5] * 50 - 300, arr2[6] * 50 - 350, arr2[7] * 50 - 400, arr2[8] * 50 - 450];
+
+    const [zindex, setZindex] = useState(auth ? arr[i] : arr2[i]);
+
+    // if (!auth) {
+    //     setZindex(arr2[i])
+    // }
 
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
@@ -50,16 +56,10 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     const [width, height] = [(640 / 3) * (i % 3) - widthOx * 1.5, (480 / 3) * ((i - (i % 3)) / 3) + heightOx - 60];
     const [puzzleSoundPlay] = useSound(puzzleSoundUrl);
 
-    // isRight인 경우 안정적으로 고정 width, heigth에서 시작하게 하기 (얼음깨고 다시 맞출때 위치가 비정상적으로 저장중 (default로 돌아오기 직전만 api.start가 옮겨서 맞춰주기 전 위치로 돌아온다. 기능적인 문제는 없음))
-    let startXY = storedPosition[i];
-    if (isRight && auth) {
-        startXY = [width, height];
-    }
-
     // TODO : 옆으로 init 시 api.start 이동
 
     useEffect(() => {
-    if (isRight || isRightCard){
+        if ((isRight && auth) || (isRightCard && !auth)) {
             setZindex(0);
         }
         const preventDefault = (e: Event) => e.preventDefault();
@@ -79,16 +79,20 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
             rotateZ: 0,
             scale: 1,
             zoom: 0,
-            x: startXY[0], // 초기 기준 좌표를 말하는 것 같음, offset은 상관없는듯
-            y: startXY[1],
+            x: (auth && isRight) || (!auth && isRightCard) ? width : storedPosition[i][0], // 초기 기준 좌표를 말하는 것 같음, offset은 상관없는듯
+            y: (auth && isRight) || (!auth && isRightCard) ? height : storedPosition[i][1],
             config: { mass: 2, tension: 750, friction: 30 },
         };
     });
 
     useEffect(() => {
         if (peerxy !== undefined) {
-            dispatch({ type: `${peerxy ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [peerxy.peerx, peerxy.peery] } });
-            api.start({ x: peerxy.peerx, y: peerxy.peery, rotateX: 0, rotateY: 0 });
+            if(isRightCard){
+                api.start({ x: width, y: height, rotateX: 0, rotateY: 0 });
+                setZindex(0);
+            }else{
+                api.start({ x: peerxy.peerx, y: peerxy.peery, rotateX: 0, rotateY: 0 });
+            }
         }
     }, [peerxy]);
 
@@ -100,10 +104,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
     let isDataIn: boolean = false;
-    let isRigthPlaceForSetTimeout = isRightPlace;
     useDrag(
         (params) => {
-            if (isRightPlace) return;
             if (!auth) return;
             if (isSameOutline(x.get(), y.get(), width, height)) return;
             if (isRight) return;
@@ -113,11 +115,10 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
             // !params.down : 마우스를 떼는 순간
             if (!params.down) {
                 //알맞은 위치에 놓았을 때
-                if (!isRightPlace && isNearOutline(x.get(), y.get(), width, height)) {
+                if (isNearOutline(x.get(), y.get(), width, height)) {
                     target.current!.setAttribute("style", "z-index: 0");
-                    isRigthPlaceForSetTimeout = true;
                     api.start({ x: width, y: height });
-                    setIsRightPlace(true);
+                    isRight = true;
                     dispatch({ type: `defaultSegmentRightPlace/setRight`, payload: { index: i, isRight: true } });
                     puzzleSoundPlay();
                     if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
@@ -141,14 +142,14 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 //마우스 떼면 offset 아예 초기화
                 params.offset[0] = 0;
                 params.offset[1] = 0;
-                setZindex(arr[i])
+                setZindex(auth ? arr[i] : arr2[i]);
                 // 마우스를 떼는 순간에는 무조건 좌표+offset한 값을 저장하고 데이터를 보냄
             }
 
             if (!isDataIn) {
                 isDataIn = true;
                 setTimeout(function noName() {
-                    if (isRigthPlaceForSetTimeout) return;
+                    if (isRight) return;
                     positionDataSend();
                     isDataIn = false;
                 }, 16);
@@ -199,28 +200,37 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
     useEffect(() => {
         if (isStart) {
-            setTimeout(() => api.start({ x: x.get() + firstlocation[i] }), 5000);
-            setTimeout(() => api.start({ y: y.get() + 90 }), 5300);
+            if (auth) {
+                setTimeout(() => {
+                    var tmpx = x.get() + firstlocation[i];
+                    memo.current.x = tmpx;
+                    api.start({ x: tmpx })}, 5000);
+            }
+            else {
+                setTimeout(() => {
+                    var tmpx = x.get() + firstlocation2[i];
+                    memo.current.x = tmpx;
+                    api.start({ x: tmpx })}, 5000);
+            }
+            setTimeout(() => {
+                var tmpy = y.get() + 90;
+                memo.current.y = tmpy;
+                api.start({ y: tmpy })
+            }, 5300);
             setTimeout(() => isStart = false, 1000);
         }
         return () => {
             // unmount될 떄, 즉 아이템을 써서 segmentState가 변할 때 좌표를 저장함에 있어 오차가 없도록 하기 위해 isRightPlace가 true인 경우와 아닌 경우로 나눠서 저장함
-            if (isRightPlace) {
+            if ((isRightCard && !auth) || (isRight && auth)) {
                 dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
             }
             else {
                 //isRightPlace가 false인 경우, 마지막으로 저장된 좌표를 저장함, 이는 부정확해도 되므로 아래 animated.div에서 memo를 매번 저장하지 않도록 함. 8번에 한 번씩만 저장함
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
+                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [x.get(), y.get()] } });
             }
             auth ? setMyWait((prev) => prev + 1) : setPeerWait((prev) => prev + 1);
         };
     }, []);
-
-    useEffect(() => {
-        if (isRightCard){
-            setZindex(0);
-        }
-    }, [isRightCard]);
 
 
 
@@ -234,7 +244,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 <div className={styles.container}>
                     <animated.div
                         ref={target}
-                        className={(isRightPlace || isRightCard || (isRight && auth)) ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
+                        className={((isRightCard && !auth) || (isRight && auth)) ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
                         style={{
                             transform: "perspective(600px)",
                             x,
