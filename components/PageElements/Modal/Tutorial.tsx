@@ -67,44 +67,45 @@ export default function Tutorial() {
   return (
     <>
       <button onClick={openModal} className={`${styles.mulum} text-4xl w-60`}>
-        튜토리얼
+        아이템 설명
       </button>
       <Modal size="xl" aria-labelledby="contained-modal-title-vcente" centered show={isOpen} onHide={closeModal}>
-        <Modal.Header className="bg-black" closeButton>
+        <Modal.Header className={`${styles.pan} bg-black`} closeButton>
           <Modal.Title>
-            <h1 className="text-white">아이템</h1>
-
-            <div className="flex container">
+            <h1 className="text-white ml-3">아이템</h1>
+            <div className="flex ml-5">
               {SKILLS.map((item, index) => (
-                <motion.button
-                  whileHover={{
-                    scale: 1.2,
-                    transition: { duration: 1 },
-                    borderRadius: 10,
-                    backgroundColor: "#FFF",
-                  }}
-                  key={`item_${index}`}
-                >
-                  <Image
-                    className="{`flex justify-context mx-2 px-2 ${styles.readypan}`}"
-                    src={item.image}
-                    onClick={handleClickSkill}
-                    data-value={index}
-                    alt=""
-                    width={80}
-                    height={80}
-                  ></Image>
-                </motion.button>
+                <div className="mr-12">
+                  <motion.button
+                    whileHover={{
+                      scale: 1.2,
+                      transition: { duration: 1 },
+                      borderRadius: 10,
+                      backgroundColor: "#FFF",
+                    }}
+                    key={`item_${index}`}
+                  >
+                      <Image
+                        className={`flex border w-24 h-24 px-2 ${styles.item}`}
+                        src={item.image}
+                        onClick={handleClickSkill}
+                        data-value={index}
+                        alt=""
+                        width={80}
+                        height={80}
+                        ></Image>
+                    </motion.button>
+                  </div>
               ))}
             </div>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="bg-black">
+        <Modal.Body className={`${styles.pan} bg-black`}>
           <section className="bg-black dark:bg-gray-900">
             <div className="gap-16 items-center py-2 px-4 mx-auto max-w-screen-lg lg:grid lg:grid-cols-3 lg:py-16 lg:px-6">
               <div className="font-light text-gray-500 sm:text-lg dark:text-gray-400 col-span-1">
-                <Image src={currentSkill.image} alt="" width={60} height={60} />
-                <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-white ">{currentSkill.name}</h2>
+                <Image src={currentSkill.image} alt="" width={70} height={70} />
+                <h2 className="mb-4 mt-4 text-4xl tracking-tight font-extrabold text-white ">{currentSkill.name}</h2>
                 <p className="mb-4 text-2xl text-slate-400">{currentSkill.description}</p>
               </div>
               <div className="grid col-span-2">
