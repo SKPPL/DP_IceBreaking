@@ -50,6 +50,19 @@ const order = createSlice({
         },
         value: (state) => {
             return state;
+        },
+    }
+})
+
+const order2 = createSlice({
+    name: "puzzleOrder2",
+    initialState: arr,
+    reducers: {
+        init: (state) => {
+            state = initialState;
+        },
+        setArr: (state, action: PayloadAction<{ arr: Array<number> }>) => {
+            return action.payload.arr;
         }
     }
 })
@@ -131,6 +144,7 @@ const store = configureStore({
         peerPuzzle: peerPuzzleSlice.reducer,
         puzzleComplete: puzzleCompleteSlice.reducer,
         puzzleOrder: order.reducer,
+        puzzleOrder2: order2.reducer,
         defaultSegmentRightPlace: defaultSegmentRightPlace.reducer,
     }
 })

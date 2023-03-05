@@ -39,8 +39,15 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     //아래 조건문 위로 올리면 안됨
 
     const arr = useSelector((state: any) => state.puzzleOrder);
+    const arr2 = useSelector((state: any) => state.puzzleOrder2);
     const firstlocation = [arr[0] * 50 - 50, arr[1] * 50 - 100, arr[2] * 50 - 150, arr[3] * 50 - 200, arr[4] * 50 - 250, arr[5] * 50 - 300, arr[6] * 50 - 350, arr[7] * 50 - 400, arr[8] * 50 - 450];
-    const [zindex, setZindex] = useState(arr[i]);
+    const firstlocation2 = [arr2[0] * 50 - 50, arr2[1] * 50 - 100, arr2[2] * 50 - 150, arr2[3] * 50 - 200, arr2[4] * 50 - 250, arr2[5] * 50 - 300, arr2[6] * 50 - 350, arr2[7] * 50 - 400, arr2[8] * 50 - 450];
+
+    const [zindex, setZindex] = useState(auth ? arr[i] : arr2[i]);
+
+    // if (!auth) {
+    //     setZindex(arr2[i])
+    // }
 
     // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
     // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
@@ -199,7 +206,12 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
     useEffect(() => {
         if (isStart) {
-            setTimeout(() => api.start({ x: x.get() + firstlocation[i] }), 5000);
+            if (auth) {
+                setTimeout(() => api.start({ x: x.get() + firstlocation[i] }), 5000);
+            }
+            else {
+                setTimeout(() => api.start({ x: x.get() + firstlocation2[i] }), 5000);
+            }
             setTimeout(() => api.start({ y: y.get() + 90 }), 5300);
             setTimeout(() => isStart = false, 1000);
         }
