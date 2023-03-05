@@ -124,19 +124,19 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
                     dispatch({ type: "puzzleComplete/plus_mine" });
                     setZindex(0);
-                    // dispatch({
-                    //     type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
-                    //     payload: { index: i, position: [width, height] },
-                    // });
+                    dispatch({
+                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        payload: { index: i, position: [width, height] },
+                    });
                     if (dataChannel?.readyState === "open") {
                         dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: width, peery: height }));
                         return;
                     }
                 } else {
-                    // dispatch({
-                    //     type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
-                    //     payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
-                    // });
+                    dispatch({
+                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
+                    });
                 }
                 positionDataSend();
                 //마우스 떼면 offset 아예 초기화
