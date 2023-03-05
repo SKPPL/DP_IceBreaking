@@ -3,7 +3,7 @@ import styles from "./styles.module.css";
 import MyPuzzle from "../Game/mypuzzle";
 import PeerPuzzle from "../Game/peerpuzzle";
 import useSound from "use-sound";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import GameBGM from "../PageElements/GameBGM";
@@ -23,6 +23,7 @@ export default function CheckReady({ dataChannel }: Props) {
   const indexBGM = useRecoilValue(indexBGMElement);
   const [isPlaying, setIsPlaying] = useRecoilState(indexBGMState);
 
+  const arr = useSelector((state: any) => state.puzzleOrder);
 
   useEffect(() => {
     readySoundPlay();
@@ -53,6 +54,9 @@ export default function CheckReady({ dataChannel }: Props) {
   };
 
   useEffect(() => {
+    if (dataChannel && dataChannel?.readyState === "open") {
+      dataChannel.send(JSON.stringify({ type: "setArr", Arr: arr }));
+    }
     //상대방 Ready 상태 확인을 위해 데이터 채널에 EventListener 추가
     if (dataChannel) {
       dataChannel!.addEventListener("message", function peerData(event: any) {
@@ -62,6 +66,8 @@ export default function CheckReady({ dataChannel }: Props) {
             case "ready":
               setPeerReadyState(dataJSON.peerReady);
               break;
+            case "setArr":
+              dispatch({ type: "puzzleOrder2/setArr", payload: { arr: dataJSON.Arr } });
           }
         }
       });

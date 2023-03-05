@@ -61,7 +61,6 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     useEffect(() => {
         setTimeout(() => {
             setIsStart(false)
-            console.log(isStart)
         }, 5800);
         if (dataChannel) {
             dataChannel!.addEventListener("message", function myData(event: MessageEvent<any>) {
