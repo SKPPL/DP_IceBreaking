@@ -90,6 +90,12 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
         };
     }, []);
 
+    useEffect(() => {
+        if (isRight || isRightCard) {
+            setZindex(0);
+        }
+    }, [isRight, isRightCard])
+
     const target = useRef<HTMLDivElement>(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => {
         return {
