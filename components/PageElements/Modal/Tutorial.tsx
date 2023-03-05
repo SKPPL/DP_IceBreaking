@@ -66,8 +66,8 @@ export default function Tutorial() {
 
   return (
     <>
-      <button onClick={openModal} className={styles.mulum}>
-        ?
+      <button onClick={openModal} className={`${styles.mulum} text-4xl w-60`}>
+        튜토리얼
       </button>
       <Modal size="xl" aria-labelledby="contained-modal-title-vcente" centered show={isOpen} onHide={closeModal}>
         <Modal.Header className="bg-black" closeButton>
