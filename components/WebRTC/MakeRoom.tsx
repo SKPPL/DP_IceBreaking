@@ -30,7 +30,7 @@ export default function RoomMake({ onClickCreateRoom }: any) {
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={handleDialogChange}>
-      <button className={styles.glowOnHover} onClick={openModal}>
+      <button className={`${styles.glowOnHover} text-3xl`} onClick={openModal}>
         방 만들기
       </button>
       <Dialog.Portal forceMount>
@@ -58,11 +58,11 @@ export default function RoomMake({ onClickCreateRoom }: any) {
                       </svg>
                     </CloseButton>
                   </DialogHeader>
-                  <Title className="text-center mb-4 mt-3 font-extrabold text-2xl text-stone-50">방제목을 입력하세요!</Title>
-                  <input className={styles.roomInput}  id="roomInput" placeholder='입력하세요'></input>
-                  <button className={`${styles.glowOnHover} mt-1 mb-5 w-30 self-center`} onClick={onClickCreateRoom}>
-                      방 만들기
-                  </button>
+                      <div className="text-center mb-4 mt-3 font-extrabold text-4xl text-stone-50"> 방제목을 입력하세요! </div>
+                      <input className={`${styles.roomInput} w-80 mt-20 text-4xl`}  id="roomInput" placeholder='입력하세요'></input>
+                      <button className={`${styles.glowOnHover} mt-20 mb-5 h-20 self-center w-80 text-4xl`} onClick={onClickCreateRoom}>
+                        방 만들기
+                      </button>
                 </Content>
               </div>
             ) : null}
@@ -157,8 +157,8 @@ const OverlayBackground = styled(animated(Dialog.Overlay), {
 
 const Content = styled(animated(Dialog.Content), {
   position: 'absolute',
-  width: '300px',
-  height: '250px',
+  width: '30vw',
+  height: '55vh',
   backgroundColor: '#2c3e50',
   borderRadius: 8,
   padding: '24px 24px 32px',
@@ -178,8 +178,4 @@ const CloseButton = styled(Dialog.Close, {
   right: 16,
   cursor: 'pointer',
   color: '#1B1A22',
-})
-
-const Title = styled(Dialog.Title, {
-  fontSize: 20,
 })
