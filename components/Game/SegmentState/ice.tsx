@@ -97,8 +97,8 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
             rotateZ: 0,
             scale: 1,
             zoom: 0,
-            x: storedPosition[i][0], // 초기 기준 좌표를 말하는 것 같음, offset은 상관없는듯
-            y: storedPosition[i][1],
+            x: (auth && isRight) || (!auth && isRightCard) ? width : storedPosition[i][0], // 초기 기준 좌표를 말하는 것 같음, offset은 상관없는듯
+            y: (auth && isRight) || (!auth && isRightCard) ? height : storedPosition[i][1],
             config: { mass: 2, tension: 750, friction: 50 },
         };
     });
