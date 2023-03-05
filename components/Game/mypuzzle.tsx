@@ -62,7 +62,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         setTimeout(() => {
             setIsStart(false)
             console.log(isStart)
-        }, 5500);
+        }, 5800);
         if (dataChannel) {
             dataChannel!.addEventListener("message", function myData(event: MessageEvent<any>) {
                 if (event.data) {
@@ -140,10 +140,10 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     return (
         <>  
-            {isStart && <CeremonyParticles />}
+            {isStart && <div className="fixed h-screen w-[200vw] z-[9999]"></div>}
             {isFinished && <>
                 <div className={`fixed ml-[50vw] mt-[270px] w-[100vw] text-center text-9xl z-50 ${styles.win}`}> YOU WIN </div>
-                <CeremonyParticles />
+                <div className="fixed h-screen w-[200vw] z-[9999]"></div>
             </>}
             {
                 [...Array(9)].map((_, i) => {
