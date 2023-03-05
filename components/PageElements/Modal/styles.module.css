@@ -71,3 +71,18 @@
               0 0 2.8rem #bc13fe,
               inset 0 0 1.3rem #bc13fe; 
 }
+
+.pan{
+    display: inline-flex;
+    background-color: rgb(51 65 85);
+    box-shadow: 0 0 5px #fff,
+              0 0 5px #fff,
+              0 0 10px #8F7414
+}
+
+.item{
+    display: inline-flex;
+    box-shadow: 0 0 5px #fff,
+              0 0 5px #fff,
+              0 0 10px #8F7414
+}
