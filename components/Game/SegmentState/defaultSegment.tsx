@@ -207,12 +207,22 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     useEffect(() => {
         if (isStart) {
             if (auth) {
-                setTimeout(() => api.start({ x: x.get() + firstlocation[i] }), 5000);
+                setTimeout(() => {
+                    var tmpx = x.get() + firstlocation[i];
+                    memo.current.x = tmpx;
+                    api.start({ x: tmpx })}, 5000);
             }
             else {
-                setTimeout(() => api.start({ x: x.get() + firstlocation2[i] }), 5000);
+                setTimeout(() => {
+                    var tmpx = x.get() + firstlocation2[i];
+                    memo.current.x = tmpx;
+                    api.start({ x: tmpx })}, 5000);
             }
-            setTimeout(() => api.start({ y: y.get() + 90 }), 5300);
+            setTimeout(() => {
+                var tmpy = y.get() + 90;
+                memo.current.y = tmpy;
+                api.start({ y: tmpy })
+            }, 5300);
             setTimeout(() => isStart = false, 1000);
         }
         return () => {
