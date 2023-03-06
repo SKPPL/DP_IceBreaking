@@ -13,12 +13,7 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
 
     useEffect(() => {
         if (!cloneRef.current) return;
-
         ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
-
-
-        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
-
         return () => {
             cancelAnimationFrame(requestID.current);
         };
