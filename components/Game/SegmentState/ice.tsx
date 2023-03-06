@@ -41,23 +41,30 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
             iceCrackSoundPlay();
         }
     }
+    //ice EventListener 추가와 제거 
     useEffect(() => {
-        if (dataChannel) {
-            dataChannel!.addEventListener("message", function ice(event: MessageEvent<any>) {
-                if (event.data) {
-                    let dataJSON = JSON.parse(event.data);
-                    switch (dataJSON.type) {
-                        case "ice":
-                            if (i === dataJSON.i && auth !== dataJSON.auth) {
-                                setIceCount(dataJSON.iceCount);
-                                // console.log(iceCount, dataJSON.iceCount, '왜 실행안해')
-                                iceCrackSoundPlay();
-                            }
-                            break;
-                    }
+        const ice = (event: MessageEvent<any>) => {
+            if (event.data) {
+                let dataJSON = JSON.parse(event.data);
+                switch (dataJSON.type) {
+                    case "ice":
+                        if (i === dataJSON.i && auth !== dataJSON.auth) {
+                            setIceCount(dataJSON.iceCount);
+                            // console.log(iceCount, dataJSON.iceCount, '왜 실행안해')
+                            iceCrackSoundPlay();
+                        }
+                        break;
                 }
-            });
+            }
+        };
+        if (dataChannel) {
+            dataChannel!.addEventListener("message", ice);
         }
+        return () => {
+            if (dataChannel) {
+                dataChannel!.removeEventListener("message", ice);
+            }
+        };
     }, []);
     //퍼즐 데이터 스토어와 연결 react-redux
     const dispatch = useDispatch();
@@ -207,7 +214,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
         { target, eventOptions: { passive: false } }
     );
 
-    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
+    const memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
     const setMyWait = useSetRecoilState(myWaitState);
     const setPeerWait = useSetRecoilState(peerWaitState);
     useEffect(() => {
