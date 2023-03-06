@@ -139,7 +139,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
             break;
           case "ice": setTimeout(() => { 
             setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
-            makePeerDefaultSegment(); }, 15000); break;
+            makePeerDefaultSegment(); }, 10000); break;
           case "magnet": setTimeout(() => { 
             setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
             makePeerDefaultSegment(); }, 7000); break;

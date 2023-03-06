@@ -32,14 +32,14 @@ export const MessageL = styled(animated.div)`
   @media (max-width: 680px) {
     width: 100%;
   }
-  width: 80vh;
-  height: 40vh;
+  width: 70vh;
+  height: 30vh;
   background-image: url("/images/lipHani.gif");
   opacity: 1.1;
   background-size: cover;
   border: 0.2rem solid #fff;
   border-top-right-radius: 150px;
-  border-bottom-left-radius: 150px;
+  border-bottom-left-radius: 50px;
   box-shadow: 0 0 .2rem #fff,
             0 0 .2rem #fff,
             0 0 2rem #FF00FA,
@@ -53,8 +53,8 @@ export const ContentL = styled.div`
   font-weight: 400;
   text-shadow: 0 0 5px #FF00FA,0 0 5px #FF00FA,0 0 5px #FF00FA,0 0 5px #FF00FA,0 0 5px #FF00FA,0 0 5px #FF00FA,0 0 5px #FF00FA,0 0 5px #FF00FA;
   opacity: 1;
-  padding: 50px 20px;
-  font-size: 3.2em;
+  padding: 70px 5px;
+  font-size: 2.8em;
   display: grid;
   grid-template-columns: 1fr auto;
   grid-gap: 10px;
