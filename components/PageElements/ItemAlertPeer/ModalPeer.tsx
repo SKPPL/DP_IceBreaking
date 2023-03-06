@@ -202,7 +202,7 @@ export default function ModalPeer({ segmentState }:Props) {
         magnetPlay();
         break;
       case 'ice':
-        ref.current?.(`적의 조각이 얼어붙었습니다!`); 
+        ref.current?.(`적의 조각을 얼렸습니다!`); 
         iceSoundPlay();
         break;
       case 'lip':
