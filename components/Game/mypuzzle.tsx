@@ -20,7 +20,6 @@ import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
 import MyTwirlParticles from "../PageElements/Particles/mytwirlParticles";
 import MyRocketParticles from "../PageElements/Particles/myrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
-import CeremonyParticles from "../PageElements/Particles/ceremonyParticles";
 import GameBGM from "../PageElements/GameBGM";
 
 
