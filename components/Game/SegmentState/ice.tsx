@@ -19,7 +19,7 @@ interface Props {
     peerxy: { peerx: number; peery: number; } | undefined;
     dataChannel: RTCDataChannel | undefined;
     segmentState: string;
-    isRightCard: boolean
+    isRightCard: boolean;
 }
 
 function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard }: Props) {
@@ -27,7 +27,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
 
     const iceCrackSoundUrl = "/sounds/can.wav";
 
-    const [iceCount, setIceCount] = useState(2);
+    const [iceCount, setIceCount] = useState(4);
     const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, { playbackRate: 1 });
 
     function breakTheIce() {
@@ -105,10 +105,10 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
 
     useEffect(() => {
         if (peerxy !== undefined) {
-            if(isRightCard){
+            if (isRightCard) {
                 api.start({ x: width, y: height, rotateX: 0, rotateY: 0 });
                 setZindex(0);
-            }else{
+            } else {
                 api.start({ x: peerxy.peerx, y: peerxy.peery, rotateX: 0, rotateY: 0 });
             }
         }
