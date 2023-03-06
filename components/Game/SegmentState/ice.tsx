@@ -120,7 +120,8 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
         }
     }, [dataChannel]);
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    let isDataIn: boolean = false;
+    // 단순 변수는 여러 컴포넌트에서 사용할 경우 동시에 접근함으로 index별로 분화
+    let isDataIn = [false, false, false, false, false, false, false, false, false];
 
     useDrag(
         (params) => {
@@ -164,12 +165,12 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
                 setZindex(auth ? arr[i] : arr2[i]);
             }
 
-            if (!isDataIn) {
-                isDataIn = true;
+            if (!isDataIn[i]) {
+                isDataIn[i] = true;
                 setTimeout(function noName() {
                     if (isRight) return;
                     positionDataSend();
-                    isDataIn = false;
+                    isDataIn[i] = false;
                 }, 16);
             }
         },
