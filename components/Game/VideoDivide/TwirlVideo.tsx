@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { isMacOs, isChrome } from 'react-device-detect';
+
 // import { getHostFace } from "./FaceLandMarkMy";
 // import { getGuestFace } from "./FaceLandMarkPeer";
 interface segmentData {
@@ -12,12 +12,9 @@ export default function TwirlVideo({ auth }: segmentData) {
     var ctx: CanvasRenderingContext2D | null = null;
     useEffect(() => {
         if (!cloneRef.current) return;
-        if (isMacOs && isChrome) {
-            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
-        }
-        else {
-            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
-        }
+
+        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
+
         return () => {
             cancelAnimationFrame(requestID.current);
         };
