@@ -147,7 +147,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
                     dispatch({ type: "puzzleComplete/plus_mine" });
                     setZindex(0);
                     dispatch({
-                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
                         payload: { index: i, position: [width, height] },
                     });
                     if (dataChannel?.readyState === "open") {
@@ -156,7 +156,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
                     }
                 } else {
                     dispatch({
-                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
                         payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
                     });
                 }
@@ -213,9 +213,9 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
     useEffect(() => {
         return () => {
             if ((isRightCard && !auth) || (isRight && auth)) {
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
+                dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
             } else {
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [x.get(), y.get()] } });
+                dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [x.get(), y.get()] } });
             }
             auth ? setMyWait((prev) => prev - 1) : setPeerWait((prev) => prev - 1);
         };

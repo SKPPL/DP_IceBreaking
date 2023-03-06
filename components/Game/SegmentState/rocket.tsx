@@ -45,9 +45,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
     const bind = useDrag(
         ({ xy, previous, down, movement: pos, velocity, direction }) => {
             if ((auth && clickedMy[i]) || (!auth && clickedPeer[i])) return;
-            // 내꺼든 상대방 것이든 아무튼 움직일 수 있음
-            // if (!auth) return
-            // 상대방에게 내가 발생시킨 이벤트를 모두 전달
+            // 내꺼든 상대방 것이든 움직일 수 있음
             api.start({
                 pos: [Math.min(Math.max(pos[0], -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]), Math.min(Math.max(pos[1], 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1])],
                 immediate: down,
@@ -58,6 +56,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
             if (direction[0] > 0 && flipped === true) { setFlip(false); }
             if (dist(xy, previous) > 10 || !down)
                 angleApi.start({ angle: flipped ? (Math.atan2(direction[0], 1) + 0.5) : (Math.atan2(direction[0], 1) - 0.5) });
+            // 상대방에게 내가 발생시킨 이벤트를 모두 전달
             if (dataChannel) {
                 dataChannel.send(JSON.stringify({ type: 'rocket', i: i, auth: auth, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction, flipped: flipped }));
             }
@@ -67,7 +66,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
             rubberband: 1,
         }
     );
-    // 상대가 발생시킨 이벤트를 받아서 그대로 원래 useDrag에서 실행하던 것처럼 실행
+    // 상대가 발생시킨 이벤트를 그대로 받아서 useDrag에서 실행하던 것처럼 실행
     useEffect(() => {
         if (dataChannel) {
             dataChannel!.addEventListener("message", function rocket(event: MessageEvent<any>) {
@@ -75,10 +74,10 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                     let dataJSON = JSON.parse(event.data);
                     switch (dataJSON.type) {
                         case "rocket":
-                            if (i === dataJSON.i && auth === !dataJSON.auth) {
-                                if(auth){
+                            if (i === dataJSON.i && auth === !dataJSON.auth) { // 상대방이 움직인 내 것만 움직이게
+                                if (auth) {
                                     clickedMy[i] = dataJSON.down;
-                                }else{
+                                } else {
                                     clickedPeer[i] = dataJSON.down;
                                 }
                                 if (dataJSON.direction[0] < 0 && dataJSON.flipped === false) { setFlip(true); }
@@ -101,7 +100,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
     const setPeerWait = useSetRecoilState(peerWaitState);
     useEffect(() => {
         return () => {
-            dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
+            dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
             auth ? setMyWait((prev) => prev - 1) : setPeerWait((prev) => prev - 1);
         };
     }, []);
