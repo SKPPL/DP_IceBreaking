@@ -51,7 +51,7 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
             //나의 범위 안에서 카드가 움직이도록 설정
             mpx = Math.min(mousePosition.clientX - left, width / 6);
             mpx = Math.max(mpx, -left);
-            mpy = Math.max(mousePosition.clientY - top , top + 130);
+            mpy = Math.max(mousePosition.clientY - top, top + 130);
             mpy = Math.min(mpy, 640);
             //useTail을 사용하여 마우스 움직임
             api.start({ xy: [mpx, mpy], delay: 0 });
@@ -75,26 +75,32 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
     }, [mousePosition]);
     //상대방쪽은 위에서 발생시킨 이벤트를 받아서 똑같이 그려줘야 함
     useEffect(() => {
-        if (dataChannel) {
-            dataChannel!.addEventListener("message", function magnet(event: MessageEvent<any>) {
-                if (event.data) {
-                    let dataJSON = JSON.parse(event.data);
-                    switch (dataJSON.type) {
-                        case "magnet":
-                            if (i !== dataJSON.i || auth === !dataJSON.auth) return;
-                            // console.log("상대방 위치 드로잉 : ", dataJSON.xy, dataJSON.xy[0], dataJSON.xy[1]);
-                            //상대방에게 전송받은 마우스포인터로 상대방 위치 드로잉
-                            api.start({ xy: dataJSON.xy, delay: 0 });
-                            //상대방이 이동한 위치를 계속 store에 저장 -> 마지막에 해당자리에 카드를 두기 위해 사용
-                            dispatch({
-                                type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
-                                payload: { index: i, position: [dataJSON.xy[0] - widthOx / 2, dataJSON.xy[1] - heightOx / 2] },
-                            });
-                            break;
-                    }
+        const magnet = (event: MessageEvent<any>) => {
+            if (event.data) {
+                let dataJSON = JSON.parse(event.data);
+                switch (dataJSON.type) {
+                    case "magnet":
+                        if (i !== dataJSON.i || auth === !dataJSON.auth) return;
+                        // console.log("상대방 위치 드로잉 : ", dataJSON.xy, dataJSON.xy[0], dataJSON.xy[1]);
+                        //상대방에게 전송받은 마우스포인터로 상대방 위치 드로잉
+                        api.start({ xy: dataJSON.xy, delay: 0 });
+                        //상대방이 이동한 위치를 계속 store에 저장 -> 마지막에 해당자리에 카드를 두기 위해 사용
+                        dispatch({
+                            type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
+                            payload: { index: i, position: [dataJSON.xy[0] - widthOx / 2, dataJSON.xy[1] - heightOx / 2] },
+                        });
+                        break;
                 }
-            });
+            }
+        };
+        if (dataChannel) {
+            dataChannel!.addEventListener("message", magnet);
         }
+        return () => {
+            if (dataChannel) {
+                dataChannel.removeEventListener("message", magnet);
+            }
+        };
     }, []);
     useEffect(() => {
         return () => {

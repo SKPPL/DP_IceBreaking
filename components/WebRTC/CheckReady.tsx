@@ -57,21 +57,28 @@ export default function CheckReady({ dataChannel }: Props) {
     if (dataChannel && dataChannel?.readyState === "open") {
       dataChannel.send(JSON.stringify({ type: "setArr", Arr: arr }));
     }
+
+    const peerData = (event: MessageEvent<any>) => {
+      if (event.data) {
+        let dataJSON = JSON.parse(event.data);
+        switch (dataJSON.type) {
+          case "ready":
+            setPeerReadyState(dataJSON.peerReady);
+            break;
+          case "setArr":
+            dispatch({ type: "puzzleOrder2/setArr", payload: { arr: dataJSON.Arr } });
+        }
+      }
+    };
     //상대방 Ready 상태 확인을 위해 데이터 채널에 EventListener 추가
     if (dataChannel) {
-      dataChannel!.addEventListener("message", function peerData(event: any) {
-        if (event.data) {
-          var dataJSON = JSON.parse(event.data);
-          switch (dataJSON.type) {
-            case "ready":
-              setPeerReadyState(dataJSON.peerReady);
-              break;
-            case "setArr":
-              dispatch({ type: "puzzleOrder2/setArr", payload: { arr: dataJSON.Arr } });
-          }
-        }
-      });
+      dataChannel!.addEventListener("message", peerData);
     }
+    return () => {
+      if (dataChannel) {
+        dataChannel!.removeEventListener("message", peerData);
+      }
+    };
   }, []);
   return (
     <>

@@ -1,24 +1,19 @@
-import React, { useRef, useEffect, useState, memo } from "react";
-import { useSpring, animated, to, Spring } from "@react-spring/web";
-import { useGesture } from "react-use-gesture";
-import { Provider, useSelector, useDispatch } from "react-redux";
-import itemStore from "@/components/Game/store";
+import React, { useEffect, useState, memo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
-import Rocket from "./SegmentState/rocket";
 import { useRouter } from "next/router";
 import ModalPeer from "../PageElements/ItemAlertPeer/ModalPeer";
 import Bar from "@/components/PageElements/ProgressBar/Bar";
 import useSound from 'use-sound';
 import PeerIceFlakeParticles from "../PageElements/Particles/peericeFlakeParticles";
 import PeerBlackhallParticles from "../PageElements/Particles/peerblackhallParticles";
-import FaceLandMarkMy, { startItem, stopItem } from "../FaceDetection/FaceLandMarkMy";
+import { startItem, stopItem } from "../FaceDetection/FaceLandMarkMy";
 import PeerLipParticles from "../PageElements/Particles/peerlipParticles";
 import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
 import PeerTwirlParticles from "../PageElements/Particles/peertwirlParticles";
 import PeerRocketParticles from "../PageElements/Particles/peerrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
-import CeremonyParticles from "../PageElements/Particles/ceremonyParticles";
 
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
@@ -64,7 +59,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
     if (dataChannel) {
       dataChannel!.addEventListener("message", function peerData(event: any) {
         if (event.data) {
-          var dataJSON = JSON.parse(event.data);
+          let dataJSON = JSON.parse(event.data);
           switch (dataJSON.type) {
             case "move": // 상대방이 움직였을 때 , 그 좌표를 받아와서 상대방 퍼즐에 동기화 시킨다.
               // TODO : 상대방 퍼즐이 로켓 상태인 경우, 그 외의 경우로 나눠야함
@@ -114,20 +109,21 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       setIsFinished(true);
       loseSoundPlay();
       setTimeout(() => {
-      const peer = document.getElementById("peerface");
-      peer!.style.display = "block";
-      document.getElementById("fullscreen")!.style.display = "none";
-      document.getElementById("itembar")!.style.display = "none";
-      document.getElementById("face")!.style.display = "block";
-      fanFareSoundPlay();
-      ceremonySoundPlay();
-      setTimeout(() => {
-        router
-          .replace({
-            pathname: "/ready",
-          })
-          .then(() => router.reload());
-      }, 15000); }, 5000)
+        const peer = document.getElementById("peerface");
+        peer!.style.display = "block";
+        document.getElementById("fullscreen")!.style.display = "none";
+        document.getElementById("itembar")!.style.display = "none";
+        document.getElementById("face")!.style.display = "block";
+        fanFareSoundPlay();
+        ceremonySoundPlay();
+        setTimeout(() => {
+          router
+            .replace({
+              pathname: "/ready",
+            })
+            .then(() => router.reload());
+        }, 15000);
+      }, 5000);
     }
   }, [puzzleCompleteCounter.peer]);
 
@@ -143,7 +139,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   // 상대의 퍼즐 변경은 시간으로하지않고 상대가 시간이 끝났음을 send 받았을 떄만 해야한다.
   useEffect(() => {
-    for (var cnt = 0; cnt < keys.length; cnt++) {
+    for (let cnt = 0; cnt < keys.length; cnt++) {
       if (itemListBefore[keys[cnt]] !== itemList[keys[cnt]]) {
         if (dataChannel) dataChannel.send(JSON.stringify({ type: "item", segementState: keys[cnt] }));
         setItemListBefore(itemList);

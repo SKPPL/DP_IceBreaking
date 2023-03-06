@@ -16,10 +16,10 @@ img.height = 160;
 
 export default function IcedVideo({ iceCount, id, auth, videoId, segmentState }: segmentData) {
 
-    var cloneRef = useRef<HTMLCanvasElement>(null);
-    var ctx: CanvasRenderingContext2D | null = null;
-    var requestID = useRef<number>(0);
-    var unmountCheck = false;
+    const cloneRef = useRef<HTMLCanvasElement>(null);
+    let ctx: CanvasRenderingContext2D | null = null;
+    const requestID = useRef<number>(0);
+    let unmountCheck = false;
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return;

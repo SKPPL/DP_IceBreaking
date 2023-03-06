@@ -41,23 +41,30 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
             iceCrackSoundPlay();
         }
     }
+    //ice EventListener 추가와 제거 
     useEffect(() => {
-        if (dataChannel) {
-            dataChannel!.addEventListener("message", function ice(event: MessageEvent<any>) {
-                if (event.data) {
-                    let dataJSON = JSON.parse(event.data);
-                    switch (dataJSON.type) {
-                        case "ice":
-                            if (i === dataJSON.i && auth !== dataJSON.auth) {
-                                setIceCount(dataJSON.iceCount);
-                                // console.log(iceCount, dataJSON.iceCount, '왜 실행안해')
-                                iceCrackSoundPlay();
-                            }
-                            break;
-                    }
+        const ice = (event: MessageEvent<any>) => {
+            if (event.data) {
+                let dataJSON = JSON.parse(event.data);
+                switch (dataJSON.type) {
+                    case "ice":
+                        if (i === dataJSON.i && auth !== dataJSON.auth) {
+                            setIceCount(dataJSON.iceCount);
+                            // console.log(iceCount, dataJSON.iceCount, '왜 실행안해')
+                            iceCrackSoundPlay();
+                        }
+                        break;
                 }
-            });
+            }
+        };
+        if (dataChannel) {
+            dataChannel!.addEventListener("message", ice);
         }
+        return () => {
+            if (dataChannel) {
+                dataChannel!.removeEventListener("message", ice);
+            }
+        };
     }, []);
     //퍼즐 데이터 스토어와 연결 react-redux
     const dispatch = useDispatch();
@@ -147,7 +154,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
                     dispatch({ type: "puzzleComplete/plus_mine" });
                     setZindex(0);
                     dispatch({
-                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
                         payload: { index: i, position: [width, height] },
                     });
                     if (dataChannel?.readyState === "open") {
@@ -156,7 +163,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
                     }
                 } else {
                     dispatch({
-                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
                         payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
                     });
                 }
@@ -207,15 +214,15 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
         { target, eventOptions: { passive: false } }
     );
 
-    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
+    const memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
     const setMyWait = useSetRecoilState(myWaitState);
     const setPeerWait = useSetRecoilState(peerWaitState);
     useEffect(() => {
         return () => {
             if ((isRightCard && !auth) || (isRight && auth)) {
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
+                dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
             } else {
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [x.get(), y.get()] } });
+                dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [x.get(), y.get()] } });
             }
             auth ? setMyWait((prev) => prev - 1) : setPeerWait((prev) => prev - 1);
         };

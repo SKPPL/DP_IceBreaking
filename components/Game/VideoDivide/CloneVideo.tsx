@@ -9,7 +9,7 @@ interface segmentData {
 export default function CloneVideo({ id, auth, videoId, segmentState }: segmentData) {
     const cloneRef = useRef<HTMLCanvasElement>(null);
     const requestID = useRef<number>(0);
-    var ctx: CanvasRenderingContext2D | null = null;
+    let ctx: CanvasRenderingContext2D | null = null;
 
     useEffect(() => {
         if (!cloneRef.current) return;

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, memo, useCallback } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
 import { useDrag, useGesture } from "@use-gesture/react";
-import { Provider, useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styles from "../styles.module.css";
 import CloneVideo from "../VideoDivide/CloneVideo";
 import useSound from 'use-sound';
@@ -127,7 +127,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     dispatch({ type: "puzzleComplete/plus_mine" });
                     setZindex(0);
                     dispatch({
-                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
                         payload: { index: i, position: [width, height] },
                     });
                     if (dataChannel?.readyState === "open") {
@@ -136,7 +136,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     }
                 } else {
                     dispatch({
-                        type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`,
+                        type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
                         payload: { index: i, position: [storedPosition[i][0] + params.offset[0], storedPosition[i][1] + params.offset[1]] },
                     });
                 }
@@ -204,20 +204,20 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
         if (isStart) {
             if (auth) {
                 setTimeout(() => {
-                    var tmpx = x.get() + firstlocation[i];
+                    const tmpx = x.get() + firstlocation[i];
                     memo.current.x = tmpx;
                     api.start({ x: tmpx });
                 }, 5000);
             }
             else {
                 setTimeout(() => {
-                    var tmpx = x.get() + firstlocation2[i];
+                    const tmpx = x.get() + firstlocation2[i];
                     memo.current.x = tmpx;
                     api.start({ x: tmpx });
                 }, 5000);
             }
             setTimeout(() => {
-                var tmpy = y.get() + 90;
+                const tmpy = y.get() + 90;
                 memo.current.y = tmpy;
                 api.start({ y: tmpy });
             }, 5300);
@@ -226,11 +226,11 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
         return () => {
             // unmount될 떄, 즉 아이템을 써서 segmentState가 변할 때 좌표를 저장함에 있어 오차가 없도록 하기 위해 isRightPlace가 true인 경우와 아닌 경우로 나눠서 저장함
             if ((isRightCard && !auth) || (isRight && auth)) {
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
+                dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
             }
             else {
                 //isRightPlace가 false인 경우, 마지막으로 저장된 좌표를 저장함, 이는 부정확해도 되므로 아래 animated.div에서 memo를 매번 저장하지 않도록 함. 8번에 한 번씩만 저장함
-                dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [x.get(), y.get()] } });
+                dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [x.get(), y.get()] } });
             }
             auth ? setMyWait((prev) => prev + 1) : setPeerWait((prev) => prev + 1);
         };
@@ -264,7 +264,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     }}
                 >
                     <animated.div>
-                        {(segmentState === "default" || (!faceLandMarkReady || !lipReady) && !twirlReady) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                        {/* segmentState가 lip, 또는 twirl로 될 때, 완벽히 준비된 상태가 아닌 경우 default를 계속 보여주도록 함(그래야 div가 비어서 세로줄만 나오는 것 방지 가능) */}
+                        {(segmentState === "default" || !((faceLandMarkReady && lipReady) || twirlReady)) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
                         {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
                         {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
                     </animated.div>
