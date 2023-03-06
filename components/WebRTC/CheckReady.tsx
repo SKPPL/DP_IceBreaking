@@ -37,10 +37,11 @@ export default function CheckReady({ dataChannel }: Props) {
 
       document.getElementById("itembar")!.classList.remove("invisible");
       document.getElementById("itembar")!.classList.add("visible");
-
+      
       setTimeout(() => {
         dispatch({ type: "myPuzzle/start" });
         dispatch({ type: "peerPuzzle/start" });
+        console.log("여기")
       }, 1000);
     }
   }, [myReadyState, peerReadyState]);

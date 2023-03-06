@@ -96,6 +96,7 @@
   font-weight: 600;
   font-size: 7vw;
   will-change: opacity;
+  animation: waiting 1.5s infinite alternate;  
 }
 
 
@@ -130,4 +131,14 @@
             0 0 0.8rem #bc13fe,
             0 0 2.8rem #bc13fe,
             inset 0 0 1.3rem #bc13fe; 
+}
+
+@keyframes waiting {
+  0% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
