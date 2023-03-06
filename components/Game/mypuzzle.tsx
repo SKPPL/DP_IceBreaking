@@ -77,27 +77,33 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 case "rocket":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                     }, 9000);
                                     break;
                                 case "ice":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                     }, 10000);
                                     break;
                                 case "magnet":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                     }, 7000);
                                     break;
                                 case "lip":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                     }, 10000);
                                     break;
                                 case "twirl":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                     }, 10000);
+
                                     break;
                             }
                     }
