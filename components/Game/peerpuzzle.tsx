@@ -38,6 +38,7 @@ interface Props {
 
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
 const loseSoundUrl = '/sounds/YouLose.mp3';
+const ceremonySoundUrl = '/sounds/ceremonysound.mp3';
 
 function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   // peerPosition for concurrent position sync
@@ -56,6 +57,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
   const [loseSoundPlay] = useSound(loseSoundUrl);
+  const [ceremonySoundPlay] = useSound(ceremonySoundUrl);
   //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
   useEffect(() => {
@@ -99,6 +101,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       document.getElementById("itembar")!.style.display = "none";
       document.getElementById("face")!.style.display = "block";
       fanFareSoundPlay();
+      ceremonySoundPlay();
       setTimeout(() => {
         router
           .replace({

@@ -31,13 +31,13 @@ export default function CeremonyParticles() {
                 loaded={particlesLoaded}
                     options={{
                     fullScreen: {
-                        enable: false,
+                        enable: true,
                         zIndex: 0,
                     },
                     particles: {
                         number: {
-                            value: 50,
-                            limit: 100,
+                            value: 20,
+                            limit: 25,
                             density: {
                                 enable: true,
                                 value_area: 800
@@ -56,7 +56,7 @@ export default function CeremonyParticles() {
                                 nb_sides: 3
                             },
                             image: {
-                                src: "/images/iceicon.png",
+                                src: "/images/ceremonyfire.png",
                                 width: 100,
                                 height: 100
                             }
@@ -72,7 +72,7 @@ export default function CeremonyParticles() {
                             }
                         },
                         size: {
-                            value: 20,
+                            value: 100,
                             random: true,
                             anim: {
                                 enable: true,
@@ -89,7 +89,7 @@ export default function CeremonyParticles() {
                             width: 1
                         },
                         move: {
-                            enable: true,
+                            enable: false,
                             speed: 3,
                             direction: "none",
                             random: true,
