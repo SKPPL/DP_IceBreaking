@@ -130,7 +130,7 @@ export const DockCard = ({ children, item }: DockCardProps) => {
     <div className={styles['dock-card-container']}>
       <animated.button
         ref={cardRef}
-        className={styles['dock-card']}
+        className={wasUsed.current === true ? styles['dock-card-used'] : styles['dock-card']}
         onClick={handleClick}
         style={{
           width: size,
