@@ -1,26 +1,19 @@
-import React, { useRef, useEffect, useState, memo } from "react";
-import { useSpring, animated, to, Spring } from "@react-spring/web";
-import { useGesture } from "react-use-gesture";
-import { Provider, useSelector, useDispatch } from "react-redux";
-import itemStore from "@/components/Game/store";
+import React, { useEffect, useState, memo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
-import Rocket from "./SegmentState/rocket";
 import { useRouter } from "next/router";
 import Modal from "../PageElements/ItemAlert/Modal";
 import MyBar from "../PageElements/ProgressBar/MyBar";
-import { myWaitState } from "./atom";
-import { useRecoilState, useRecoilValue } from "recoil";
 import useSound from "use-sound";
 import MyIceFlakeParticles from "../PageElements/Particles/myiceFlakeParticles";
 import MyBlackhallParticles from "../PageElements/Particles/myblackhallParticles";
-import { getGuestLip, startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
+import { startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
 import MyLipParticles from "../PageElements/Particles/mylipParticles";
 import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
 import MyTwirlParticles from "../PageElements/Particles/mytwirlParticles";
 import MyRocketParticles from "../PageElements/Particles/myrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
-import GameBGM from "../PageElements/GameBGM";
 
 
 // import Segment from './Segment'
@@ -66,7 +59,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         if (dataChannel) {
             dataChannel!.addEventListener("message", function myData(event: MessageEvent<any>) {
                 if (event.data) {
-                    var dataJSON = JSON.parse(event.data);
+                    let dataJSON = JSON.parse(event.data);
                     switch (dataJSON.type) {
                         case "item":
                             setMySegmentState(dataJSON);
