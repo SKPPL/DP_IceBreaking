@@ -36,6 +36,7 @@ interface Props {
 }
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
 const winSoundUrl = '/sounds/YouWin.mp3';
+const ceremonySoundUrl = '/sounds/ceremonysound.mp3';
 
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
@@ -51,6 +52,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const router = useRouter();
     const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
     const [winSoundPlay] = useSound(winSoundUrl);
+    const [ceremonySoundPlay] = useSound(ceremonySoundUrl);
     const [isFinished, setIsFinished] = useState(false);
     const [isStart, setIsStart] = useState(true);
 
@@ -123,6 +125,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 document.getElementById("itembar")!.style.display = "none";
                 document.getElementById("face")!.style.display = "block";
                 fanFareSoundPlay();
+                ceremonySoundPlay();
                 setTimeout(() => {
                     router
                         .replace({
