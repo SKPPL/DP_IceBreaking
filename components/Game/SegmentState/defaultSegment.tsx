@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, memo, useCallback } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
 import { useDrag, useGesture } from "@use-gesture/react";
-import { Provider, useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styles from "../styles.module.css";
 import CloneVideo from "../VideoDivide/CloneVideo";
 import useSound from 'use-sound';
@@ -204,20 +204,20 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
         if (isStart) {
             if (auth) {
                 setTimeout(() => {
-                    var tmpx = x.get() + firstlocation[i];
+                    const tmpx = x.get() + firstlocation[i];
                     memo.current.x = tmpx;
                     api.start({ x: tmpx });
                 }, 5000);
             }
             else {
                 setTimeout(() => {
-                    var tmpx = x.get() + firstlocation2[i];
+                    const tmpx = x.get() + firstlocation2[i];
                     memo.current.x = tmpx;
                     api.start({ x: tmpx });
                 }, 5000);
             }
             setTimeout(() => {
-                var tmpy = y.get() + 90;
+                const tmpy = y.get() + 90;
                 memo.current.y = tmpy;
                 api.start({ y: tmpy });
             }, 5300);
@@ -264,7 +264,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     }}
                 >
                     <animated.div>
-                        {(segmentState === "default" || (!faceLandMarkReady || !lipReady) && !twirlReady) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                        {/* segmentState가 lip, 또는 twirl로 될 때, 완벽히 준비된 상태가 아닌 경우 default를 계속 보여주도록 함(그래야 div가 비어서 세로줄만 나오는 것 방지 가능) */}
+                        {(segmentState === "default" || !((faceLandMarkReady && lipReady) || twirlReady)) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
                         {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
                         {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
                     </animated.div>

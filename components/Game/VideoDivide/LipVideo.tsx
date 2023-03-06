@@ -8,7 +8,7 @@ export default function LipVideo({ auth }: segmentData) {
     const videoId = auth ? 'peer_lip' : 'my_lip';
     const cloneRef = useRef<HTMLCanvasElement>(null);
     const requestID = useRef<number>(0);
-    var ctx: CanvasRenderingContext2D | null = null;
+    let ctx: CanvasRenderingContext2D | null = null;
 
     useEffect(() => {
         if (!cloneRef.current) return;
