@@ -31,13 +31,13 @@ export default function CeremonyParticles() {
                 loaded={particlesLoaded}
                     options={{
                     fullScreen: {
-                        enable: true,
-                        zIndex: 10,
+                        enable: false,
+                        zIndex: 0,
                     },
                     particles: {
                         number: {
-                            value: 300,
-                            limit: 500,
+                            value: 50,
+                            limit: 100,
                             density: {
                                 enable: true,
                                 value_area: 800

@@ -66,11 +66,11 @@ export default function Tutorial() {
 
   return (
     <>
-      <button onClick={openModal} className={`${styles.mulum} text-4xl w-60`}>
+      <button onClick={openModal} className={`${styles.mulum} text-4xl w-60`} >
         아이템 설명
       </button>
-      <Modal size="xl" aria-labelledby="contained-modal-title-vcente" centered show={isOpen} onHide={closeModal}>
-        <Modal.Header className={`${styles.pan} bg-black`} closeButton>
+      <Modal className="fixed bottom-0 top-0 right-0" show={isOpen} onHide={closeModal} bsPrefix="fullscreen-mode">
+        <Modal.Header className={`${styles.pan} bg-black w-screen h-[25vh]`} closeButton>
           <Modal.Title>
             <h1 className="text-white ml-3">아이템</h1>
             <div className="flex ml-5">
@@ -100,7 +100,7 @@ export default function Tutorial() {
             </div>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className={`${styles.pan} bg-black`}>
+        <Modal.Body className={`${styles.pan} bg-black w-screen h-[70vh]`}>
           <section className="bg-black dark:bg-gray-900">
             <div className="gap-16 items-center py-2 px-4 mx-auto max-w-screen-lg lg:grid lg:grid-cols-3 lg:py-16 lg:px-6">
               <div className="font-light text-gray-500 sm:text-lg dark:text-gray-400 col-span-1">
@@ -143,7 +143,7 @@ export default function Tutorial() {
             Close
           </Button>
         </Modal.Footer>
-      </Modal>
+        </Modal>
     </>
   );
 }
