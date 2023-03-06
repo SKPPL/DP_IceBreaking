@@ -15,6 +15,10 @@ interface Props {
     dataChannel: RTCDataChannel | undefined;
     auth: boolean;
 }
+
+let clickedMy = [false, false, false, false, false, false, false, false, false];
+let clickedPeer = [false, false, false, false, false, false, false, false, false];
+
 export default function rocket({ i, auth, dataChannel }: Props) {
 
     const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle; });
@@ -40,6 +44,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
 
     const bind = useDrag(
         ({ xy, previous, down, movement: pos, velocity, direction }) => {
+            if ((auth && clickedMy[i]) || (!auth && clickedPeer[i])) return;
             // 내꺼든 상대방 것이든 아무튼 움직일 수 있음
             // if (!auth) return
             // 상대방에게 내가 발생시킨 이벤트를 모두 전달
@@ -71,6 +76,11 @@ export default function rocket({ i, auth, dataChannel }: Props) {
                     switch (dataJSON.type) {
                         case "rocket":
                             if (i === dataJSON.i && auth === !dataJSON.auth) {
+                                if(auth){
+                                    clickedMy[i] = dataJSON.down;
+                                }else{
+                                    clickedPeer[i] = dataJSON.down;
+                                }
                                 if (dataJSON.direction[0] < 0 && dataJSON.flipped === false) { setFlip(true); }
                                 else if (dataJSON.direction[0] > 0 && dataJSON.flipped === true) { setFlip(false); }
                                 api.start({

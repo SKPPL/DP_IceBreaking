@@ -32,14 +32,14 @@ export const MessageT = styled(animated.div)`
   @media (max-width: 680px) {
     width: 100%;
   }
-  width: 80vh;
-  height: 40vh;
+  width: 70vh;
+  height: 30vh;
   background-image: url('/images/twirl_flushing.gif');
   opacity: 1.1;
   background-size: contain;
   border: 0.2rem solid #fff;
   border-top-right-radius: 150px;
-  border-bottom-left-radius: 150px;
+  border-bottom-left-radius: 50px;
   box-shadow: 0 0 .2rem #fff,
             0 0 .2rem #fff,
             0 0 2rem #fe135d,
@@ -53,8 +53,8 @@ export const ContentT = styled.div`
   font-weight: 400;
   text-shadow: 0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d,0 0 5px #fe135d;
   opacity: 1;
-  padding: 50px 20px;
-  font-size: 3.2em;
+  padding: 70px 5px;
+  font-size: 2.8em;
   display: grid;
   grid-template-columns: 1fr auto;
   grid-gap: 10px;

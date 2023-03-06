@@ -3,7 +3,7 @@ import { getHostLip } from "./FaceLandMarkMy";
 import { getGuestLip } from "./FaceLandMarkPeer";
 import { useSetRecoilState } from 'recoil';
 import { myLipState, peerLipState } from "../Game/atom";
-import { isMacOs, isChrome } from 'react-device-detect';
+
 
 interface segmentData {
     auth: boolean;
@@ -16,12 +16,7 @@ export default function MakeVideoLip({ auth }: segmentData) {
     var ctx: CanvasRenderingContext2D | null = null;
     useEffect(() => {
         if (!cloneRef) return;
-        if (isMacOs && isChrome) {
-            ctx = cloneRef.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
-        }
-        else {
-            ctx = cloneRef.getContext('2d', { alpha: false, willReadFrequently: true });
-        }
+        ctx = cloneRef.getContext('2d', { alpha: false, willReadFrequently: true });
         return () => {
             cancelAnimationFrame(requestID.current);
             auth ? myLipSet(false) : peerLipSet(false);

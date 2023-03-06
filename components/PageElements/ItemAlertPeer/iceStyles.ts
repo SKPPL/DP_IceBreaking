@@ -32,14 +32,14 @@ export const MessageI = styled(animated.div)`
   @media (max-width: 680px) {
     width: 100%;
   }
-  width: 80vh;
-  height: 40vh;
+  width: 70vh;
+  height: 30vh;
   background-image: url("/images/iceModal.jpg");
   opacity: 1.1;
   background-size: cover;
   border: 0.2rem solid #fff;
   border-top-left-radius: 150px;
-  border-bottom-right-radius: 150px;
+  border-bottom-right-radius: 50px;
   box-shadow: 0 0 0.2rem #fff, 0 0 0.2rem #fff, 0 0 2rem #1b13fe, 0 0 0.8rem #1b13fe, 0 0 2.8rem #1b13fe, inset 0 0 1.3rem #1b13fe;
 `;
 // 아이템 사용 모달 알람 메시지 스타일
@@ -49,8 +49,8 @@ export const ContentI = styled.div`
   font-weight: 400;
   text-shadow: 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe, 0 0 5px #1b13fe;
   opacity: 1;
-  padding: 50px 20px;
-  font-size: 3.2em;
+  padding: 70px 20px;
+  font-size: 2.8em;
   display: grid;
   grid-template-columns: 1fr auto;
   grid-gap: 10px;

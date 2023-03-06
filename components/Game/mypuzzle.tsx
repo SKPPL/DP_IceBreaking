@@ -25,14 +25,14 @@ import GameBGM from "../PageElements/GameBGM";
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(import("@/components/Game/Segment"), {
-  loading: () => <div></div>,
-  ssr: false,
+    loading: () => <div></div>,
+    ssr: false,
 });
 
 interface Props {
-  videoId: string;
-  auth: boolean;
-  dataChannel: RTCDataChannel | undefined;
+    videoId: string;
+    auth: boolean;
+    dataChannel: RTCDataChannel | undefined;
 }
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
 const winSoundUrl = '/sounds/YouWin.mp3';
@@ -59,7 +59,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     useEffect(() => {
         setTimeout(() => {
-            setIsStart(false)
+            setIsStart(false);
         }, 5800);
         if (dataChannel) {
             dataChannel!.addEventListener("message", function myData(event: MessageEvent<any>) {
@@ -82,7 +82,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 case "ice":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
-                                    }, 15000);
+                                    }, 10000);
                                     break;
                                 case "magnet":
                                     setTimeout(() => {
@@ -108,7 +108,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     useEffect(() => {
         if (puzzleCompleteCounter.mine === 9 && puzzleCompleteCounter.peer !== 9) {
-            setIsFinished(true)
+            setIsFinished(true);
             winSoundPlay();
             setTimeout(() => {
                 const myface = document.getElementById("myface");
@@ -124,12 +124,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                         })
                         .then(() => router.reload());
                 }, 15000);
-            }, 5000)
+            }, 5000);
 
         }
     }, [puzzleCompleteCounter.mine]);
 
-    if (mySegmentState.segementState === "lip" || mySegmentState.segementState === "twirl") {
+    if (mySegmentState.segementState === "lip") {
         startItem();
         setTimeout(() => {
             stopItem();
@@ -137,7 +137,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     }
 
     return (
-        <>  
+        <>
             {isStart && <div className="fixed h-screen w-[200vw] z-[9999]"></div>}
             {isFinished && <>
                 <div className={`fixed ml-[50vw] mt-[270px] w-[100vw] text-center text-9xl z-50 ${styles.win}`}> YOU WIN </div>

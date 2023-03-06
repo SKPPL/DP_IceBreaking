@@ -18,7 +18,7 @@ const SKILLS = [
     image: "/images/iceIcon.png",
     GIF: "/images/ice_gif.gif",
     VIDEO: "/videos/ice_video.mp4",
-    description: "15초 동안 상대방이 퍼즐을 움직이지 못하도록 얼려버립니다. 얼어붙은 카드는 상대방이 두 번 클릭하여 녹일 수 있습니다.",
+    description: "10초 동안 상대방이 퍼즐을 움직이지 못하도록 얼려버립니다. 얼어붙은 카드는 상대방이 4번 클릭하여 녹일 수 있습니다.",
   },
   {
     name: "입술 쪽",

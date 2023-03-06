@@ -9,8 +9,8 @@ export const MessageA = styled(animated.div)`
   @media (max-width: 680px) {
     width: 100%;
   }
-  width: 700px;
-  height: 130px;
+  width: 630px;
+  height: 121px;
   background-image: url("");
   opacity: 1;
   background-size: contain;

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { isMacOs, isChrome } from 'react-device-detect';
+
 interface segmentData {
     auth: boolean;
     id: number;
@@ -13,12 +13,12 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
 
     useEffect(() => {
         if (!cloneRef.current) return;
-        if (isMacOs && isChrome) {
-            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
-        }
-        else {
-            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
-        }
+
+        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
+
+
+        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
+
         return () => {
             cancelAnimationFrame(requestID.current);
         };
@@ -61,3 +61,4 @@ export default function CloneVideo({ id, auth, videoId, segmentState }: segmentD
     );
 
 }
+
