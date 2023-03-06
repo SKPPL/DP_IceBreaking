@@ -33,9 +33,10 @@ export default function GameBGM({ prevPlayingState }: props) {
     }
   }, [isPlaying]);
 
+  const iconClass = isPlaying ? "bg-[url('../public/images/whitevolume.png')]" : "bg-[url('../public/images/nowhitevolume.png')]";
   return (
     <>
-      <button className="z-10 absolute bottom-0 m-[20px] w-12 h-12 bg-[url('../public/images/whitevolume.png')] bg-cover" onClick={handleChangeSound}></button>
+      <button className={`z-10 absolute bottom-0 m-[20px] w-12 h-12 ${iconClass} bg-cover`} onClick={handleChangeSound}></button>      
     </>
   );
 }
