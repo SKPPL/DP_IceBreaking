@@ -37,11 +37,10 @@ export default function CheckReady({ dataChannel }: Props) {
 
       document.getElementById("itembar")!.classList.remove("invisible");
       document.getElementById("itembar")!.classList.add("visible");
-      
+
       setTimeout(() => {
         dispatch({ type: "myPuzzle/start" });
         dispatch({ type: "peerPuzzle/start" });
-        console.log("여기")
       }, 1000);
     }
   }, [myReadyState, peerReadyState]);
@@ -102,7 +101,7 @@ export default function CheckReady({ dataChannel }: Props) {
             {!(myReadyState && peerReadyState) && (
               <div className="absolute h-[480px] justify-center items-center w-[640px] flex">
                 <div className={`absolute text-7xl text-center ${styles.lose}`}>
-                  내가 상대 얼굴을 <br/> <br/> &nbsp;&nbsp;&nbsp;&nbsp;맞춥니다. &nbsp;😏
+                  내가 상대 얼굴을 <br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;맞춥니다. &nbsp;😏
                 </div>
               </div>
             )}

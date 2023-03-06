@@ -76,28 +76,34 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
                                 case "rocket":
                                     setTimeout(() => {
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                         makeMyDefaultSegment();
                                     }, 9000);
                                     break;
                                 case "ice":
                                     setTimeout(() => {
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                         makeMyDefaultSegment();
                                     }, 10000);
                                     break;
                                 case "magnet":
                                     setTimeout(() => {
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                         makeMyDefaultSegment();
                                     }, 7000);
                                     break;
                                 case "lip":
                                     setTimeout(() => {
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                         makeMyDefaultSegment();
                                     }, 10000);
                                     break;
                                 case "twirl":
                                     setTimeout(() => {
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                         makeMyDefaultSegment();
                                     }, 10000);
+
                                     break;
                             }
                     }
