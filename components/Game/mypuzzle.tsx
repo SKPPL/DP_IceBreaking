@@ -83,7 +83,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 case "ice":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
-                                    }, 15000);
+                                    }, 10000);
                                     break;
                                 case "magnet":
                                     setTimeout(() => {
