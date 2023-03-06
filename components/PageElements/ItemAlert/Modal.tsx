@@ -67,7 +67,7 @@ function MessageHub({
 
   useEffect(() => {
     children((msg: string) => {
-      setItems(state => [...state, { key: id++, msg }])
+      setItems(state => [...state, { key: 0, msg }])
     })
   }, [])
 

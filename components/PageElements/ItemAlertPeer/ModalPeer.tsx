@@ -35,7 +35,7 @@ function MessageHub({
 }: MessageHubProps) {
   const refMap = useMemo(() => new WeakMap(), [])
   let [items, setItems] = useState<Item[]>([])
-
+  
   let timeout;
 
   switch(segmentState){
@@ -68,7 +68,7 @@ function MessageHub({
 
   useEffect(() => {
     children((msg: string) => {
-      setItems(state => [...state, { key: id++, msg }])
+      setItems(state => [...state, { key: 0, msg }])
     })
   }, [])
 
