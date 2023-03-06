@@ -22,6 +22,9 @@ interface Props {
     isRightCard: boolean;
 }
 
+let myPuzzleRight = [false, false, false, false, false, false, false, false, false];
+let isDataIn = [false, false, false, false, false, false, false, false, false];
+
 function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard }: Props) {
     //TODO ice 버그 수정하기
 
@@ -61,9 +64,10 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
     const storedPosition = useSelector((state: any) => {
         return auth ? state.myPuzzle : state.peerPuzzle;
     });
-    let isRight = useSelector((state: any) => {
+    const isRight = useSelector((state: any) => {
         return state.defaultSegmentRightPlace[i];
     });
+    myPuzzleRight[i] = isRight;
     const arr = useSelector((state: any) => state.puzzleOrder);
     const arr2 = useSelector((state: any) => state.puzzleOrder2);
     const [zindex, setZindex] = useState(auth ? arr[i] : arr2[i]);
@@ -120,8 +124,6 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
         }
     }, [dataChannel]);
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    // 단순 변수는 여러 컴포넌트에서 사용할 경우 동시에 접근함으로 index별로 분화
-    let isDataIn = [false, false, false, false, false, false, false, false, false];
 
     useDrag(
         (params) => {
@@ -138,7 +140,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
                 if (isNearOutline(x.get(), y.get(), width, height)) {
                     target.current!.setAttribute("style", "z-index: 0");
                     api.start({ x: width, y: height });
-                    isRight = true;
+                    myPuzzleRight[i] = true;
                     dispatch({ type: `defaultSegmentRightPlace/setRight`, payload: { index: i, isRight: true } });
                     puzzleSoundPlay();
                     if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
@@ -168,7 +170,7 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
             if (!isDataIn[i]) {
                 isDataIn[i] = true;
                 setTimeout(function noName() {
-                    if (isRight) return;
+                    if (myPuzzleRight[i]) return;
                     positionDataSend();
                     isDataIn[i] = false;
                 }, 16);
