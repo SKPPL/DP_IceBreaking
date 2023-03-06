@@ -103,7 +103,9 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     }, [dataChannel]);
 
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-    let isDataIn: boolean = false;
+    // 단순 변수는 여러 컴포넌트에서 사용할 경우 동시에 접근함으로 index별로 분화
+    let isDataIn = [false, false, false, false, false, false, false, false, false];
+
     useDrag(
         (params) => {
             if (!auth) return;
@@ -146,12 +148,12 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 // 마우스를 떼는 순간에는 무조건 좌표+offset한 값을 저장하고 데이터를 보냄
             }
 
-            if (!isDataIn) {
-                isDataIn = true;
+            if (!isDataIn[i]) {
+                isDataIn[i] = true;
                 setTimeout(function noName() {
                     if (isRight) return;
                     positionDataSend();
-                    isDataIn = false;
+                    isDataIn[i] = false;
                 }, 16);
             }
         },
