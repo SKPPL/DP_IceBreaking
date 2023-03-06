@@ -87,10 +87,10 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
     useEffect(() => {
         if (peerxy !== undefined) {
-            if(isRightCard){
+            if (isRightCard) {
                 api.start({ x: width, y: height, rotateX: 0, rotateY: 0 });
                 setZindex(0);
-            }else{
+            } else {
                 api.start({ x: peerxy.peerx, y: peerxy.peery, rotateX: 0, rotateY: 0 });
             }
         }
@@ -204,18 +204,20 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 setTimeout(() => {
                     var tmpx = x.get() + firstlocation[i];
                     memo.current.x = tmpx;
-                    api.start({ x: tmpx })}, 5000);
+                    api.start({ x: tmpx });
+                }, 5000);
             }
             else {
                 setTimeout(() => {
                     var tmpx = x.get() + firstlocation2[i];
                     memo.current.x = tmpx;
-                    api.start({ x: tmpx })}, 5000);
+                    api.start({ x: tmpx });
+                }, 5000);
             }
             setTimeout(() => {
                 var tmpy = y.get() + 90;
                 memo.current.y = tmpy;
-                api.start({ y: tmpy })
+                api.start({ y: tmpy });
             }, 5300);
             setTimeout(() => isStart = false, 1000);
         }
@@ -240,33 +242,31 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     const twirlReady = useRecoilValue(auth ? myTwirlState : peerTwirlState);
     return (
         <>
-            <div className="">
-                <div className={styles.container}>
-                    <animated.div
-                        ref={target}
-                        className={((isRightCard && !auth) || (isRight && auth)) ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
-                        style={{
-                            transform: "perspective(600px)",
-                            x,
-                            y,
-                            scale: to([scale, zoom], (s, z) => {
-                                memo.current.x = x.get();
-                                memo.current.y = y.get();
-                                return s + z;
-                            }),
-                            rotateX,
-                            rotateY,
-                            rotateZ,
-                            zIndex: zindex,
-                        }}
-                    >
-                        <animated.div>
-                            {(segmentState === "default" || (!faceLandMarkReady || !lipReady) && !twirlReady) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
-                            {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
-                            {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
-                        </animated.div>
+            <div className={styles.container}>
+                <animated.div
+                    ref={target}
+                    className={((isRightCard && !auth) || (isRight && auth)) ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
+                    style={{
+                        transform: "perspective(600px)",
+                        x,
+                        y,
+                        scale: to([scale, zoom], (s, z) => {
+                            memo.current.x = x.get();
+                            memo.current.y = y.get();
+                            return s + z;
+                        }),
+                        rotateX,
+                        rotateY,
+                        rotateZ,
+                        zIndex: zindex,
+                    }}
+                >
+                    <animated.div>
+                        {(segmentState === "default" || (!faceLandMarkReady || !lipReady) && !twirlReady) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                        {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
+                        {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
                     </animated.div>
-                </div>
+                </animated.div>
             </div>
         </>
     );
