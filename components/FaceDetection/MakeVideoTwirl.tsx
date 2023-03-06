@@ -47,7 +47,12 @@ export default function MakeVideoTwirl({ videoId, auth }: segmentData) {
     const radius = 120;
 
     const draw = useCallback(() => {
-        ctx2!.drawImage(video, 0, 0, 640, 480, 0, 0, 320, 240);
+        if (video.videoWidth !== 640) {
+            ctx2!.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 320, 240);
+        }
+        else {
+            ctx2!.drawImage(video, 0, 0, 640, 480, 0, 0, 320, 240);
+        }
         const frame = ctx2!.getImageData(0, 0, 320, 240);
         const frame2: ImageData = new ImageData(320, 240);
         for (let y = 0; y < 240; y++) {

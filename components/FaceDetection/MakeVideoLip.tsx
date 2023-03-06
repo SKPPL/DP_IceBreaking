@@ -21,15 +21,24 @@ export default function MakeVideoLip({ auth }: segmentData) {
             cancelAnimationFrame(requestID.current);
             auth ? myLipSet(false) : peerLipSet(false);
             cloneRef.remove();
-
         };
     }, []);
-    const xyr = useRef([320, 240, 50]);
+    const xyr = useRef([320, 240, 30]);
+    var tempXYR;
     const video = document.getElementById(videoId) as HTMLVideoElement;
     const draw = useCallback(() => {
-        var tempXYR = auth ? getGuestLip() : getHostLip();
-        if (tempXYR) {
-            xyr.current = tempXYR;
+        if (video.videoWidth !== 640) {
+            xyr.current = [video.videoWidth / 2, video.videoHeight / 2, Math.floor(30 * video.videoWidth / 640)];
+            tempXYR = auth ? getGuestLip() : getHostLip();
+            if (tempXYR) {
+                xyr.current = tempXYR.map((v) => Math.floor(v * video.videoWidth / 640));
+            }
+        }
+        else {
+            tempXYR = auth ? getGuestLip() : getHostLip();
+            if (tempXYR) {
+                xyr.current = tempXYR;
+            }
         }
         //장축과 단축
         var lr = Math.floor(xyr.current[2] * 1.5);
