@@ -350,6 +350,7 @@
 
 
 .readyTbody{
+    grid-template-columns: 6;
     border: 0.3rem solid #fff;
     box-shadow: 0 0 5px #fff,
               0 0 5px #fff,
