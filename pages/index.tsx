@@ -8,7 +8,6 @@ import { useRecoilState } from "recoil";
 import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
 import IndexBGM from "@/components/PageElements/IndexBGM";
 
-const bgUrl = 'images/DP'
 export default function Home() {
   return (
     <>
