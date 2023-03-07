@@ -282,7 +282,6 @@ export function isNearOutline(x: number, y: number, positionx: number, positiony
     } else return false;
 }
 export function isSameOutline(x: number, y: number, positionx: number, positiony: number) {
-    const diff = 0;
     if (x === positionx && y === positiony) {
         return true;
     } else return false;
