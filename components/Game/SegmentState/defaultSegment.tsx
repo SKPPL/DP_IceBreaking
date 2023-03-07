@@ -9,6 +9,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { myFaceLandMarkState, myLipState, myTwirlState, myWaitState, peerFaceLandMarkState, peerLipState, peerTwirlState, peerWaitState } from "../atom";
 import LipVideo from "../VideoDivide/LipVideo";
 import TwirlVideo from "@/components/Game/VideoDivide/TwirlVideo";
+import IcedVideo from "../VideoDivide/IcedVideo";
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
@@ -46,19 +47,56 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
     const [zindex, setZindex] = useState(auth ? arr[i] : arr2[i]);
 
-    // if (!auth) {
-    //     setZindex(arr2[i])
-    // }
-
-    // const videoElement = document.getElementById(videoId) as HTMLVideoElement;
-    // const [width, height] = [videoElement.videoWidth / 3 * (i % 3), videoElement.videoHeight / 3 * ((i - i % 3) / 3)]
+    
     const d = 1;
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [(640 / 3) * d, (480 / 3) * d];
     const [width, height] = [(640 / 3) * (i % 3) - widthOx * 1.5, (480 / 3) * ((i - (i % 3)) / 3) + heightOx - 60];
     const [puzzleSoundPlay] = useSound(puzzleSoundUrl);
-
+    
     // TODO : 옆으로 init 시 api.start 이동
+    
+    //ice 관련
+
+    const iceCrackSoundUrl = "/sounds/can.wav";
+    const [iceCount, setIceCount] = useState((isRight && auth) || (isRightCard && !auth) ? 0 : 4);
+    const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, { playbackRate: 1 });
+
+    const breakTheIce = () => {
+        if (!auth) return;
+        if (segmentState !== "ice") return;
+        if (iceCount > 0) {
+            if (dataChannel) dataChannel.send(JSON.stringify({ type: "ice", i: i, auth: auth, iceCount: iceCount - 1 }));
+            setIceCount(iceCount - 1);
+            iceCrackSoundPlay();
+        }
+    }
+
+    //ice EventListener 추가와 제거 
+    useEffect(() => {
+        const ice = (event: MessageEvent<any>) => {
+            if (event.data) {
+                let dataJSON = JSON.parse(event.data);
+                switch (dataJSON.type) {
+                    case "ice":
+                        if (i === dataJSON.i && auth !== dataJSON.auth) {
+                            setIceCount(dataJSON.iceCount);
+                            // console.log(iceCount, dataJSON.iceCount, '왜 실행안해')
+                            iceCrackSoundPlay();
+                        }
+                        break;
+                }
+            }
+        };
+        if (dataChannel) {
+            dataChannel!.addEventListener("message", ice);
+        }
+        return () => {
+            if (dataChannel) {
+                dataChannel!.removeEventListener("message", ice);
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if ((isRight && auth) || (isRightCard && !auth)) {
@@ -109,8 +147,12 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     useDrag(
         (params) => {
             if (!auth) return;
-            if (isSameOutline(x.get(), y.get(), width, height)) return;
             if (isRight) return;
+            if (segmentState === "ice" && iceCount > 0) {
+                params.offset[0] = 0;
+                params.offset[1] = 0;
+                return;
+            }
             x.set(storedPosition[i][0] + params.offset[0]);
             y.set(storedPosition[i][1] + params.offset[1]);
             setZindex(10);
@@ -244,7 +286,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     const twirlReady = useRecoilValue(auth ? myTwirlState : peerTwirlState);
     return (
         <>
-            <div className={styles.container}>
+            <div className={styles.container} onClick={breakTheIce}>
                 <animated.div
                     ref={target}
                     className={((isRightCard && !auth) || (isRight && auth)) ? `${styles.rightCard}` : (auth ? `${styles.myCard}` : `${styles.peerCard}`)}
@@ -265,9 +307,19 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 >
                     <animated.div>
                         {/* segmentState가 lip, 또는 twirl로 될 때, 완벽히 준비된 상태가 아닌 경우 default를 계속 보여주도록 함(그래야 div가 비어서 세로줄만 나오는 것 방지 가능) */}
+                        {segmentState === "ice" &&
+                            <>
+                                {iceCount > 0 &&
+                                    <div className="flex text-center justify-center items-center">
+                                        <div className={`${styles.iced} absolute select-none text-9xl z-10 pointer-events-none`}>{iceCount}</div>
+                                        <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                                    </div>
+                                }
+                            </>}
                         {(segmentState === "default" || !((faceLandMarkReady && lipReady) || twirlReady)) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
                         {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
                         {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
+
                     </animated.div>
                 </animated.div>
             </div>
@@ -278,11 +330,6 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 export function isNearOutline(x: number, y: number, positionx: number, positiony: number) {
     const diff = 30;
     if (x > positionx - diff && x < positionx + diff && y > positiony - diff && y < positiony + diff) {
-        return true;
-    } else return false;
-}
-export function isSameOutline(x: number, y: number, positionx: number, positiony: number) {
-    if (x === positionx && y === positiony) {
         return true;
     } else return false;
 }

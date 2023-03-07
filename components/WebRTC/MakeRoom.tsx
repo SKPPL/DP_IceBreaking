@@ -58,7 +58,7 @@ export default function RoomMake({ onClickCreateRoom }: any) {
                       </svg>
                     </CloseButton>
                   </DialogHeader>
-                      <div className="text-center mt-[1vh] font-extrabold text-[2.5vw] text-stone-50"> 방제목을 입력하세요! </div>
+                      <div className="text-center mt-[1vh] font-extrabold text-[2.5vw] text-stone-50 select-none"> 방제목을 입력하세요! </div>
                       <input className={`${styles.roomInput} w-[22vw] mt-[7vh] text-[2.5vw]`}  id="roomInput" placeholder='이곳에 입력하세요'></input>
                       <button className={`${styles.glowOnHover} mt-[7vh] w-[22vw] self-center text-[2.5vw]`} onClick={onClickCreateRoom}>
                         방 만들기

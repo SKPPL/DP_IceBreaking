@@ -105,13 +105,13 @@ const RoomList = () => {
           <table className={styles.readyTable}>
             <thead>
               <tr className="">
-                <th scope="col" className="text-center text-3xl py-3">
+                <th scope="col" className="text-center text-3xl py-3 select-none">
                   방 제목
                 </th>
-                <th scope="col" className="text-center w-[12vw] text-3xl py-3">
+                <th scope="col" className="text-center w-[12vw] text-3xl py-3 select-none">
                   참가 인원
                 </th>
-                <th scope="col" className="text-center w-[13vw] text-3xl py-3">
+                <th scope="col" className="text-center w-[13vw] text-3xl py-3 select-none">
                   Enter
                 </th>
               </tr>

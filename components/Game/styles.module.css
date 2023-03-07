@@ -356,6 +356,7 @@
   font-size: 3rem;
   animation: flicker 1.5s infinite alternate;
   color: #fff;
+  user-select: none;
 }
 
 /* Flickering animation */

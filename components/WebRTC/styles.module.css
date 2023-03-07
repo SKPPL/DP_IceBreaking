@@ -93,67 +93,6 @@
     inset 0 0 0.2rem rgba(255, 0, 0, 0.5); 
 }
 
-@keyframes pulsateMy {
-    
-    100% {
-        
-        text-shadow:
-        0 0 4px #fff,
-        0 0 11px #fff,
-        0 0 19px #fff,
-        0 0 40px rgba(168, 232, 251, 0.5),
-        0 0 80px rgba(168, 232, 251, 0.5),
-        0 0 90px rgba(168, 232, 251, 0.5),
-        0 0 100px rgba(168, 232, 251, 0.5),
-        0 0 150px rgba(168, 232, 251, 0.5);
-        
-    }
-    
-    0% {
-        
-        text-shadow:
-        0 0 2px #fff,
-        0 0 4px #fff,
-        0 0 6px #fff,
-        0 0 10px rgba(168, 232, 251, 0.5),
-        0 0 45px rgba(168, 232, 251, 0.5),
-        0 0 55px rgba(168, 232, 251, 0.5),
-        0 0 70px rgba(168, 232, 251, 0.5),
-        0 0 80px rgba(168, 232, 251, 0.5);
-        
-    }
-}
-
-@keyframes pulsatePeer {
-    
-    100% {
-        
-        text-shadow:
-        0 0 4px #fff,
-        0 0 11px #fff,
-        0 0 19px #fff,
-        0 0 40px rgba(255, 0, 0, 0.5),
-        0 0 80px rgba(255, 0, 0, 0.5),
-        0 0 90px rgba(255, 0, 0, 0.5),
-        0 0 100px rgba(255, 0, 0, 0.5),
-        0 0 150px rgba(255, 0, 0, 0.5);
-        
-    }
-    
-    0% {
-        
-        text-shadow:
-        0 0 2px #fff,
-        0 0 4px #fff,
-        0 0 6px #fff,
-        0 0 10px rgba(255, 0, 0, 0.5),
-        0 0 45px rgba(255, 0, 0, 0.5),
-        0 0 55px rgba(255, 0, 0, 0.5),
-        0 0 70px rgba(255, 0, 0, 0.5),
-        0 0 80px rgba(255, 0, 0, 0.5);
-        
-    }
-}
 
 /* -------------------------- RoomList -------------------------- */
 .readyContainer{
@@ -397,12 +336,21 @@
     height: 4rem;
     font-size: 2.5rem;
     text-align: center;
-    animation: pulsateMy 1.5s infinite alternate;  
     border: 0.3rem solid #fff;
     box-shadow: 0 0 .1rem #fff,
               0 0 .1rem #fff,
               0 0 0.4rem #A8E8FB,
               inset 0 0 0.65rem #A8E8FB; 
+    text-shadow: 
+              0 0 2px #fff,
+              0 0 4px #fff,
+              0 0 6px #fff,
+              0 0 10px rgba(168, 232, 251, 0.5),
+              0 0 45px rgba(168, 232, 251, 0.5),
+              0 0 55px rgba(168, 232, 251, 0.5),
+              0 0 70px rgba(168, 232, 251, 0.5),
+              0 0 80px rgba(168, 232, 251, 0.5);
+    user-select: none;
 }
 
 .readyMy:hover {
@@ -417,12 +365,22 @@
     height: 4rem;
     font-size: 2.5rem;
     text-align: center;
-    animation: pulsatePeer 1.5s infinite alternate;  
     border: 0.3rem solid #fff;
     box-shadow: 0 0 .1rem #fff,
               0 0 .1rem #fff,
               0 0 0.4rem red,
-              inset 0 0 0.65rem red; 
+              inset 0 0 0.65rem red;
+    text-shadow:
+        0 0 2px #fff,
+        0 0 4px #fff,
+        0 0 6px #fff,
+        0 0 10px rgba(255, 0, 0, 0.5),
+        0 0 45px rgba(255, 0, 0, 0.5),
+        0 0 55px rgba(255, 0, 0, 0.5),
+        0 0 70px rgba(255, 0, 0, 0.5),
+        0 0 80px rgba(255, 0, 0, 0.5);
+    user-select: none;
+    
 }
 
 .readyPeer:hover {
@@ -437,6 +395,8 @@
 
         0 0 20px #f08,
         0 0 25px #f08;
+    user-select: none;
+    
 }
 
 .lose{
@@ -446,4 +406,6 @@
       0 0 10px #fff,
       0 0 20px rgb(108, 95, 210),
       0 0 25px rgb(108, 95, 210);
-}
+      user-select: none;
+
+    }

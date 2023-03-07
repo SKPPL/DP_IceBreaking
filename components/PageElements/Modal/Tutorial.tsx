@@ -115,8 +115,8 @@ export default function Tutorial() {
             </div>
             <div className="font-light h-[15vh] w-[90vw] flex items-center text-gray-500 sm:text-lg dark:text-gray-400">
               <img className="w-[7vw] h-[13vh] mr-[2vw]" src={currentSkill.image} alt="" />
-              <h2 className="w-[22vw] mr-[2vw] text-4xl tracking-tight font-extrabold text-white ">{currentSkill.name}</h2>
-              <p className=" text-3xl text-slate-400">{currentSkill.description}</p>
+              <h2 className="w-[22vw] mr-[2vw] text-4xl tracking-tight font-extrabold text-white select-none">{currentSkill.name}</h2>
+              <p className=" text-3xl text-slate-400 select-none">{currentSkill.description}</p>
             </div>
           </section>
         </Modal.Body>
