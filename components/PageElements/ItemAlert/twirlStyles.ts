@@ -36,7 +36,7 @@ export const MessageT = styled(animated.div)`
   height: 30vh;
   background-image: url('/images/twirl_flushing.gif');
   opacity: 1.1;
-  background-size: contain;
+  background-size: cover;
   border: 0.2rem solid #fff;
   border-top-right-radius: 150px;
   border-bottom-left-radius: 50px;
