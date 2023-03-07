@@ -30,7 +30,11 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
 
     const iceCrackSoundUrl = "/sounds/can.wav";
 
-    const [iceCount, setIceCount] = useState(4);
+    const isRight = useSelector((state: any) => {
+        return state.defaultSegmentRightPlace[i];
+    });
+
+    const [iceCount, setIceCount] = useState((isRight && auth) || (isRightCard && !auth) ? 0 : 4);
     const [iceCrackSoundPlay] = useSound(iceCrackSoundUrl, { playbackRate: 1 });
 
     function breakTheIce() {
@@ -70,9 +74,6 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
     const dispatch = useDispatch();
     const storedPosition = useSelector((state: any) => {
         return auth ? state.myPuzzle : state.peerPuzzle;
-    });
-    const isRight = useSelector((state: any) => {
-        return state.defaultSegmentRightPlace[i];
     });
     myPuzzleRight[i] = isRight;
     const arr = useSelector((state: any) => state.puzzleOrder);

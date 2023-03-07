@@ -34,7 +34,7 @@ export const MessageR = styled(animated.div)`
   }
   width: 70vh;
   height: 30vh;
-  background-image: url('/images/rocketModalPeer.jpg');
+  background-image: url('/images/rocketModalPeer.webp');
   opacity: 1.1;
   background-size: cover;
   border: 0.2rem solid #fff;
