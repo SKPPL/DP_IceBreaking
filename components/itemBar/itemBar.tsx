@@ -1,20 +1,20 @@
-import * as React from 'react'
-import { Provider, useSelector, useDispatch } from 'react-redux'
+import * as React from 'react';
+import { Provider, useSelector, useDispatch } from 'react-redux';
 
-import { Card } from './Card'
-import { Dock } from './Dock'
-import { DockCard } from './DockCard'
-import { DockDivider } from './DockDivider'
+import { Card } from './Card';
+import { Dock } from './Dock';
+import { DockCard } from './DockCard';
+import { DockDivider } from './DockDivider';
 
-import styles from './styles.module.scss'
+import styles from './styles.module.scss';
 
 const GRADIENTS = [
-    '/images/rocket.png',
-    '/images/iceIcon.png',
-    '/images/lip.png',
-    '/images/twirl.png',
-    '/images/magnet.png',
-]
+    '/images/rocket.webp',
+    '/images/iceIcon.webp',
+    '/images/lip.webp',
+    '/images/twirl.webp',
+    '/images/magnet.webp',
+];
 
 export default function ItemBar() {
     return (
@@ -33,5 +33,5 @@ export default function ItemBar() {
                 </Dock>
             </div>
         </>
-    )
+    );
 }
