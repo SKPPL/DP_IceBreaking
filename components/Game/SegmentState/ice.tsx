@@ -253,7 +253,11 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
                             {iceCount <= 0 ? (
                                 <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
                             ) : (
-                                <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                                <div className="flex text-center justify-center items-center">
+                                    
+                                    <div className={`${styles.iced} absolute select-none text-9xl z-10 pointer-events-none`}>{iceCount}</div>
+                                    <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                                </div>
                             )}
                         </animated.div>
                     </animated.div>
