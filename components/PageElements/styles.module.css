@@ -96,7 +96,8 @@
   font-weight: 600;
   font-size: 7vw;
   will-change: opacity;
-  animation: waiting 1.5s infinite alternate;  
+  animation: waiting 1.5s infinite alternate;
+  user-select: none;
 }
 
 
