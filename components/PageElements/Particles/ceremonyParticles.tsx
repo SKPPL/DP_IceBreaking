@@ -29,7 +29,7 @@ export default function CeremonyParticles() {
                 id='ceremonytsparticle'
                 init={particlesInit}
                 loaded={particlesLoaded}
-                    options={{
+                options={{
                     fullScreen: {
                         enable: true,
                         zIndex: 0,
@@ -56,7 +56,7 @@ export default function CeremonyParticles() {
                                 nb_sides: 3
                             },
                             image: {
-                                src: "/images/ceremonyfire.png",
+                                src: "/images/ceremonyfire.webp",
                                 width: 100,
                                 height: 100
                             }
@@ -161,9 +161,9 @@ export default function CeremonyParticles() {
                     },
                     retina_detect: false,
                     fps_limit: 60
-                    }}
-                    
-                />
+                }}
+
+            />
         </>
-)
+    );
 }
