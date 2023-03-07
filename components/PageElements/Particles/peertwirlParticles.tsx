@@ -58,7 +58,7 @@ export default function PeerTwirlParticles() {
                                         nb_sides: 3
                                     },
                                     image: {
-                                        src: "/images/twirlparticle.webp",
+                                        src: "/images/swirl.png",
                                         width: 100,
                                         height: 100
                                     }
