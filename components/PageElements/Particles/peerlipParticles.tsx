@@ -58,7 +58,7 @@ export default function PeerLipParticles() {
                                         nb_sides: 3
                                     },
                                     image: {
-                                        src: "/images/web.png",
+                                        src: "/images/lip.webp",
                                         width: 100,
                                         height: 100
                                     }
