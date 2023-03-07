@@ -240,7 +240,6 @@ function Ice({ i, auth, videoId, peerxy, dataChannel, segmentState, isRightCard 
                         }}
                     >
                         <animated.div>
-                            {/* 투두 : 안 눌리게 텍스트 안 눌리게 ㅇㅋ? 응 ㅇㅋ */}
                             {iceCount <= 0 ? (
                                 <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
                             ) : (
