@@ -55,6 +55,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   const [ceremonySoundPlay] = useSound(ceremonySoundUrl);
   //dataChannel에 addEventListner 붙이기 (하나의 dataChannel에 이벤트리스너를 여러번 붙이는 것은 문제가 없다.)
 
+  const [peerWinFlag, setPeerWin] = useState(false);
+
   useEffect(() => {
     if (dataChannel) {
       dataChannel!.addEventListener("message", function peerData(event: any) {
@@ -95,6 +97,10 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
                 case "twirl": makePeerDefaultSegment(); break;
               }
               break;
+            case "peerWin":
+              if (dataJSON.won === true){
+                setPeerWin(true);
+              }
           }
         }
       });
@@ -105,7 +111,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   //useSelector는 state가 변경되었다면 functional component가 render한 이후에 실행됩니다.
   useEffect(() => {
-    if (puzzleCompleteCounter.peer === 9 && puzzleCompleteCounter.mine !== 9) {
+    if ((puzzleCompleteCounter.peer === 9 && puzzleCompleteCounter.mine !== 9) || peerWinFlag) {
       setIsFinished(true);
       loseSoundPlay();
       setTimeout(() => {
@@ -125,7 +131,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         }, 15000);
       }, 5000);
     }
-  }, [puzzleCompleteCounter.peer]);
+  }, [puzzleCompleteCounter.peer, peerWinFlag]);
 
   //item 사용을 위한 코드
   const itemList = useSelector((state: any) => {
