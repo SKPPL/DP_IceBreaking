@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { isMacOs, isChrome } from 'react-device-detect';
+import React, { useCallback, useRef, useEffect } from 'react';
+
 import { useSetRecoilState } from 'recoil';
 import { myTwirlState, peerTwirlState } from '../Game/atom';
 
@@ -11,17 +11,12 @@ interface segmentData {
 export default function MakeVideoTwirl({ videoId, auth }: segmentData) {
     // auth가 true면 내 비디오를 변환해서 상대 퍼즐에 표시함, false면 상대 비디오를 변환해서 내 퍼즐에 표시함
 
-    var cloneRef = document.getElementById(`${videoId}_twirl`) as HTMLCanvasElement;
-    var cnt = useRef<number>(0);
-    var requestID = useRef<number>(0);
-    var ctx: CanvasRenderingContext2D | null = null;
+    const cloneRef = document.getElementById(`${videoId}_twirl`) as HTMLCanvasElement;
+    const cnt = useRef<number>(0);
+    const requestID = useRef<number>(0);
+    let ctx: CanvasRenderingContext2D | null = null;
     useEffect(() => {
-        if (isMacOs && isChrome) {
-            ctx = cloneRef.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
-        }
-        else {
-            ctx = cloneRef.getContext('2d', { alpha: false, willReadFrequently: true });
-        }
+        ctx = cloneRef.getContext('2d', { alpha: false, willReadFrequently: true });
         return () => {
             auth ? myTwirlSet(false) : peerTwirlSet(false);
             cancelAnimationFrame(requestID.current);
@@ -33,13 +28,10 @@ export default function MakeVideoTwirl({ videoId, auth }: segmentData) {
     const canvas2 = document.createElement('canvas'); // twirl 만들 캔버스
     canvas2.width = 320;
     canvas2.height = 240;
-    var ctx2: CanvasRenderingContext2D | null = null;
-    if (isMacOs) {
-        ctx2 = canvas2.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
-    }
-    else {
-        ctx2 = canvas2.getContext('2d', { alpha: false, willReadFrequently: true });
-    }
+    let ctx2: CanvasRenderingContext2D | null = null;
+
+    ctx2 = canvas2.getContext('2d', { alpha: false, willReadFrequently: true });
+
     const d = 0.7;
 
     // angle from -2 rad to 2 rad, function is made to pass the origin quickly!
@@ -55,7 +47,12 @@ export default function MakeVideoTwirl({ videoId, auth }: segmentData) {
     const radius = 120;
 
     const draw = useCallback(() => {
-        ctx2!.drawImage(video, 0, 0, 640, 480, 0, 0, 320, 240);
+        if (video.videoWidth !== 640) {
+            ctx2!.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 320, 240);
+        }
+        else {
+            ctx2!.drawImage(video, 0, 0, 640, 480, 0, 0, 320, 240);
+        }
         const frame = ctx2!.getImageData(0, 0, 320, 240);
         const frame2: ImageData = new ImageData(320, 240);
         for (let y = 0; y < 240; y++) {
@@ -78,15 +75,19 @@ export default function MakeVideoTwirl({ videoId, auth }: segmentData) {
                 frame2.data[newIndex + 3] = frame.data[index + 3];; //a
             }
         }
+        let tempIndex1 = 0;
+        let cnt1 = 0;
+        let tempIndex2 = 0;
+        let cnt2 = 0;
         for (let y = 0; y < 240; y++) {
             for (let x = 0; x < 320; x++) {
                 const index = (y * 320 + x) * 4;
                 if (frame2.data[index] == 0 || frame2.data[index + 1] == 0 || frame2.data[index + 2] == 0 || frame2.data[index + 3] == 0) {
                     //tempIndex1, tempIndex2는 0이 아닌 값이 나올 때까지 앞뒤로 탐색, for interpolation of the color!
-                    var tempIndex1 = index;
-                    var cnt1 = 0;
-                    var tempIndex2 = index;
-                    var cnt2 = 0;
+                    tempIndex1 = index;
+                    cnt1 = 0;
+                    tempIndex2 = index;
+                    cnt2 = 0;
                     while ((frame2.data[tempIndex1] == 0 || frame2.data[tempIndex1 + 1] == 0 || frame2.data[tempIndex1 + 2] == 0 || frame2.data[tempIndex1 + 3] == 0) && tempIndex1 >= 0) {
                         tempIndex1 -= 4;
                         cnt1 += 1;

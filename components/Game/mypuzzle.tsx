@@ -1,42 +1,35 @@
-import React, { useRef, useEffect, useState, memo } from "react";
-import { useSpring, animated, to, Spring } from "@react-spring/web";
-import { useGesture } from "react-use-gesture";
-import { Provider, useSelector, useDispatch } from "react-redux";
-import itemStore from "@/components/Game/store";
+import React, { useEffect, useState, memo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
-import Rocket from "./SegmentState/rocket";
 import { useRouter } from "next/router";
 import Modal from "../PageElements/ItemAlert/Modal";
 import MyBar from "../PageElements/ProgressBar/MyBar";
-import { myWaitState } from "./atom";
-import { useRecoilState, useRecoilValue } from "recoil";
 import useSound from "use-sound";
 import MyIceFlakeParticles from "../PageElements/Particles/myiceFlakeParticles";
 import MyBlackhallParticles from "../PageElements/Particles/myblackhallParticles";
-import { getGuestLip, startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
+import { startItem, stopItem } from "../FaceDetection/FaceLandMarkPeer";
 import MyLipParticles from "../PageElements/Particles/mylipParticles";
 import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
 import MyTwirlParticles from "../PageElements/Particles/mytwirlParticles";
 import MyRocketParticles from "../PageElements/Particles/myrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
-import CeremonyParticles from "../PageElements/Particles/ceremonyParticles";
-import GameBGM from "../PageElements/GameBGM";
 
 
 // import Segment from './Segment'
 const PuzzleSegment = dynamic(import("@/components/Game/Segment"), {
-  loading: () => <div></div>,
-  ssr: false,
+    loading: () => <div></div>,
+    ssr: false,
 });
 
 interface Props {
-  videoId: string;
-  auth: boolean;
-  dataChannel: RTCDataChannel | undefined;
+    videoId: string;
+    auth: boolean;
+    dataChannel: RTCDataChannel | undefined;
 }
 const fanFareSoundUrl = '/sounds/Fanfare.mp3';
 const winSoundUrl = '/sounds/YouWin.mp3';
+const ceremonySoundUrl = '/sounds/ceremonysound.mp3';
 
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
@@ -52,6 +45,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     const router = useRouter();
     const [fanFareSoundPlay] = useSound(fanFareSoundUrl);
     const [winSoundPlay] = useSound(winSoundUrl);
+    const [ceremonySoundPlay] = useSound(ceremonySoundUrl);
     const [isFinished, setIsFinished] = useState(false);
     const [isStart, setIsStart] = useState(true);
 
@@ -60,12 +54,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     useEffect(() => {
         setTimeout(() => {
-            setIsStart(false)
+            setIsStart(false);
         }, 5800);
         if (dataChannel) {
             dataChannel!.addEventListener("message", function myData(event: MessageEvent<any>) {
                 if (event.data) {
-                    var dataJSON = JSON.parse(event.data);
+                    let dataJSON = JSON.parse(event.data);
                     switch (dataJSON.type) {
                         case "item":
                             setMySegmentState(dataJSON);
@@ -78,27 +72,33 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                                 case "rocket":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                     }, 9000);
                                     break;
                                 case "ice":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
-                                    }, 15000);
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
+                                    }, 10000);
                                     break;
                                 case "magnet":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                     }, 7000);
                                     break;
                                 case "lip":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                     }, 10000);
                                     break;
                                 case "twirl":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
                                     }, 10000);
+
                                     break;
                             }
                     }
@@ -109,7 +109,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     useEffect(() => {
         if (puzzleCompleteCounter.mine === 9 && puzzleCompleteCounter.peer !== 9) {
-            setIsFinished(true)
+            setIsFinished(true);
             winSoundPlay();
             setTimeout(() => {
                 const myface = document.getElementById("myface");
@@ -118,6 +118,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                 document.getElementById("itembar")!.style.display = "none";
                 document.getElementById("face")!.style.display = "block";
                 fanFareSoundPlay();
+                ceremonySoundPlay();
                 setTimeout(() => {
                     router
                         .replace({
@@ -125,12 +126,12 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                         })
                         .then(() => router.reload());
                 }, 15000);
-            }, 5000)
+            }, 5000);
 
         }
     }, [puzzleCompleteCounter.mine]);
 
-    if (mySegmentState.segementState === "lip" || mySegmentState.segementState === "twirl") {
+    if (mySegmentState.segementState === "lip") {
         startItem();
         setTimeout(() => {
             stopItem();
@@ -138,7 +139,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     }
 
     return (
-        <>  
+        <>
             {isStart && <div className="fixed h-screen w-[200vw] z-[9999]"></div>}
             {isFinished && <>
                 <div className={`fixed ml-[50vw] mt-[270px] w-[100vw] text-center text-9xl z-50 ${styles.win}`}> YOU WIN </div>

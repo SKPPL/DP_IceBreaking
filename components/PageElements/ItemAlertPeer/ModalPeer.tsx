@@ -35,15 +35,15 @@ function MessageHub({
 }: MessageHubProps) {
   const refMap = useMemo(() => new WeakMap(), [])
   let [items, setItems] = useState<Item[]>([])
-
+  
   let timeout;
 
   switch(segmentState){
-    case 'rocket': timeout = 1500;  break;
-    case 'magnet': timeout = 1500;  break;
-    case 'ice': timeout = 1500;  break;
-    case 'lip' : timeout = 1500; break;
-    case 'twirl' : timeout = 1500; break;
+    case 'rocket': timeout = 2000;  break;
+    case 'magnet': timeout = 2000;  break;
+    case 'ice': timeout = 2000;  break;
+    case 'lip' : timeout = 2000; break;
+    case 'twirl' : timeout = 2000; break;
     case 'default' : items = [];
   }
 
@@ -68,7 +68,7 @@ function MessageHub({
 
   useEffect(() => {
     children((msg: string) => {
-      setItems(state => [...state, { key: id++, msg }])
+      setItems(state => [...state, { key: 0, msg }])
     })
   }, [])
 
@@ -117,7 +117,7 @@ function MessageHub({
           {transitions(({ life, ...style }, item) => (
             <MessageA style={style}>
               <ContentA ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}>
-                <p>15초 지속</p>
+                <p>10초 지속</p>
               </ContentA>
             </MessageA>
           ))}
@@ -202,7 +202,7 @@ export default function ModalPeer({ segmentState }:Props) {
         magnetPlay();
         break;
       case 'ice':
-        ref.current?.(`적의 조각이 얼어붙었습니다!`); 
+        ref.current?.(`적의 조각을 얼렸습니다!`); 
         iceSoundPlay();
         break;
       case 'lip':

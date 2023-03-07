@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { isMacOs, isChrome } from 'react-device-detect';
+
 interface segmentData {
     auth: boolean;
     id: number;
@@ -16,19 +16,14 @@ img.height = 160;
 
 export default function IcedVideo({ iceCount, id, auth, videoId, segmentState }: segmentData) {
 
-    var cloneRef = useRef<HTMLCanvasElement>(null);
-    var ctx: CanvasRenderingContext2D | null = null;
-    var requestID = useRef<number>(0);
-    var unmountCheck = false;
+    const cloneRef = useRef<HTMLCanvasElement>(null);
+    let ctx: CanvasRenderingContext2D | null = null;
+    const requestID = useRef<number>(0);
+    let unmountCheck = false;
     useEffect(() => {
         unmountCheck = false;
         if (!cloneRef.current) return;
-        if (isMacOs && isChrome) {
-            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
-        }
-        else {
-            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
-        }
+        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
         return () => {
             unmountCheck = true;
         };
@@ -83,7 +78,7 @@ export default function IcedVideo({ iceCount, id, auth, videoId, segmentState }:
 
     return (
         <>
-            <canvas id={`${auth ? 'my' : 'peer'}_${id}`} width="213" height="160" ref={cloneRef} ></canvas>
+            <canvas className="absolute" id={`${auth ? 'my' : 'peer'}_${id}`} width="213" height="160" ref={cloneRef} ></canvas>
         </>
     );
 

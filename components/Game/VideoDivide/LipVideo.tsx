@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { isMacOs, isChrome } from 'react-device-detect';
 interface segmentData {
     auth: boolean;
 }
@@ -9,16 +8,12 @@ export default function LipVideo({ auth }: segmentData) {
     const videoId = auth ? 'peer_lip' : 'my_lip';
     const cloneRef = useRef<HTMLCanvasElement>(null);
     const requestID = useRef<number>(0);
-    var ctx: CanvasRenderingContext2D | null = null;
+    let ctx: CanvasRenderingContext2D | null = null;
 
     useEffect(() => {
         if (!cloneRef.current) return;
-        if (isMacOs && isChrome) {
-            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true, desynchronized: true });
-        }
-        else {
-            ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
-        }
+
+        ctx = cloneRef.current.getContext('2d', { alpha: false, willReadFrequently: true });
         return () => {
             cancelAnimationFrame(requestID.current);
         };

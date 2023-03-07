@@ -38,8 +38,8 @@ export default function MyIceFlakeParticles() {
                         },
                         particles: {
                             number: {
-                                value: 50,
-                                limit: 100,
+                                value: 30,
+                                limit: 50,
                                 density: {
                                     enable: true,
                                     value_area: 800
@@ -58,7 +58,7 @@ export default function MyIceFlakeParticles() {
                                     nb_sides: 3
                                 },
                                 image: {
-                                    src: "/images/iceicon.png",
+                                    src: "/images/iceIcon.png",
                                     width: 100,
                                     height: 100
                                 }

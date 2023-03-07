@@ -1,14 +1,14 @@
 import Head from "next/head";
-import React, { ReactNode, useState, useEffect, useRef } from 'react'
-import { useSpring, animated, to } from '@react-spring/web'
-import { useDrag, useGesture } from 'react-use-gesture'
+import React, { ReactNode, useState, useEffect, useRef } from 'react';
+import { useSpring, animated, to } from '@react-spring/web';
+import { useDrag, useGesture } from 'react-use-gesture';
 import styles from "./styles.module.css";
 import { useRouter } from "next/router";
 
-const puzzleImageUrl = '/images/currentSmallPiece.png'
+const puzzleImageUrl = '/images/currentSmallPiece.png';
 
-const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
-const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
+const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
+const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
 
 
 
@@ -21,18 +21,20 @@ interface MyConstraints {
 export default function PuzzleScreen() {
 
     const router = useRouter();
-    var cloneRef = useRef<HTMLCanvasElement>(null);
-    var ctx: CanvasRenderingContext2D | null = null;
+    // const userVideoRef = useRef<any>();
+    const userStreamRef = useRef<MediaStream>();
+    const cloneRef = useRef<HTMLCanvasElement>(null);
+    let ctx: CanvasRenderingContext2D | null = null;
     const puzzleImage = new Image();
     puzzleImage.src = puzzleImageUrl;
     const [innerWidth, setInnerWidth] = useState(window.innerWidth);
     const movingRef = useRef<HTMLDivElement>(null);
     const [divX, setDivX] = useState(0); //퍼즐의 절대위치 X
     const [divY, setDivY] = useState(0); //퍼즐의 절대위치 y
-    const [puzzleHoleX,setHoleX] = useState(1); //퍼즐 구멍의 화면 절대위치 X
-    const [puzzleHoleY,setHoleY] = useState(1); //퍼즐 구멍의 화면 절대위치 Y
-    const puzzleWidth = 230/1440*innerWidth;
-    const puzzleHeight = 255/781*innerWidth/1440*781;
+    const [puzzleHoleX, setHoleX] = useState(1); //퍼즐 구멍의 화면 절대위치 X
+    const [puzzleHoleY, setHoleY] = useState(1); //퍼즐 구멍의 화면 절대위치 Y
+    const puzzleWidth = 230 / 1440 * innerWidth;
+    const puzzleHeight = 255 / 781 * innerWidth / 1440 * 781;
 
 
     function findPosition() {
@@ -42,12 +44,12 @@ export default function PuzzleScreen() {
         setHoleX(innerWidth*(1250/1440));
         setHoleY(innerWidth*(640/1440));
     }
-    
-    
+
+
     const handleResize = () => {
         router.reload();
-        
-    }
+
+    };
 
 
     useEffect(() => {
@@ -55,14 +57,14 @@ export default function PuzzleScreen() {
 
         return () => {
             document.removeEventListener('resize', handleResize);
-        }
-    }, [])
+        };
+    }, []);
 
 
-    function draw(){
-        ctx!.drawImage(puzzleImage,0,0, puzzleWidth, puzzleHeight);
+    function draw() {
+        ctx!.drawImage(puzzleImage, 0, 0, puzzleWidth, puzzleHeight);
         setTimeout(() => {
-            draw()
+            draw();
         }, 40);
     }
 
@@ -74,15 +76,15 @@ export default function PuzzleScreen() {
         document.addEventListener('gesturestart', preventDefault);
         document.addEventListener('gesturechange', preventDefault);
 
-        draw()
+        draw();
         findPosition();
 
 
         return () => {
             document.removeEventListener('gesturestart', preventDefault);
             document.removeEventListener('gesturechange', preventDefault);
-        }
-    }, [cloneRef, puzzleHoleX])
+        };
+    }, [cloneRef, puzzleHoleX]);
 
     const domTarget = useRef(null);
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
@@ -96,18 +98,18 @@ export default function PuzzleScreen() {
             y: 0,
             config: { mass: 5, tension: 350, friction: 50 },
         })
-        )
-    
-    
-        const bind = useDrag(
-            (params) => {
-                if(!params.down && isPuzzleMatched(x.get(), y.get(), puzzleHoleX, puzzleHoleY, divX, divY)) {
-                    router.push({
-                        pathname: '/ready',
-                    })
-                }
+    );
+
+
+    const bind = useDrag(
+        (params) => {
+            if (!params.down && isPuzzleMatched(x.get(), y.get(), puzzleHoleX, puzzleHoleY, divX, divY)) {
+                router.push({
+                    pathname: '/ready',
+                });
             }
-        );
+        }
+    );
 
     useGesture(
         {
@@ -125,7 +127,7 @@ export default function PuzzleScreen() {
                 !hovering && api({ rotateX: 0, rotateY: 0, scale: 1 }),
         },
         { domTarget, eventOptions: { passive: false } }
-    )
+    );
 
 
     return (
@@ -150,7 +152,7 @@ export default function PuzzleScreen() {
                 </animated.div>
             </div>
         </>
-    )
+    );
 }
 
 

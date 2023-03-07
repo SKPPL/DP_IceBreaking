@@ -59,7 +59,7 @@ export default function WebRTC() {
   const hostRef = useRef(false);
   const userStreamRef = useRef<MediaStream>();
   // call setDataChannel when dataChannel created
-  var [dataChannel, setDataChannel] = useState<RTCDataChannel>();
+  let [dataChannel, setDataChannel] = useState<RTCDataChannel>();
   //State
   const [roomName, setRoomName] = useState<string | string[] | undefined>("");
   const [socketConnect, setSocketConnect] = useState<any>();
@@ -97,6 +97,7 @@ export default function WebRTC() {
       // unmmount시 소켓을 끊는다
       return () => {
         window.removeEventListener("popstate", handleBackSpace);
+
         socketConnect.disconnect();
       };
     }
@@ -254,7 +255,8 @@ export default function WebRTC() {
   const handleReceivedOffer = async (offer: any[]): Promise<void> => {
     if (!hostRef.current) {
       webRTCConnRef.current = makeConnection();
-      webRTCConnRef.current.addEventListener("datachannel", (event: any) => {
+
+      const handleOffer = (event: any): void => {
         console.log("[offer]", event);
         // on guest side, guest -> host
         switch (event.channel.label) {
@@ -262,7 +264,9 @@ export default function WebRTC() {
             setDataChannel(event.channel);
             break;
         }
-      });
+      };
+      webRTCConnRef.current.addEventListener("datachannel", handleOffer);
+
       if (typeof userStreamRef.current !== "undefined") {
         userStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => webRTCConnRef.current.addTrack(track, userStreamRef.current));
       }
@@ -299,7 +303,7 @@ export default function WebRTC() {
         }
       }, 1000);
 
-      dataChannel!.addEventListener("message", function peerload(event: MessageEvent<any>) {
+      const peerload = (event: MessageEvent<any>) => {
         if (event.data) {
           let dataJSON = JSON.parse(event.data);
           switch (dataJSON.type) {
@@ -309,8 +313,12 @@ export default function WebRTC() {
               break;
           }
         }
-      });
-      
+      };
+
+      dataChannel!.addEventListener("message", peerload);
+      return () => {
+        dataChannel!.removeEventListener("message", peerload);
+      };
     }
   }, [dataChannel]);
 
@@ -323,8 +331,8 @@ export default function WebRTC() {
         <Ceremony />
         <GameBGM prevPlayingState={true} />
         <div className={`flex justify-center`}>
-          <video className={`${styles.gamepanMy} w-1/2 hidden rounded-2xl`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
-          <video className={`${styles.gamepanPeer} w-1/2 hidden rounded-2xl`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
+          <video className={`${styles.gamepanMy} w-1/2 hidden rounded-2xl z-50`} id="peerface" autoPlay playsInline ref={peerVideoRef}></video>
+          <video className={`${styles.gamepanPeer} w-1/2 hidden rounded-2xl z-50`} id="myface" autoPlay playsInline ref={userVideoRef}></video>
         </div>
       </div>
       {!dataChannel && (

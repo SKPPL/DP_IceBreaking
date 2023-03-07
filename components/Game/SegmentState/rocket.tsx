@@ -15,6 +15,10 @@ interface Props {
     dataChannel: RTCDataChannel | undefined;
     auth: boolean;
 }
+
+let clickedMy = [false, false, false, false, false, false, false, false, false];
+let clickedPeer = [false, false, false, false, false, false, false, false, false];
+
 export default function rocket({ i, auth, dataChannel }: Props) {
 
     const storedPosition = useSelector((state: any) => { return auth ? state.myPuzzle : state.peerPuzzle; });
@@ -32,7 +36,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
     // memo is like a cache, it contains the values that you return inside "set"
     // this way we can inject the springs current coordinates on the initial event and
     // add movement to it for convenience
-    var memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
+    const memo = useRef({ x: storedPosition[i][0], y: storedPosition[i][1] });
     const d = 1;
     // 현재 좌표 받아와서 퍼즐을 끼워맞출 곳을 보정해줄 값을 widthOx, heightOx에 저장
     const [widthOx, heightOx] = [213 * d, 160 * d];
@@ -40,9 +44,8 @@ export default function rocket({ i, auth, dataChannel }: Props) {
 
     const bind = useDrag(
         ({ xy, previous, down, movement: pos, velocity, direction }) => {
-            // 내꺼든 상대방 것이든 아무튼 움직일 수 있음
-            // if (!auth) return
-            // 상대방에게 내가 발생시킨 이벤트를 모두 전달
+            if ((auth && clickedMy[i]) || (!auth && clickedPeer[i])) return;
+            // 내꺼든 상대방 것이든 움직일 수 있음
             api.start({
                 pos: [Math.min(Math.max(pos[0], -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]), Math.min(Math.max(pos[1], 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1])],
                 immediate: down,
@@ -53,6 +56,7 @@ export default function rocket({ i, auth, dataChannel }: Props) {
             if (direction[0] > 0 && flipped === true) { setFlip(false); }
             if (dist(xy, previous) > 10 || !down)
                 angleApi.start({ angle: flipped ? (Math.atan2(direction[0], 1) + 0.5) : (Math.atan2(direction[0], 1) - 0.5) });
+            // 상대방에게 내가 발생시킨 이벤트를 모두 전달
             if (dataChannel) {
                 dataChannel.send(JSON.stringify({ type: 'rocket', i: i, auth: auth, xy: xy, previous: previous, down: down, pos: pos, velocity: velocity, direction: direction, flipped: flipped }));
             }
@@ -62,36 +66,48 @@ export default function rocket({ i, auth, dataChannel }: Props) {
             rubberband: 1,
         }
     );
-    // 상대가 발생시킨 이벤트를 받아서 그대로 원래 useDrag에서 실행하던 것처럼 실행
+    // 상대가 발생시킨 이벤트를 그대로 받아서 useDrag에서 실행하던 것처럼 실행, EventListner 추가와 제거
     useEffect(() => {
-        if (dataChannel) {
-            dataChannel!.addEventListener("message", function rocket(event: MessageEvent<any>) {
-                if (event.data) {
-                    let dataJSON = JSON.parse(event.data);
-                    switch (dataJSON.type) {
-                        case "rocket":
-                            if (i === dataJSON.i && auth === !dataJSON.auth) {
-                                if (dataJSON.direction[0] < 0 && dataJSON.flipped === false) { setFlip(true); }
-                                else if (dataJSON.direction[0] > 0 && dataJSON.flipped === true) { setFlip(false); }
-                                api.start({
-                                    pos: [Math.min(Math.max(dataJSON.pos[0], -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]), Math.min(Math.max(dataJSON.pos[1], 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1])],
-                                    immediate: dataJSON.down,
-                                    config: { velocity: scale(dataJSON.direction, dataJSON.velocity), decay: true },
-                                });
-                                if (dist(dataJSON.xy, dataJSON.previous) > 10 || !dataJSON.down)
-                                    angleApi.start({ angle: dataJSON.flipped ? (Math.atan2(dataJSON.direction[0], 1) + 0.5) : (Math.atan2(dataJSON.direction[0], 1) - 0.5) });
-                                break;
+        const rocket = (event: MessageEvent<any>) => {
+            if (event.data) {
+                let dataJSON = JSON.parse(event.data);
+                switch (dataJSON.type) {
+                    case "rocket":
+                        if (i === dataJSON.i && auth === !dataJSON.auth) { // 상대방이 움직인 내 것만 움직이게
+                            if (auth) {
+                                clickedMy[i] = dataJSON.down;
+                            } else {
+                                clickedPeer[i] = dataJSON.down;
                             }
-                    }
+                            if (dataJSON.direction[0] < 0 && dataJSON.flipped === false) { setFlip(true); }
+                            else if (dataJSON.direction[0] > 0 && dataJSON.flipped === true) { setFlip(false); }
+                            api.start({
+                                pos: [Math.min(Math.max(dataJSON.pos[0], -widthOx * 2 - storedPosition[i][0]), widthOx * 1 - storedPosition[i][0]), Math.min(Math.max(dataJSON.pos[1], 0 - storedPosition[i][1]), heightOx * 3.5 - storedPosition[i][1])],
+                                immediate: dataJSON.down,
+                                config: { velocity: scale(dataJSON.direction, dataJSON.velocity), decay: true },
+                            });
+                            if (dist(dataJSON.xy, dataJSON.previous) > 10 || !dataJSON.down)
+                                angleApi.start({ angle: dataJSON.flipped ? (Math.atan2(dataJSON.direction[0], 1) + 0.5) : (Math.atan2(dataJSON.direction[0], 1) - 0.5) });
+                            break;
+                        }
                 }
-            });
+            }
+        };
+
+        if (dataChannel) {
+            dataChannel!.addEventListener("message", rocket);
         }
+        return () => {
+            if (dataChannel) {
+                dataChannel!.removeEventListener("message", rocket);
+            }
+        };
     }, []);
     const setMyWait = useSetRecoilState(myWaitState);
     const setPeerWait = useSetRecoilState(peerWaitState);
     useEffect(() => {
         return () => {
-            dispatch({ type: `${!auth ? "peerPuzzle" : "myPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
+            dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [memo.current.x, memo.current.y] } });
             auth ? setMyWait((prev) => prev - 1) : setPeerWait((prev) => prev - 1);
         };
     }, []);
