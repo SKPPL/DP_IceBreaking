@@ -109,6 +109,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
     useEffect(() => {
         if (puzzleCompleteCounter.mine === 9 && puzzleCompleteCounter.peer !== 9) {
+            if (dataChannel) dataChannel.send(JSON.stringify({ type: "peerWin", won: true }));
             setIsFinished(true);
             winSoundPlay();
             setTimeout(() => {
