@@ -22,7 +22,7 @@ const SKILLS = [
   },
   {
     name: "입술 쪽",
-    image: "/images/web.png",
+    image: "/images/lip.webp",
     GIF: "/images/lip_gif.gif",
     VIDEO: "/videos/lip_video.mp4",
     description: "10초 동안 상대방 퍼즐이 나의 입술로 변합니다. 매혹적인 입술로 상대방을 당황시키세요! >3<",
