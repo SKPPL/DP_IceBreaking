@@ -58,7 +58,7 @@ export default function MyTwirlParticles() {
                                         nb_sides: 3
                                     },
                                     image: {
-                                        src: "/images/twirlparticle.webp",
+                                        src: "/images/swirl.webp",
                                         width: 100,
                                         height: 100
                                     }
