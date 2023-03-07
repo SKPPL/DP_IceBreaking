@@ -8,6 +8,7 @@ import { useRecoilState } from "recoil";
 import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
 import IndexBGM from "@/components/PageElements/IndexBGM";
 
+const bgUrl = 'images/DP';
 export default function Home() {
   return (
     <>
@@ -19,7 +20,7 @@ export default function Home() {
       </Head>
       <IndexBGM />
       <div className="absolute flex">
-        <img src="images/dpindexBg.png" className="w-screen h-max z-5"></img>
+        <img src="images/dpindexBg.webp" className="w-screen h-max z-5"></img>
       </div>
       <div className="absolute justify-end items-end flex w-1/5 h-4/5 z-7">
         <BagicHome />

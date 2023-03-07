@@ -104,14 +104,14 @@ const RoomList = () => {
           </div>
           <table className={styles.readyTable}>
             <thead>
-              <tr>
-                <th scope="col" className="text-center text-3xl px-10 py-3">
+              <tr className="">
+                <th scope="col" className="text-center text-3xl py-3">
                   방 제목
                 </th>
-                <th scope="col" className="text-center text-3xl px-10 py-3">
+                <th scope="col" className="text-center w-[12vw] text-3xl py-3">
                   참가 인원
                 </th>
-                <th scope="col" className="text-center text-3xl px-10 py-3">
+                <th scope="col" className="text-center w-[13vw] text-3xl py-3">
                   Enter
                 </th>
               </tr>
@@ -119,9 +119,9 @@ const RoomList = () => {
             <tbody>
               {rooms?.map((room, index) => (
                 <tr key={index} className={styles.readyTbody} onClick={onClickJoinRoom(room.roomName)}>
-                  <td className="text-3xl px-10 py-4">{room.roomName}</td>
-                  <td className="text-3xl px-10 py-4">({room.roomSize}/2)</td>
-                  <td className="text-3xl px-10 py-4">
+                  <td className="text-3xl col-span-3 py-4">{room.roomName}</td>
+                  <td className="text-3xl py-4">({room.roomSize}/2)</td>
+                  <td className="text-3xl col-span-2  py-4">
                     {room.roomSize < 2 ? (
                       <button className={styles.joinBtn} onClick={onClickJoinRoom(room.roomName)}>
                         입장하기
