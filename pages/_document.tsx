@@ -4,7 +4,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
       </Head>
-      <body className="bg-[url('../public/images/wall.webp')] bg-center bg-cover overflow-hidden bg-no-repeat">
+      <body className="bg-[url('../public/images/wall.webp')] bg-center bg-cover overflow-hidden">
         <Main />
         <NextScript />
       </body>
