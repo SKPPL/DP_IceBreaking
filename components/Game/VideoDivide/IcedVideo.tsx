@@ -78,7 +78,7 @@ export default function IcedVideo({ iceCount, id, auth, videoId, segmentState }:
 
     return (
         <>
-            <canvas id={`${auth ? 'my' : 'peer'}_${id}`} width="213" height="160" ref={cloneRef} ></canvas>
+            <canvas className="absolute" id={`${auth ? 'my' : 'peer'}_${id}`} width="213" height="160" ref={cloneRef} ></canvas>
         </>
     );
 
