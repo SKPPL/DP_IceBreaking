@@ -28,7 +28,6 @@ export default function PuzzleScreen() {
     const puzzleImage = new Image();
     puzzleImage.src = puzzleImageUrl;
     const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-    const [innerHeight, setInnerHeight] = useState(window.innerHeight);
     const movingRef = useRef<HTMLDivElement>(null);
     const [divX, setDivX] = useState(0); //퍼즐의 절대위치 X
     const [divY, setDivY] = useState(0); //퍼즐의 절대위치 y
@@ -42,10 +41,8 @@ export default function PuzzleScreen() {
         if (!movingRef.current) return;
         setDivX(movingRef.current!.getBoundingClientRect().x);
         setDivY(movingRef.current!.getBoundingClientRect().y);
-        setHoleX(innerWidth * (1250 / 1440));
-        setHoleY(innerWidth * (781 / 1440) * 640 / 781);
-        // setHoleY(innerHeight*(640/780));
-        // console.log("foundposition", "x",puzzleHoleX, "y", puzzleHoleY);
+        setHoleX(innerWidth*(1250/1440));
+        setHoleY(innerWidth*(640/1440));
     }
 
 
