@@ -6,7 +6,7 @@ import styles from "../styles.module.css";
 import CloneVideo from "../VideoDivide/CloneVideo";
 import useSound from 'use-sound';
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { myFaceLandMarkState, myLipState, myTwirlState, myWaitState, peerFaceLandMarkState, peerLipState, peerTwirlState, peerWaitState } from "../atom";
+import { myWaitState, peerWaitState, myItemState, peerItemState } from "../atom";
 import LipVideo from "../VideoDivide/LipVideo";
 import TwirlVideo from "@/components/Game/VideoDivide/TwirlVideo";
 
@@ -282,9 +282,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
 
 
-    const faceLandMarkReady = useRecoilValue(auth ? myFaceLandMarkState : peerFaceLandMarkState);
-    const lipReady = useRecoilValue(auth ? myLipState : peerLipState);
-    const twirlReady = useRecoilValue(auth ? myTwirlState : peerTwirlState);
+    const itemReady = useRecoilValue(auth ? myItemState : peerItemState);
+
     return (
         <>
             <div className={styles.container} onClick={breakTheIce}>
@@ -320,9 +319,9 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                             }
                             
                             </>}
-                        {(segmentState === "default" || !((faceLandMarkReady && lipReady) || twirlReady) && segmentState !== "ice") && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
-                        {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
-                        {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
+                        {(segmentState === "default" || !itemReady && segmentState !== "ice") && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                        {segmentState === "lip" && itemReady && <LipVideo auth={auth} />}
+                        {segmentState === "twirl" && itemReady && <TwirlVideo auth={auth} />}
                     </animated.div>
                 </animated.div>
             </div>
