@@ -71,6 +71,13 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
         }
     }
 
+    useEffect(()=>{
+        dispatch({
+            type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
+            payload: { index: i, position: [memo.current.x, memo.current.y] },
+        });
+    }, [segmentState]);
+
     //ice EventListener 추가와 제거 
     useEffect(() => {
         const ice = (event: MessageEvent<any>) => {
@@ -143,7 +150,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     }, [dataChannel]);
 
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-
+    
     useDrag(
         (params) => {
             if (!auth) return;
