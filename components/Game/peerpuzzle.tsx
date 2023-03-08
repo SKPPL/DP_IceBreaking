@@ -6,13 +6,8 @@ import { useRouter } from "next/router";
 import ModalPeer from "../PageElements/ItemAlertPeer/ModalPeer";
 import Bar from "@/components/PageElements/ProgressBar/Bar";
 import useSound from 'use-sound';
-import PeerIceFlakeParticles from "../PageElements/Particles/peericeFlakeParticles";
-import PeerBlackhallParticles from "../PageElements/Particles/peerblackhallParticles";
 import { startItem, stopItem } from "../FaceDetection/FaceLandMarkMy";
-import PeerLipParticles from "../PageElements/Particles/peerlipParticles";
 import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
-import PeerTwirlParticles from "../PageElements/Particles/peertwirlParticles";
-import PeerRocketParticles from "../PageElements/Particles/peerrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
 import { useSetRecoilState } from 'recoil';
 import { peerItemState } from "../Game/atom";
@@ -198,10 +193,10 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
       {/* 아이템 쓸 때 나오는 효과 */}
       <div className="absolute grid w-[640px] h-[480px] mt-[100px]" style={{ pointerEvents: "none" }}>
         {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerBlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerLipParticles /> <img src="../images/lippeer.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerTwirlParticles /> </div>)}
-        {peerSegmentState.segementState === 'rocket' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerRocketParticles /> <img src="../images/rocketpeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lippeer.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} >  </div>)}
+        {peerSegmentState.segementState === 'rocket' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/rocketpeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
 
       </div>
 

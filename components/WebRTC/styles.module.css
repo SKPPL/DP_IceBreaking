@@ -234,6 +234,7 @@
               0 0 0.2rem #e2aff6,
               0 0 0.7rem #e2aff6,
               inset 0 0 0.15rem #e2aff6;
+    user-select: none;
 }
 
 .joinBtn:before {
