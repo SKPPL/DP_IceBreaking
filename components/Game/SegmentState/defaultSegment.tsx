@@ -130,6 +130,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
             if (isRightCard) {
                 api.start({ x: width, y: height, rotateX: 0, rotateY: 0 });
                 setZindex(0);
+                setIceCount(0);
             } else {
                 api.start({ x: peerxy.peerx, y: peerxy.peery, rotateX: 0, rotateY: 0 });
             }
@@ -168,6 +169,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
                     dispatch({ type: "puzzleComplete/plus_mine" });
                     setZindex(0);
+                    setIceCount(0);
                     dispatch({
                         type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
                         payload: { index: i, position: [width, height] },
@@ -316,7 +318,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                                     </div>
                                 }
                             </>}
-                        {(segmentState === "default" || !((faceLandMarkReady && lipReady) || twirlReady)) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                        {(segmentState === "default" || !((faceLandMarkReady && lipReady) || twirlReady) && (segmentState!=="ice" || (segmentState==="ice" && iceCount <= 0))) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
                         {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
                         {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
 
