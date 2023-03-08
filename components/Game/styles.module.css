@@ -110,7 +110,7 @@
   will-change: transform;
   border: 2px solid white;
   cursor: grab;
-  overflow: visible;
+  overflow: hidden;
   touch-action: none;
   animation-duration: 1s;
   animation-name: rightcard;

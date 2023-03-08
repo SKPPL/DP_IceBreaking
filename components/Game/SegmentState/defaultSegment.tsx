@@ -307,19 +307,16 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 >
                     <animated.div>
                         {/* segmentState가 lip, 또는 twirl로 될 때, 완벽히 준비된 상태가 아닌 경우 default를 계속 보여주도록 함(그래야 div가 비어서 세로줄만 나오는 것 방지 가능) */}
-                        {segmentState === "ice" &&
-                            <>
-                                {iceCount > 0 ?
-                                    <div className="flex text-center justify-center items-center">
+                        {(segmentState === "default" || segmentState === "ice" || !itemReady) &&
+                            <div className="flex text-center justify-center items-center">
+                                {iceCount > 0 && segmentState === "ice" &&
+                                    <>
                                         <img src="/images/new_ice.png" className="absolute z-0 select-none pointer-events-none" />
-                                        <div className={`${styles.iced} absolute select-none text-9xl z-10 pointer-events-none`}>{iceCount}</div>
-                                        <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
-                                </div>
-                                : <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
-                            }
-                            
-                            </>}
-                        {(segmentState === "default" || !itemReady && segmentState !== "ice") && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                                        <div className={`${styles.iced} absolute text-center select-none text-9xl z-10 pointer-events-none`}>{iceCount}</div>
+                                    </>}
+                                <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                            </div>
+                        }
                         {segmentState === "lip" && itemReady && <LipVideo auth={auth} />}
                         {segmentState === "twirl" && itemReady && <TwirlVideo auth={auth} />}
                     </animated.div>
