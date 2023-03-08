@@ -2,7 +2,6 @@ import Head from "next/head";
 import BagicHome from "@/components/PageElements/BagicHome";
 import IndexBGM from "@/components/PageElements/IndexBGM";
 
-const bgUrl = 'images/DP';
 export default function Home() {
   return (
     <>
