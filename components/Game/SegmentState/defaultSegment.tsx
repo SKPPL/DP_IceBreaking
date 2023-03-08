@@ -6,10 +6,9 @@ import styles from "../styles.module.css";
 import CloneVideo from "../VideoDivide/CloneVideo";
 import useSound from 'use-sound';
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { myFaceLandMarkState, myLipState, myTwirlState, myWaitState, peerFaceLandMarkState, peerLipState, peerTwirlState, peerWaitState } from "../atom";
+import { myWaitState, peerWaitState, myItemState, peerItemState } from "../atom";
 import LipVideo from "../VideoDivide/LipVideo";
 import TwirlVideo from "@/components/Game/VideoDivide/TwirlVideo";
-import IcedVideo from "../VideoDivide/IcedVideo";
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
@@ -72,6 +71,15 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
         }
     }
 
+    useEffect(()=>{
+        if(segmentState === 'ice'){
+            dispatch({
+                type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
+                payload: { index: i, position: [memo.current.x, memo.current.y] },
+            });
+        }
+    }, [segmentState]);
+
     //ice EventListener 추가와 제거 
     useEffect(() => {
         const ice = (event: MessageEvent<any>) => {
@@ -130,6 +138,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
             if (isRightCard) {
                 api.start({ x: width, y: height, rotateX: 0, rotateY: 0 });
                 setZindex(0);
+                setIceCount(0);
             } else {
                 api.start({ x: peerxy.peerx, y: peerxy.peery, rotateX: 0, rotateY: 0 });
             }
@@ -143,7 +152,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     }, [dataChannel]);
 
     //for bounding puzzle peace to board / 움직임에 관한 모든 컨트롤은 여기서
-
+    
     useDrag(
         (params) => {
             if (!auth) return;
@@ -168,6 +177,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                     if (dataChannel) dataChannel.send(JSON.stringify({ type: "cnt", isRightPlace: true, i: i }));
                     dispatch({ type: "puzzleComplete/plus_mine" });
                     setZindex(0);
+                    setIceCount(0);
                     dispatch({
                         type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
                         payload: { index: i, position: [width, height] },
@@ -281,9 +291,8 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
 
 
 
-    const faceLandMarkReady = useRecoilValue(auth ? myFaceLandMarkState : peerFaceLandMarkState);
-    const lipReady = useRecoilValue(auth ? myLipState : peerLipState);
-    const twirlReady = useRecoilValue(auth ? myTwirlState : peerTwirlState);
+    const itemReady = useRecoilValue(auth ? myItemState : peerItemState);
+
     return (
         <>
             <div className={styles.container} onClick={breakTheIce}>
@@ -307,19 +316,18 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 >
                     <animated.div>
                         {/* segmentState가 lip, 또는 twirl로 될 때, 완벽히 준비된 상태가 아닌 경우 default를 계속 보여주도록 함(그래야 div가 비어서 세로줄만 나오는 것 방지 가능) */}
-                        {segmentState === "ice" &&
-                            <>
-                                {iceCount > 0 &&
-                                    <div className="flex text-center justify-center items-center">
-                                        <div className={`${styles.iced} absolute select-none text-9xl z-10 pointer-events-none`}>{iceCount}</div>
-                                        <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
-                                    </div>
-                                }
-                            </>}
-                        {(segmentState === "default" || !((faceLandMarkReady && lipReady) || twirlReady)) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
-                        {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
-                        {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
-
+                        {(segmentState === "default" || segmentState === "ice" || !itemReady) &&
+                            <div className="flex text-center justify-center items-center">
+                                {iceCount > 0 && segmentState === "ice" &&
+                                    <>
+                                        <img src="/images/new_ice.png" className="absolute z-0 select-none pointer-events-none" />
+                                        <div className={`${styles.iced} absolute text-center select-none text-9xl z-10 pointer-events-none`}>{iceCount}</div>
+                                    </>}
+                                <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                            </div>
+                        }
+                        {segmentState === "lip" && itemReady && <LipVideo auth={auth} />}
+                        {segmentState === "twirl" && itemReady && <TwirlVideo auth={auth} />}
                     </animated.div>
                 </animated.div>
             </div>

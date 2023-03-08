@@ -10,7 +10,7 @@ import { useDock } from '../Dock/DockContext';
 
 import styles from './styles.module.scss';
 import { useRecoilValue } from 'recoil';
-import { peerLipState, peerTwirlState, peerWaitState } from "../../Game/atom";
+import { peerItemState, peerWaitState } from "../../Game/atom";
 
 interface DockCardProps {
   children: React.ReactNode;
@@ -86,9 +86,7 @@ export const DockCard = ({ children, item }: DockCardProps) => {
   const wasUsed = React.useRef(false);
 
   const peerWait = useRecoilValue(peerWaitState);
-  const peerLipWait = useRecoilValue(peerLipState);
-  const peerTwirlWait = useRecoilValue(peerTwirlState);
-  const itemWait = peerLipWait || peerTwirlWait;
+  const itemWait = useRecoilValue(peerItemState);
 
   const handleClick = () => {
     // peer에 쓴 아이템이 진행중일 때는 눌러도 아무일도 일어나지 않음

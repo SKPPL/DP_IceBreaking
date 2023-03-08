@@ -14,7 +14,8 @@ import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
 import PeerTwirlParticles from "../PageElements/Particles/peertwirlParticles";
 import PeerRocketParticles from "../PageElements/Particles/peerrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
-
+import { useSetRecoilState } from 'recoil';
+import { peerItemState } from "../Game/atom";
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
 let i: number;
@@ -57,6 +58,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   const [peerWinFlag, setPeerWin] = useState(false);
 
+  const setPeerItemState = useSetRecoilState(peerItemState);
+
   useEffect(() => {
     if (dataChannel) {
       dataChannel!.addEventListener("message", function peerData(event: any) {
@@ -85,14 +88,14 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
                   setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
                   makePeerDefaultSegment();
                   break;
-                case "ice":
-                  setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
-                  makePeerDefaultSegment();
-                  break;
-                case "magnet":
-                  setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
-                  makePeerDefaultSegment();
-                  break;
+                  case "magnet":
+                    setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
+                    makePeerDefaultSegment();
+                    break;
+                case "ice": 
+                    makePeerDefaultSegment(); 
+                    setPeerItemState(false);
+                    break;
                 case "lip": makePeerDefaultSegment(); break;
                 case "twirl": makePeerDefaultSegment(); break;
               }
@@ -150,6 +153,9 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         if (dataChannel) dataChannel.send(JSON.stringify({ type: "item", segementState: keys[cnt] }));
         setItemListBefore(itemList);
         setPeerSegmentState({ type: "item", segementState: keys[cnt] });
+        if (keys[cnt] === "ice"){
+          setPeerItemState(true);
+        }
         if (keys[cnt] === "rocket" || keys[cnt] === "magnet") {
           dispatch({ type: `puzzleComplete/init_peer` });
           isRightPlace = [false, false, false, false, false, false, false, false, false];
@@ -191,7 +197,7 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
       {/* 아이템 쓸 때 나오는 효과 */}
       <div className="absolute grid w-[640px] h-[480px] mt-[100px]" style={{ pointerEvents: "none" }}>
-        {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerIceFlakeParticles /> <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerBlackhallParticles /> <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerLipParticles /> <img src="../images/lippeer.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
         {peerSegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <PeerTwirlParticles /> </div>)}

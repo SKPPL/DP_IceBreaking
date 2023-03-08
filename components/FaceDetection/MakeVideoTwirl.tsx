@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { myTwirlState, peerTwirlState } from '../Game/atom';
+import { myItemState, peerItemState } from '../Game/atom';
 
 interface segmentData {
     videoId: string;
@@ -83,8 +83,8 @@ export default function MakeVideoTwirl({ videoId, auth }: segmentData) {
 
     }, []);
 
-    const myTwirlSet = useSetRecoilState(myTwirlState);
-    const peerTwirlSet = useSetRecoilState(peerTwirlState);
+    const myTwirlSet = useSetRecoilState(myItemState);
+    const peerTwirlSet = useSetRecoilState(peerItemState);
     useEffect(() => {
         auth ? myTwirlSet(true) : peerTwirlSet(true);
         requestID.current = requestAnimationFrame(draw);
