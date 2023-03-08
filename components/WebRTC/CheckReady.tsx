@@ -7,14 +7,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { indexBGMElement, indexBGMState } from "@/components/Game/atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import GameBGM from "../PageElements/GameBGM";
+import { CalculateInitTwirl } from "@/components/FaceDetection/CalculateInitTwirl";
+
 interface Props {
   dataChannel: RTCDataChannel | undefined;
 }
+
+export let twirlArray = CalculateInitTwirl();
 
 export default function CheckReady({ dataChannel }: Props) {
   const [myReadyState, setMyReadyState] = useState(false);
   const [peerReadyState, setPeerReadyState] = useState(false);
   const [gameReadyState, setGameReadyState] = useState(false);
+  const [twirlReadyState, setTwirlReadyState] = useState(false);
   const dispatch = useDispatch();
 
   const readySoundUrl = "/sounds/ready.mp3";
@@ -26,8 +31,14 @@ export default function CheckReady({ dataChannel }: Props) {
   const arr = useSelector((state: any) => state.puzzleOrder);
 
   useEffect(() => {
+    if (twirlArray) {
+      setTwirlReadyState(true);
+    }
+  }, [twirlArray]);
+
+  useEffect(() => {
     readySoundPlay();
-    setGameReadyState(myReadyState && peerReadyState);
+    setGameReadyState(myReadyState && peerReadyState && twirlReadyState);
 
     if (myReadyState && peerReadyState) {
       if (indexBGM && isPlaying) {
