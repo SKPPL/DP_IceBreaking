@@ -38,6 +38,7 @@ export function CalculateInitTwirl() {
         newX = Math.round(centerX + distance * Math.cos(an));
         newY = Math.round(centerY + distance * Math.sin(an));
         let temp = (newY * 320 + newX) * 4;
+        if (temp >= 307200 || temp < 0) continue;
         arrTwirl[z][y * 320 + x - 40] = temp;
         }
     }
