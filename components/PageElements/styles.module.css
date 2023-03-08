@@ -94,7 +94,7 @@
 .text {
   color:white;
   font-weight: 600;
-  font-size: 7vw;
+  font-size: 6.5vw;
   will-change: opacity;
   animation: waiting 1.5s infinite alternate;
   user-select: none;
