@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { getHostLip } from "./FaceLandMarkMy";
 import { getGuestLip } from "./FaceLandMarkPeer";
-import { useSetRecoilState } from 'recoil';
-import { myLipState, peerLipState } from "../Game/atom";
+import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { myItemState, peerItemState, myFaceLandMarkState, peerFaceLandMarkState } from "../Game/atom";
 
 
 interface segmentData {
@@ -44,12 +44,16 @@ export default function MakeVideoLip({ auth }: segmentData) {
 
     }, []);
 
-    const myLipSet = useSetRecoilState(myLipState);
-    const peerLipSet = useSetRecoilState(peerLipState);
+    const myLipSet = useSetRecoilState(myItemState);
+    const peerLipSet = useSetRecoilState(peerItemState);
+    const faceLandMarkReady = useRecoilValue(auth ? myFaceLandMarkState : peerFaceLandMarkState);
+
     useEffect(() => {
-        requestID.current = requestAnimationFrame(draw);
-        auth ? myLipSet(true) : peerLipSet(true);
-    }, []);
+        if (faceLandMarkReady){
+            requestID.current = requestAnimationFrame(draw);
+            auth ? myLipSet(true) : peerLipSet(true);
+        }
+    }, [faceLandMarkReady]);
 
     return <></>;
 }

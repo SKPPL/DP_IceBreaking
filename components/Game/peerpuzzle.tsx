@@ -14,7 +14,8 @@ import MakeVideoTwirl from "../FaceDetection/MakeVideoTwirl";
 import PeerTwirlParticles from "../PageElements/Particles/peertwirlParticles";
 import PeerRocketParticles from "../PageElements/Particles/peerrocketParticles";
 import MakeVideoLip from "../FaceDetection/MakeVideoLip";
-
+import { useSetRecoilState } from 'recoil';
+import { peerItemState } from "../Game/atom";
 
 let isRightPlace: boolean[] = [false, false, false, false, false, false, false, false, false];
 let i: number;
@@ -57,6 +58,8 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
   const [peerWinFlag, setPeerWin] = useState(false);
 
+  const setPeerItemState = useSetRecoilState(peerItemState);
+
   useEffect(() => {
     if (dataChannel) {
       dataChannel!.addEventListener("message", function peerData(event: any) {
@@ -85,14 +88,14 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
                   setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
                   makePeerDefaultSegment();
                   break;
-                case "ice":
-                  setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
-                  makePeerDefaultSegment();
-                  break;
-                case "magnet":
-                  setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
-                  makePeerDefaultSegment();
-                  break;
+                  case "magnet":
+                    setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
+                    makePeerDefaultSegment();
+                    break;
+                case "ice": 
+                    makePeerDefaultSegment(); 
+                    setPeerItemState(false);
+                    break;
                 case "lip": makePeerDefaultSegment(); break;
                 case "twirl": makePeerDefaultSegment(); break;
               }
@@ -150,6 +153,9 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         if (dataChannel) dataChannel.send(JSON.stringify({ type: "item", segementState: keys[cnt] }));
         setItemListBefore(itemList);
         setPeerSegmentState({ type: "item", segementState: keys[cnt] });
+        if (keys[cnt] === "ice"){
+          setPeerItemState(true);
+        }
         if (keys[cnt] === "rocket" || keys[cnt] === "magnet") {
           dispatch({ type: `puzzleComplete/init_peer` });
           isRightPlace = [false, false, false, false, false, false, false, false, false];

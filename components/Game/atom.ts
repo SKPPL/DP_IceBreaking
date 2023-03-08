@@ -24,21 +24,14 @@ export const peerFaceLandMarkState = atom({
   default: false,
 });
 
-export const myLipState = atom({
-  key: "myLip",
+// 아이템 사용시 바뀌고, 아이템 사용이 풀릴때 돌아오는 상태
+// 특정 컴포넌트의 사용이 필요한 아이템의 경우 사용시 바꾸지 않고 해당 컴포넌트의 마운트, 언마운트에 바꾼다.
+export const myItemState = atom({
+  key: "myItem",
   default: false,
 });
-export const peerLipState = atom({
-  key: "peerLip",
-  default: false,
-});
-
-export const myTwirlState = atom({
-  key: "myTwirl",
-  default: false,
-});
-export const peerTwirlState = atom({
-  key: "peerTwirl",
+export const peerItemState = atom({
+  key: "peerItem",
   default: false,
 });
 
