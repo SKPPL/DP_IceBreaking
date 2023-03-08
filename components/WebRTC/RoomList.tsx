@@ -119,9 +119,9 @@ const RoomList = () => {
             <tbody>
               {rooms?.map((room, index) => (
                 <tr key={index} className={styles.readyTbody} onClick={onClickJoinRoom(room.roomName)}>
-                  <td className="text-3xl col-span-3 py-4">{room.roomName}</td>
-                  <td className="text-3xl py-4">({room.roomSize}/2)</td>
-                  <td className="text-3xl col-span-2  py-4">
+                  <td className="text-3xl col-span-3 py-4 select-none">{room.roomName}</td>
+                  <td className="text-3xl py-4 select-none">({room.roomSize}/2)</td>
+                  <td className="text-3xl col-span-2 py-4 select-none">
                     {room.roomSize < 2 ? (
                       <button className={styles.joinBtn} onClick={onClickJoinRoom(room.roomName)}>
                         입장하기
