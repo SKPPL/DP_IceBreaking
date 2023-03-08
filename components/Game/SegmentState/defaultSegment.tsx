@@ -72,10 +72,12 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
     }
 
     useEffect(()=>{
-        dispatch({
-            type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
-            payload: { index: i, position: [memo.current.x, memo.current.y] },
-        });
+        if(segmentState === 'ice'){
+            dispatch({
+                type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`,
+                payload: { index: i, position: [memo.current.x, memo.current.y] },
+            });
+        }
     }, [segmentState]);
 
     //ice EventListener 추가와 제거 
