@@ -9,7 +9,6 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { myFaceLandMarkState, myLipState, myTwirlState, myWaitState, peerFaceLandMarkState, peerLipState, peerTwirlState, peerWaitState } from "../atom";
 import LipVideo from "../VideoDivide/LipVideo";
 import TwirlVideo from "@/components/Game/VideoDivide/TwirlVideo";
-import IcedVideo from "../VideoDivide/IcedVideo";
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
@@ -311,17 +310,19 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                         {/* segmentState가 lip, 또는 twirl로 될 때, 완벽히 준비된 상태가 아닌 경우 default를 계속 보여주도록 함(그래야 div가 비어서 세로줄만 나오는 것 방지 가능) */}
                         {segmentState === "ice" &&
                             <>
-                                {iceCount > 0 &&
+                                {iceCount > 0 ?
                                     <div className="flex text-center justify-center items-center">
+                                        <img src="/images/new_ice.png" className="absolute z-0 select-none pointer-events-none" />
                                         <div className={`${styles.iced} absolute select-none text-9xl z-10 pointer-events-none`}>{iceCount}</div>
-                                        <IcedVideo iceCount={iceCount} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
-                                    </div>
-                                }
+                                        <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                                </div>
+                                : <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />
+                            }
+                            
                             </>}
-                        {(segmentState === "default" || !((faceLandMarkReady && lipReady) || twirlReady) && (segmentState!=="ice" || (segmentState==="ice" && iceCount <= 0))) && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
+                        {(segmentState === "default" || !((faceLandMarkReady && lipReady) || twirlReady) && segmentState !== "ice") && <CloneVideo key={i} id={i} auth={auth} videoId={videoId} segmentState={segmentState} />}
                         {segmentState === "lip" && faceLandMarkReady && lipReady && <LipVideo auth={auth} />}
                         {segmentState === "twirl" && twirlReady && <TwirlVideo auth={auth} />}
-
                     </animated.div>
                 </animated.div>
             </div>
