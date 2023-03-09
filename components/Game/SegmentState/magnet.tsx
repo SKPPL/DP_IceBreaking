@@ -57,7 +57,7 @@ export default function magnet({ i, auth, videoId, peerxy, dataChannel, segmentS
             api.start({ xy: [mpx, mpy], delay: 0 });
             //나의 움직임을 상대방에게 그리기 위해 정보전달
             if (dataChannel) {
-                dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: mpx, peery: mpy }));
+                // dataChannel.send(JSON.stringify({ type: "move", i: i, peerx: mpx, peery: mpy }));
                 dataChannel.send(
                     JSON.stringify({
                         type: "magnet",
