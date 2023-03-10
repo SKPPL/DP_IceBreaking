@@ -7,7 +7,7 @@ interface Props{
 
 export default function LinearWithValueLabel({score}:Props) {
   const [progress, setProgress] = React.useState(0);
-
+  let rid = React.useRef(0);
   React.useEffect(() => {
     var from = progress;
     var to = score*10;
@@ -20,21 +20,23 @@ export default function LinearWithValueLabel({score}:Props) {
     
     function animate(timestamp) {
       if (!startTime) startTime = timestamp;
-      var progressTime = timestamp - startTime!;
-      var progressRatio = Math.min(progressTime / duration, 1);
-      var progressValue = Math.floor(from + gap * progressRatio);
+      let progressTime = timestamp - startTime!;
+      let progressRatio = Math.min(progressTime / duration, 1);
+      let progressValue = Math.floor(from + gap * progressRatio);
       setProgress(progressValue);
       if (progressRatio < 1) {
-        requestAnimationFrame(animate);
+        rid.current = requestAnimationFrame(animate);
       }
     }
     
     if (gap >= 0) {
-      requestAnimationFrame(animate);
+      cancelAnimationFrame(rid.current);
+      rid.current = requestAnimationFrame(animate);
     } else {
       // 반대 방향 애니메이션 수행시 startTime 초기화
       startTime = null;
-      requestAnimationFrame(animate);
+      cancelAnimationFrame(rid.current);
+      rid.current = requestAnimationFrame(animate);
     }
   }, [score]);
 

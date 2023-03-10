@@ -35,14 +35,14 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   // peerPosition for concurrent position sync
   const [peerPosition, setPeerPosition] = useState({ type: "move", i: -1, peerx: 0, peery: 0 });
   // for peer Item state
-  const [peerSegmentState, setPeerSegmentState] = useState({ type: "item", segementState: "default" });
+  const [peerSegmentState, setPeerSegmentState] = useState({ type: "item", segmentState: "default" });
   const [isFinished, setIsFinished] = useState(false);
 
   const dispatch = useDispatch();
   const puzzleCompleteCounter = useSelector((state: any) => state.puzzleComplete);
 
   const makePeerDefaultSegment = () => {
-    setPeerSegmentState({ type: "item", segementState: "default" });
+    setPeerSegmentState({ type: "item", segmentState: "default" });
   };
   const router = useRouter();
 
@@ -67,19 +67,26 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
               break;
 
             case "item":
-              if (dataJSON.segementState === "magnet") {
+              if (dataJSON.segmentState === "magnet") {
                 setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
               }
               break;
             case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가
-              if(peerSegmentState.segementState !== 'magnet' && peerSegmentState.segementState !== 'rocket'){
+              if(peerSegmentState.segmentState !== 'magnet' && peerSegmentState.segmentState !== 'rocket'){
                 dispatch({ type: `puzzleComplete/plus_peer` });
                 i = dataJSON.i;
                 { dataJSON.isRightPlace ? isRightPlace[i] = true : false; }
               }
               break;
+            case "itemExecuted":
+              setPeerSegmentState({ type: "item", segmentState: dataJSON.segmentState });
+              if (dataJSON.segmentState === "rocket" || dataJSON.segmentState === "magnet") {
+                dispatch({ type: `puzzleComplete/init_peer` });
+                isRightPlace = [false, false, false, false, false, false, false, false, false];
+              }
+              break;
             case "itemTimeout":
-              switch (dataJSON.segementState) {
+              switch (dataJSON.segmentState) {
                 case "rocket":
                   // default에서 마지막으로 세팅되어있던 peerposition이 다시 default로 돌아왔을때 영향을 주게하지 못하게 다른 아이템으로 넘어갈 때 peerposition을 초기화시키고 넘기기
                   setPeerPosition({ type: "move", i: -1, peerx: 0, peery: 0 });
@@ -147,21 +154,16 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
   useEffect(() => {
     for (let cnt = 0; cnt < keys.length; cnt++) {
       if (itemListBefore[keys[cnt]] !== itemList[keys[cnt]]) {
-        if (dataChannel) dataChannel.send(JSON.stringify({ type: "item", segementState: keys[cnt] }));
+        if (dataChannel) dataChannel.send(JSON.stringify({ type: "item", segmentState: keys[cnt] }));
         setItemListBefore(itemList);
-        setPeerSegmentState({ type: "item", segementState: keys[cnt] });
         if (keys[cnt] === "ice"){
           setPeerItemState(true);
-        }
-        if (keys[cnt] === "rocket" || keys[cnt] === "magnet") {
-          dispatch({ type: `puzzleComplete/init_peer` });
-          isRightPlace = [false, false, false, false, false, false, false, false, false];
         }
       }
     }
   }, [itemList]);
 
-  if (peerSegmentState.segementState === 'lip') {
+  if (peerSegmentState.segmentState === 'lip') {
     startItem();
     setTimeout(() => { stopItem(); }, 10000);
   }
@@ -176,9 +178,9 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
         return (
           <>
             <div className={`${styles[`c${i}`]}`} key={`peerpuzzle_${i}`}>
-              {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />}
+              {(peerPosition.i === i) && <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={{ peerx: peerPosition.peerx, peery: peerPosition.peery }} dataChannel={dataChannel} segmentState={peerSegmentState.segmentState} isRightCard={isRightPlace[i]} />}
               {(peerPosition.i !== i) &&
-                <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segementState} isRightCard={isRightPlace[i]} />
+                <PuzzleSegment key={`peer${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={peerSegmentState.segmentState} isRightCard={isRightPlace[i]} />
               }
             </div>
           </>
@@ -194,18 +196,18 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
 
       {/* 아이템 쓸 때 나오는 효과 */}
       <div className="absolute grid w-[640px] h-[480px] mt-[100px]" style={{ pointerEvents: "none" }}>
-        {peerSegmentState.segementState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lippeer.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-        {peerSegmentState.segementState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} >  </div>)}
-        {peerSegmentState.segementState === 'rocket' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/rocketpeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segmentState === 'ice' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segmentState === 'magnet' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/blackholepeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segmentState === 'lip' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lippeer.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+        {peerSegmentState.segmentState === 'twirl' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} >  </div>)}
+        {peerSegmentState.segmentState === 'rocket' && (<div className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/rocketpeer.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
 
       </div>
 
       <Bar score={puzzleCompleteCounter.peer} />
-      <ModalPeer segmentState={peerSegmentState.segementState} />
-      {peerSegmentState.segementState === 'lip' && <MakeVideoLip auth={auth} />}
-      {peerSegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
+      <ModalPeer segmentState={peerSegmentState.segmentState} />
+      {peerSegmentState.segmentState === 'lip' && <MakeVideoLip auth={auth} />}
+      {peerSegmentState.segmentState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
 
     </>
   );

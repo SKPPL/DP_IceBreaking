@@ -30,10 +30,10 @@ const ceremonySoundUrl = '/sounds/ceremonysound.mp3';
 
 function MyPuzzle({ auth, videoId, dataChannel }: Props) {
     // segmentState for item use
-    const [mySegmentState, setMySegmentState] = useState({ type: "item", segementState: "default" });
+    const [mySegmentState, setMySegmentState] = useState({ type: "item", segmentState: "default" });
     // using after store value changed, for restoring purpose
     const makeMyDefaultSegment = () => {
-        setMySegmentState({ type: "item", segementState: "default" });
+        setMySegmentState({ type: "item", segmentState: "default" });
     };
     const dispatch = useDispatch();
 
@@ -59,40 +59,41 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                     switch (dataJSON.type) {
                         case "item":
                             setMySegmentState(dataJSON);
-                            if (dataJSON.segementState === "rocket" || dataJSON.segementState === "magnet") {
+                            if (dataJSON.segmentState === "rocket" || dataJSON.segmentState === "magnet") {
                                 dispatch({ type: "puzzleComplete/init_mine" });
                                 dispatch({ type: "defaultSegmentRightPlace/init" });
                             }
-                            switch (dataJSON.segementState) {
+                            dataChannel.send(JSON.stringify({ type: "itemExecuted", segmentState: dataJSON.segmentState }));
+                            switch (dataJSON.segmentState) {
 
                                 case "rocket":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
-                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segmentState: dataJSON.segmentState }));
                                     }, 9000);
                                     break;
                                 case "ice":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
-                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segmentState: dataJSON.segmentState }));
                                     }, 10000);
                                     break;
                                 case "magnet":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
-                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segmentState: dataJSON.segmentState }));
                                     }, 7000);
                                     break;
                                 case "lip":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
-                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segmentState: dataJSON.segmentState }));
                                     }, 10000);
                                     break;
                                 case "twirl":
                                     setTimeout(() => {
                                         makeMyDefaultSegment();
-                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segementState: dataJSON.segementState }));
+                                        if (dataChannel) dataChannel.send(JSON.stringify({ type: "itemTimeout", segmentState: dataJSON.segmentState }));
                                     }, 10000);
 
                                     break;
@@ -128,7 +129,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
         }
     }, [puzzleCompleteCounter.mine]);
 
-    if (mySegmentState.segementState === "lip") {
+    if (mySegmentState.segmentState === "lip") {
         startItem();
         setTimeout(() => {
             stopItem();
@@ -147,7 +148,7 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                     return (
                         <>
                             <div className={`${styles[`c${i}`]}`} key={`mypuzzle_${i}`}>
-                                <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segementState} isRightCard={false} />
+                                <PuzzleSegment key={`my${i}`} i={i} auth={auth} videoId={videoId} peerxy={undefined} dataChannel={dataChannel} segmentState={mySegmentState.segmentState} isRightCard={false} />
                             </div>
                         </>
                     );
@@ -164,17 +165,17 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
 
             {/* 아이템 쓸 때 나오는 효과 */}
             <div className="absolute grid w-[640px] h-[480px] mt-[100px]" style={{ pointerEvents: "none" }}>
-                <MyGameParticles mysegmentState={mySegmentState.segementState} />
-                {mySegmentState.segementState === 'ice' && (<div id="myice" className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-                {mySegmentState.segementState === 'magnet' && (<div id="mymagnet" className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-                {mySegmentState.segementState === 'lip' && (<div id="mylip" className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lipmine.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
-                {mySegmentState.segementState === 'twirl' && (<div id="mytwirl" className={`flex fill`} style={{ pointerEvents: "none" }} > </div>)}
-                {mySegmentState.segementState === 'rocket' && (<div id="myrocket" className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/rocketmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                <MyGameParticles mysegmentState={mySegmentState.segmentState} />
+                {mySegmentState.segmentState === 'ice' && (<div id="myice" className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/icemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segmentState === 'magnet' && (<div id="mymagnet" className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/blackholemine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segmentState === 'lip' && (<div id="mylip" className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/lipmine.gif" className={`z-50 ${styles.gif2}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
+                {mySegmentState.segmentState === 'twirl' && (<div id="mytwirl" className={`flex fill`} style={{ pointerEvents: "none" }} > </div>)}
+                {mySegmentState.segmentState === 'rocket' && (<div id="myrocket" className={`flex fill`} style={{ pointerEvents: "none" }} > <img src="../images/rocketmine.gif" className={`z-50 ${styles.gif}`} draggable="false" style={{ pointerEvents: "none" }} /> </div>)}
             </div>
             <MyBar score={puzzleCompleteCounter.mine} />
-            <Modal segmentState={mySegmentState.segementState} />
-            {mySegmentState.segementState === 'lip' && <MakeVideoLip auth={auth} />}
-            {mySegmentState.segementState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
+            <Modal segmentState={mySegmentState.segmentState} />
+            {mySegmentState.segmentState === 'lip' && <MakeVideoLip auth={auth} />}
+            {mySegmentState.segmentState === 'twirl' && <MakeVideoTwirl videoId={videoId} auth={auth} />}
         </>
     );
 }
