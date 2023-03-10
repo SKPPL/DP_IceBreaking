@@ -60,8 +60,10 @@ function MyPuzzle({ auth, videoId, dataChannel }: Props) {
                         case "item":
                             setMySegmentState(dataJSON);
                             if (dataJSON.segmentState === "rocket" || dataJSON.segmentState === "magnet") {
-                                dispatch({ type: "puzzleComplete/init_mine" });
-                                dispatch({ type: "defaultSegmentRightPlace/init" });
+                                setTimeout(()=>{
+                                    dispatch({ type: "puzzleComplete/init_mine" });
+                                    dispatch({ type: "defaultSegmentRightPlace/init" });
+                                }, 200);
                             }
                             dataChannel.send(JSON.stringify({ type: "itemExecuted", segmentState: dataJSON.segmentState }));
                             switch (dataJSON.segmentState) {
