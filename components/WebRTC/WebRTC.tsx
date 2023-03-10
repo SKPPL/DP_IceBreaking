@@ -67,7 +67,7 @@ export default function WebRTC() {
   const [myLoading, setMyLoading] = useState<boolean>(false);
   const [peerLoading, setPeerLoading] = useState<boolean>(false);
 
-  //segementState is for item using, owner is my or peer
+  //segmentState is for item using, owner is my or peer
   useEffect(() => {
     if (typeof socketConnect !== "undefined") {
       console.log("[roomName] : ", roomName);
