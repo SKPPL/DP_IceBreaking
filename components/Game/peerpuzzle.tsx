@@ -72,9 +72,11 @@ function PeerPuzzle({ auth, videoId, dataChannel }: Props) {
               }
               break;
             case "cnt": // 상대방이 퍼즐을 하나 맞출 때 마다 카운트 증가
-              dispatch({ type: `puzzleComplete/plus_peer` });
-              i = dataJSON.i;
-              { dataJSON.isRightPlace ? isRightPlace[i] = true : false; }
+              if(peerSegmentState.segementState !== 'magnet' && peerSegmentState.segementState !== 'rocket'){
+                dispatch({ type: `puzzleComplete/plus_peer` });
+                i = dataJSON.i;
+                { dataJSON.isRightPlace ? isRightPlace[i] = true : false; }
+              }
               break;
             case "itemTimeout":
               switch (dataJSON.segementState) {
