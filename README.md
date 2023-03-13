@@ -25,13 +25,14 @@
 
 
 ## 아키텍처 & 기술스택
+
+![image](https://user-images.githubusercontent.com/43032391/224637846-99736ca6-7cd8-450d-8418-06d5d1cb49d0.png)
 1. 백엔드 : next.js (API 및 웹서버 역할)  
 2. 프론트엔드 : react.js, next.js, react spring, redux, recoil, type script, Tensor flow  
 3. 인프라: Amazon EC2, Github actions, Socket.io  
 4. 협업 툴 : slack, github, notion  
 
-![image](https://user-images.githubusercontent.com/43032391/224637846-99736ca6-7cd8-450d-8418-06d5d1cb49d0.png)
-
+### 주요 기술 스택
 1. React.js  
   팀원 모두 프론트앤드 학습한 경험이 적어 그나마 익숙한 javscript를 사용하는 언어 중 레퍼런스가 가장 많은 react.js 언어를 채택하여 빠르게 프로토 타입을 개발하여 가능성 부터 확인하고자함.
 2. Type Script  
