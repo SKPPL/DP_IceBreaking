@@ -1,7 +1,5 @@
 # Dynamic Puzzle with Web Camera
 
-Puz2le.com
-
 ## 프로젝트 기간 
 (2023.02.02 ~ 2023.03.11)  
 [0주차] flutter, golang 학습하다가 프로젝트 엎기 (1.26 ~ 2.01)  
@@ -26,11 +24,19 @@ Puz2le.com
 
 
 ## 아키텍처 & 기술스택
-- 왜 이런 아키텍쳐와 기술스택을 사용했는지?
 1. 백엔드 : next.js (API 및 웹서버 역할)  
 2. 프론트엔드 : react.js, next.js, react spring, redux, recoil, type script, Tensor flow  
 3. 인프라: Amazon EC2, Github actions, Socket.io  
 4. 협업 툴 : slack, github, notion  
+
+![image](https://user-images.githubusercontent.com/43032391/224637846-99736ca6-7cd8-450d-8418-06d5d1cb49d0.png)
+
+1. React.js
+  팀원 모두 프론트앤드 학습한 경험이 적어 그나마 익숙한 javscript를 사용하는 언어 중 레퍼런스가 가장 많은 react.js 언어를 채택하여 빠르게 프로토 타입을 개발하여 가능성 부터 확인하고자함.
+2. Type Script
+  JavaScript에 Type을 명시하여 안정성을 향상
+3. next.js
+  Hot Module Replacement(HMR)을 지원하여 개발 중 변경한 코드를 실시간으로 확인할 수 있고, Type Script를 지원하여 코드 유지보수와 디버깅이 안정적임. 추가로, API 라우팅 기능을 제공하여 간단한 API 서버를 사용하기에 가장 적절하였음.
 
 ## 프로젝트 진행
 - 어떤 어려움이 있있는지?
@@ -42,6 +48,7 @@ Puz2le.com
   - 이벤트 순서 처리 해결
   - 공유자원 관리
   - 최적화
+  
 
 ## 팀원소개
 각 팀원들은 아래의 역할을 중점적으로 맡았으나, Boundary없이 서로 도우면서 개발하였음.
