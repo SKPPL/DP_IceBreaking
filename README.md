@@ -31,11 +31,11 @@
 
 ![image](https://user-images.githubusercontent.com/43032391/224637846-99736ca6-7cd8-450d-8418-06d5d1cb49d0.png)
 
-1. React.js
+1. React.js  
   팀원 모두 프론트앤드 학습한 경험이 적어 그나마 익숙한 javscript를 사용하는 언어 중 레퍼런스가 가장 많은 react.js 언어를 채택하여 빠르게 프로토 타입을 개발하여 가능성 부터 확인하고자함.
-2. Type Script
+2. Type Script  
   JavaScript에 Type을 명시하여 안정성을 향상
-3. next.js
+3. next.js  
   Hot Module Replacement(HMR)을 지원하여 개발 중 변경한 코드를 실시간으로 확인할 수 있고, Type Script를 지원하여 코드 유지보수와 디버깅이 안정적임. 추가로, API 라우팅 기능을 제공하여 간단한 API 서버를 사용하기에 가장 적절하였음.
 
 ## 프로젝트 진행
