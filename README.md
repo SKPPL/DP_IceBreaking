@@ -17,6 +17,7 @@
   2. 실시간 1:1 멀티플레이
   3. 재미있는 아이템들
 
+- [URL](https://puz2le.com)
 - [시연 영상](https://www.youtube.com/watch?v=sIGSSbmrrp0)
 - 포스터 
 ![posterv8 001](https://user-images.githubusercontent.com/115034667/224616200-21e8dbe4-2962-4960-8a89-415033506dcf.png)
