@@ -1,6 +1,6 @@
 # Dynamic Puzzle with Web Camera
 
-URL : Puz2le.com
+Puz2le.com
 
 ## 프로젝트 기간 
 (2023.02.02 ~ 2023.03.11)  
