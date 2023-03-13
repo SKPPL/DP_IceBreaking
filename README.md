@@ -25,24 +25,27 @@
 
 ## 아키텍처 & 기술스택
 - 왜 이런 아키텍쳐와 기술스택을 사용했는지?
-    1. WebRTC
-    2. Reactjs, Next.js
-    3. ReactSpring
+1. 백엔드 : next.js (API 및 웹서버 역할)  
+2. 프론트엔드 : react.js, next.js, react spring, redux, recoil, type script, Tensor flow  
+3. 인프라: Amazon EC2, Github actions, Socket.io  
+4. 협업 툴 : slack, github, notion  
 
 ## 프로젝트 진행
 - 어떤 어려움이 있있는지?
-  - 상태관리
-  - 레퍼런스가 풍부하지 않은 라이브러리 활용
+  - 상태 관리
+  - peer to peer 통신의 이벤트 타이밍 처리
+  - 레퍼런스가 풍부하지 않은 라이브러리
 - 어떤 문제를 해결했는지?
   - 프레임 저하 해결
   - 이벤트 순서 처리 해결
   - 공유자원 관리
+  - 최적화
 
 ## 팀원소개
-주로 다음과 같은 것들을 맡았고, Boundary 없이 서로 도우면서 개발하였음.
-- K곽호연 게임 구조 설계, Canvas
-- P박다솔 Canvas, 이미지, 사운드
-- P박찬 프로젝트 UI/UX
-- S성현식 프로젝트 전반의 코드 퀄리티 향상 및 디버깅
-- L이전제 WebRTC, Socket.io, CI/CD
+각 팀원들은 아래의 역할을 중점적으로 맡았으나, Boundary없이 서로 도우면서 개발하였음.
+- 곽호연 : 게임 구조 설계, Canvas API
+- 박다솔 : Canvas API, 이미지, 사운드
+- 박찬 : 프로젝트 UI/UX
+- 성현식 : 프로젝트 전반의 코드 퀄리티 향상 및 디버깅
+- 이전제 : WebRTC, Socket.io, CI/CD
 
