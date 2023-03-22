@@ -281,7 +281,7 @@ function DefaultSegment({ i, auth, videoId, peerxy, dataChannel, segmentState, i
                 dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [width, height] } });
             }
             else {
-                //isRightPlace가 false인 경우, 마지막으로 저장된 좌표를 저장함, 이는 부정확해도 되므로 아래 animated.div에서 memo를 매번 저장하지 않도록 함. 8번에 한 번씩만 저장함
+                //isRightPlace가 false인 경우, 마지막으로 저장된 좌표를 저장함
                 dispatch({ type: `${auth ? "myPuzzle" : "peerPuzzle"}/setPosition`, payload: { index: i, position: [x.get(), y.get()] } });
             }
             auth ? setMyWait((prev) => prev + 1) : setPeerWait((prev) => prev + 1);
